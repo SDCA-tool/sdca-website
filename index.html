@@ -44,6 +44,12 @@
 				
 				<div id="selector">
 					<ul>
+						<li class="publictransport">
+							<img src="/js/lib/Mapboxgljs.LayerViewer/images/spinner.svg" class="loading" alt="" />
+							<p class="total"></p>
+							<input type="checkbox" name="show[]" id="show_publictransport" />
+							<a href="#publictransport" title="Public transport" class="tooltip"><img src="/images/osm/transport_bus_stop.p.64.png" alt="" /><br />Transport stops</a>
+						</li>
 						<li class="trafficcounts">
 							<img src="/js/lib/Mapboxgljs.LayerViewer/images/spinner.svg" class="loading" alt="" />
 							<p class="total"></p>
@@ -60,6 +66,11 @@
 				</div>
 				
 				<div id="sections">
+					
+					<div id="publictransport">
+						<h2>Transport stops</h2>
+						<p>Shows public transport stops and frequency of service. Stops are coloured using the A+ (most) to F- (least) frequent grades. Click on stops for more details, and zoom in to see more stops.</p>
+					</div>
 					
 					<div id="trafficcounts">
 						<h2>Traffic counts</h2>
