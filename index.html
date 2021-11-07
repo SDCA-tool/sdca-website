@@ -1,0 +1,116 @@
+<?php include ('header.html'); ?>
+
+<div id="application">
+
+	<link rel="stylesheet" href="/js/lib/mapbox-gl-js/mapbox-gl.css" />
+	<script src="/js/lib/mapbox-gl-js/mapbox-gl.min.js"></script>
+	<script src="/js/lib/jquery/jquery.min.js"></script>
+	
+	<script src="/js/lib/jquery-ui/jquery-ui.min.js"></script>
+	
+	<script src="/js/lib/jQuery-Touch-Events/src/1.0.9/jquery.mobile-events.min.js"></script>
+	
+	<script src="/js/lib/mapbox-gl-draw/mapbox-gl-draw.js"></script>
+	<link rel="stylesheet" href="/js/lib/mapbox-gl-draw/mapbox-gl-draw.css" />
+	
+	<script src="/js/lib/js-cookie/js.cookie.js"></script>
+	
+	<!-- Vex dialogs; see: https://github.hubspot.com/vex/ -->
+	<script src="/js/lib/vex-4.1.0/dist/js/vex.combined.min.js"></script>
+	<link rel="stylesheet" href="/js/lib/vex-4.1.0/dist/css/vex.css" />
+	<link rel="stylesheet" href="/js/lib/vex-4.1.0/dist/css/vex-theme-plain.css" />
+	
+	<!-- GeoJSON extent library; see: https://github.com/mapbox/geojson-extent -->
+	<script src="/js/lib/geojson-extent/geojson-extent.js"></script>
+	
+	<!-- LayerViewer library, providing the application logic -->
+	<script src="/js/lib/Mapboxgljs.LayerViewer/src/layerviewer.js"></script>
+	<link rel="stylesheet" type="text/css" href="/js/lib/Mapboxgljs.LayerViewer/src/layerviewer.css" />
+	<script src="/js/lib/Mapboxgljs.LayerViewer/lib/geocoder.js"></script>
+	
+	<!-- Map application and its config, implementing the LayerViewer library -->
+	<script src="/.config.js"></script>
+	<script src="/js/sdca.js"></script>
+	<link rel="stylesheet" type="text/css" href="/css/style.css" />
+	<script>
+		$(function() {
+			sdca.initialise (config);
+		});
+	</script>
+		
+		<form id="data">
+		
+			<nav>
+				
+				<div id="selector">
+					<ul>
+						<li class="trafficcounts">
+							<img src="/js/lib/Mapboxgljs.LayerViewer/images/spinner.svg" class="loading" alt="" />
+							<p class="total"></p>
+							<input type="checkbox" name="show[]" id="show_trafficcounts" />
+							<a href="#trafficcounts" title="Traffic data" class="tooltip"><img src="/images/icons/icon_congestion_bad.svg" alt="" /><br />Traffic counts</a>
+						</li>
+						<li class="planningapplications">
+							<img src="/js/lib/Mapboxgljs.LayerViewer/images/spinner.svg" class="loading" alt="" />
+							<p class="total"></p>
+							<input type="checkbox" name="show[]" id="show_planningapplications" />
+							<a href="#planningapplications" title="Planning applications" class="tooltip"><img src="/images/icons/signs_neutral.svg" alt="" /><br />Planning applications</a>
+						</li>
+					</ul>
+				</div>
+				
+				<div id="sections">
+					
+					<div id="trafficcounts">
+						<h2>Traffic counts</h2>
+						<p>This map contains official traffic counts of all main roads in the UK, for each type of vehicle. This is a visualisation of the DfT's AADF (Annual Average Daily Flows) data. Figures are average daily counts.</p>
+					</div>
+					
+					<div id="planningapplications">
+						<h2>Planning applications</h2>
+						<p>New developments have the potential to worsen traffic conditions, but can also bring opportunities to fund infrastructure improvements.</p>
+						
+						<div class="filters">
+							<h3>Filters:</h3>
+							
+							<h4>Size of development:</h4>
+							<ul class="controls">
+								<li><label><input type="checkbox" name="app_size[]" value="Small">Small</label></li>
+								<li><label><input type="checkbox" name="app_size[]" value="Medium">Medium</label></li>
+								<li><label><input type="checkbox" name="app_size[]" checked="checked" value="Large">Large</label></li>
+							</ul>
+							
+							<h4>Status</h4>
+							<ul class="controls">
+								<li><label><input type="checkbox" checked="checked" name="app_state[]" value="Undecided" />Current</label></li>
+								<li><label><input type="checkbox" checked="checked" name="app_state[]" value="Permitted,Conditions,Rejected,Withdrawn,Other" />Decided</label></li>
+							</ul>
+							
+							<div id="dateRange">
+								<h4>Between dates:</h4>
+								<div class="controls">
+									<label for="planningapplications_start_date">From: </label><input type="date" name="start_date" id="planningapplications_start_date" /><br />
+									<label for="planningapplications_end_date">To: </label><input type="date" name="end_date" id="planningapplications_end_date" />
+								</div>
+							</div>
+							
+						</div>
+						
+					</div>
+					
+				</div>
+			</nav>
+			
+			<div id="geocoder" class="geocoder">
+				<input type="text" name="location" autocomplete="off" placeholder="Search locations and move map" tabindex="1" spellcheck="false" />
+			</div>
+			
+			<div id="map" class="map">
+			</div>
+			
+		</form>
+
+
+</div>
+
+<?php include ('footer.html'); ?>
