@@ -27,7 +27,7 @@ input[type=checkbox] {margin-right: 5px;}
 #selector ul li:first-child {border-top: 0;}
 #selector ul li:last-child {border-bottom: 1px solid gray;}
 #selector ul li.selected {background-color: black; border-left: 4px solid brown;}
-#selector ul li a {font-size: 0.9em; padding: 17px 7px; display: block; text-align: center;}
+#selector ul li a {font-size: 0.8em; padding: 17px 7px; display: block; text-align: center;}
 #selector ul li:hover {background-color: #111;}
 #selector ul li.selected:hover {background-color: black;}
 #selector ul li a img {width: 40px;}
