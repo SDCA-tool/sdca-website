@@ -173,8 +173,65 @@ var sdca = (function ($) {
 				}
 			});
 			
-			// Run the layerviewer for these settings and layers
-			layerviewer.initialise (_settings, _layerConfig);
+			// Load layers from datasets file, and then initialise layers
+			sdca.loadDatasets ();
+				
+			// Initialisation is wrapped within loadDatasets
+			// layerviewer.initialise (_settings, _layerConfig);
+		},
+		
+		
+		// Function to load layers from datasets file
+		loadDatasets: function ()
+		{
+			// Load the datasets
+			$.getJSON ('/datasets.json', function (datasets) {
+				
+				// Add each dataset
+				var $clone;
+				$.each (datasets, function (index, dataset) {
+					
+					// Register the layer definition
+					_layerConfig[dataset.id] = {
+						vector: {
+							source: {
+								'type': 'vector',
+								'tiles': [
+									'/data/' + dataset.id + '/{z}/{x}/{y}.pbf'
+								],
+								'minzoom': 6,
+								'maxzoom': 14
+							},
+							layer: {
+								'id': dataset.id,
+								'type': 'line',		// See: https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#type
+								'source': dataset.id,
+								'source-layer': dataset.id
+							}
+						}
+					};
+					
+					// Create a UI nav menu entry
+					$clone = $('nav #selector ul li.template').clone (true);
+					$clone.removeClass ('template').addClass (dataset.id);
+					$clone.find ('input[type="checkbox"').attr ('id', 'show_' + dataset.id);
+					$clone.find ('a').attr ('href', '#' + dataset.id);
+					$clone.find ('a').attr ('title', dataset.description);
+					$clone.html ($clone.html ().replace ('Template', dataset.title));
+					$clone.appendTo ('nav #selector ul');
+					
+					// Create the information panel
+					$clone = $('#sections div.template').clone (true);
+					$clone.removeClass ('template');
+					$clone.attr ('id', dataset.id);
+					$clone.find ('h2').html (dataset.title);
+					$clone.find ('p').html (dataset.description);
+					$clone.appendTo ('#sections');
+				});
+				
+				// Run the layerviewer for these settings and layers
+				layerviewer.initialise (_settings, _layerConfig);
+			});
 		}
 	};
 	
