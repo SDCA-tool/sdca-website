@@ -188,12 +188,28 @@ var sdca = (function ($) {
 			$.getJSON ('/datasets.json', function (datasets) {
 				
 				// Add each dataset
+				var type;
 				var $clone;
 				$.each (datasets, function (index, dataset) {
 					
 					// Skip if required
 					if (dataset.show == 'FALSE') {
 						return;		// continue
+					}
+					
+					// Determine the renderer; see: https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#type
+					// The incoming data derives from the geometries_type listed at: https://github.com/SDCA-tool/sdca-data/blob/main/datasets.csv
+					switch (dataset.geometries_type) {
+						case 'LineString':
+						case 'MultiLineString':
+						case 'MultiPolygon':
+						case 'Polygon':
+							type = 'line';
+							break;
+						case 'MultiPoint':
+						case 'Point':
+							type = 'circle';
+							break;
 					}
 					
 					// Register the layer definition
@@ -209,7 +225,7 @@ var sdca = (function ($) {
 							},
 							layer: {
 								'id': dataset.id,
-								'type': 'line',		// See: https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#type
+								'type': type,
 								'source': dataset.id,
 								'source-layer': dataset.id
 							}
