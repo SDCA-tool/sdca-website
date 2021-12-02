@@ -191,6 +191,11 @@ var sdca = (function ($) {
 				var $clone;
 				$.each (datasets, function (index, dataset) {
 					
+					// Skip if required
+					if (dataset.show == 'FALSE') {
+						return;		// continue
+					}
+					
 					// Register the layer definition
 					_layerConfig[dataset.id] = {
 						vector: {
