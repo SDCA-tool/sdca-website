@@ -202,9 +202,11 @@ var sdca = (function ($) {
 					switch (dataset.geometries_type) {
 						case 'LineString':
 						case 'MultiLineString':
+							type = 'line';
+							break;
 						case 'MultiPolygon':
 						case 'Polygon':
-							type = 'line';
+							type = 'fill';
 							break;
 						case 'MultiPoint':
 						case 'Point':
