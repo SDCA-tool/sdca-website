@@ -23,7 +23,7 @@ var sdca = (function ($) {
 			longitude: -1.216,
 			zoom: 5.2
 		},
-		defaultTileLayer: 'mapboxstreets',
+		defaultTileLayer: 'osoutdoor',
 		
 		// Default layers ticked
 		defaultLayers: [],
