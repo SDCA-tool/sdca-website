@@ -184,76 +184,78 @@ var sdca = (function ($) {
 		// Function to load layers from datasets file
 		loadDatasets: function ()
 		{
-			// Load the datasets
+			// Load the datasets and field definitions
 			$.getJSON ('/datasets.json', function (datasets) {
-				
-				// Add each dataset
-				var type;
-				var $clone;
-				$.each (datasets, function (index, dataset) {
+				$.getJSON ('/fields.json', function (fields) {
 					
-					// Skip if required
-					if (dataset.show == 'FALSE') {
-						return;		// continue
-					}
-					
-					// Determine the renderer; see: https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#type
-					// The incoming data derives from the geometries_type listed at: https://github.com/SDCA-tool/sdca-data/blob/main/datasets.csv
-					switch (dataset.geometries_type) {
-						case 'LineString':
-						case 'MultiLineString':
-							type = 'line';
-							break;
-						case 'MultiPolygon':
-						case 'Polygon':
-							type = 'fill';
-							break;
-						case 'MultiPoint':
-						case 'Point':
-							type = 'circle';
-							break;
-					}
-					
-					// Register the layer definition
-					_layerConfig[dataset.id] = {
-						vector: {
-							source: {
-								'type': 'vector',
-								'tiles': [
-									'/data/' + dataset.id + '/{z}/{x}/{y}.pbf'
-								],
-								'minzoom': 6,
-								'maxzoom': 14
-							},
-							layer: {
-								'id': dataset.id,
-								'type': type,
-								'source': dataset.id,
-								'source-layer': dataset.id
-							}
+					// Add each dataset
+					var type;
+					var $clone;
+					$.each (datasets, function (index, dataset) {
+						
+						// Skip if required
+						if (dataset.show == 'FALSE') {
+							return;		// continue
 						}
-					};
+						
+						// Determine the renderer; see: https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#type
+						// The incoming data derives from the geometries_type listed at: https://github.com/SDCA-tool/sdca-data/blob/main/datasets.csv
+						switch (dataset.geometries_type) {
+							case 'LineString':
+							case 'MultiLineString':
+								type = 'line';
+								break;
+							case 'MultiPolygon':
+							case 'Polygon':
+								type = 'fill';
+								break;
+							case 'MultiPoint':
+							case 'Point':
+								type = 'circle';
+								break;
+						}
+						
+						// Register the layer definition
+						_layerConfig[dataset.id] = {
+							vector: {
+								source: {
+									'type': 'vector',
+									'tiles': [
+										'/data/' + dataset.id + '/{z}/{x}/{y}.pbf'
+									],
+									'minzoom': 6,
+									'maxzoom': 14
+								},
+								layer: {
+									'id': dataset.id,
+									'type': type,
+									'source': dataset.id,
+									'source-layer': dataset.id
+								}
+							}
+						};
+						
+						// Create a UI nav menu entry
+						$clone = $('nav #selector ul li.template').clone (true);
+						$clone.removeClass ('template').addClass (dataset.id);
+						$clone.find ('input[type="checkbox"').attr ('id', 'show_' + dataset.id);
+						$clone.find ('a').attr ('href', '#' + dataset.id);
+						$clone.find ('a').attr ('title', dataset.description);
+						$clone.html ($clone.html ().replace ('Template', dataset.title));
+						$clone.appendTo ('nav #selector ul');
+						
+						// Create the information panel
+						$clone = $('#sections div.template').clone (true);
+						$clone.removeClass ('template');
+						$clone.attr ('id', dataset.id);
+						$clone.find ('h2').html (dataset.title);
+						$clone.find ('p').html (dataset.description);
+						$clone.appendTo ('#sections');
+					});
 					
-					// Create a UI nav menu entry
-					$clone = $('nav #selector ul li.template').clone (true);
-					$clone.removeClass ('template').addClass (dataset.id);
-					$clone.find ('input[type="checkbox"').attr ('id', 'show_' + dataset.id);
-					$clone.find ('a').attr ('href', '#' + dataset.id);
-					$clone.find ('a').attr ('title', dataset.description);
-					$clone.html ($clone.html ().replace ('Template', dataset.title));
-					$clone.appendTo ('nav #selector ul');
-					
-					// Create the information panel
-					$clone = $('#sections div.template').clone (true);
-					$clone.removeClass ('template');
-					$clone.attr ('id', dataset.id);
-					$clone.find ('h2').html (dataset.title);
-					$clone.find ('p').html (dataset.description);
-					$clone.appendTo ('#sections');
+					// Run the layerviewer for these settings and layers
+					layerviewer.initialise (_settings, _layerConfig);
 				});
-				
-				// Run the layerviewer for these settings and layers
-				layerviewer.initialise (_settings, _layerConfig);
 			});
 		}
 	};
