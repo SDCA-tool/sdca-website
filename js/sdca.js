@@ -188,9 +188,17 @@ var sdca = (function ($) {
 			$.getJSON ('/datasets.json', function (datasets) {
 				$.getJSON ('/fields.json', function (fields) {
 					
+					// #!# Duplicate fields, pending layer merging work
+					fields.carbon_full = fields.lsoa;
+					fields.carbon_general = fields.lsoa;
+					fields.carbon_super_general = fields.lsoa;
+					
 					// Add each dataset
 					var type;
 					var $clone;
+					var popupLabels;
+					var popupDescriptions;
+					var fieldname;
 					$.each (datasets, function (index, dataset) {
 						
 						// Skip if required
@@ -215,6 +223,17 @@ var sdca = (function ($) {
 								break;
 						}
 						
+						// Set labels and descriptions for popups, if present
+						popupLabels = {};
+						popupDescriptions = {};
+						if (fields[dataset.id]) {
+							$.each (fields[dataset.id], function (index, field) {
+								fieldname = field.col_name;
+								popupLabels[fieldname] = field.name;
+								popupDescriptions[fieldname] = field.description;
+							});
+						}
+						
 						// Register the layer definition
 						_layerConfig[dataset.id] = {
 							vector: {
@@ -234,6 +253,8 @@ var sdca = (function ($) {
 								}
 							},
 							popupHtml: (dataset.has_attributes == 'TRUE' ? false : '<p>' + sdca.htmlspecialchars (dataset.title) + '</p>'),
+							popupLabels: popupLabels,
+							popupDescriptions: popupDescriptions,
 						};
 						
 						// Create a UI nav menu entry
