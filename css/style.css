@@ -12,6 +12,9 @@ p.right {float: right;}
 #application nav a {color: white; text-decoration: none; border-bottom: 1px solid gray;}
 #map .mapboxgl-ctrl-attrib {margin-right: 335px;}
 
+/* Popup styling */
+#map .mapboxgl-popup .mapboxgl-popup-content {min-width: 350px; max-height: 300px; overflow: scroll;}
+
 /* Layer-specific popup styling */
 #map .mapboxgl-popup.trafficcounts .mapboxgl-popup-content {min-width: 500px; max-width: 500px;}
 #map .mapboxgl-popup.trafficcounts table td, #map .mapboxgl-popup.trafficcounts table th {font-size: 0.83em;}
