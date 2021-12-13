@@ -258,6 +258,14 @@ var sdca = (function ($) {
 					layerviewer.initialise (_settings, _layerConfig);
 				});
 			});
+		},
+		
+		
+		// Function to make data entity-safe
+		htmlspecialchars: function (string)
+		{
+			if (typeof string !== 'string') {return string;}
+			return string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 		}
 	};
 	
