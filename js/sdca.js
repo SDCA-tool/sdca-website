@@ -232,7 +232,8 @@ var sdca = (function ($) {
 									'source': dataset.id,
 									'source-layer': dataset.id
 								}
-							}
+							},
+							popups: (dataset.has_attributes == 'TRUE')
 						};
 						
 						// Create a UI nav menu entry
