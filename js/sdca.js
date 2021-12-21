@@ -38,7 +38,11 @@ var sdca = (function ($) {
 		geolocationPosition: 'top-left',
 		
 		// Enable scale bar
-		enableScale: true
+		enableScale: true,
+		
+		// Drawing
+		enableDrawing: true,
+		drawingGeometryType: 'LineString',
 	};
 	
 	// Layer definitions
