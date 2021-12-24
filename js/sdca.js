@@ -182,6 +182,9 @@ var sdca = (function ($) {
 				
 			// Initialisation is wrapped within loadDatasets
 			// layerviewer.initialise (_settings, _layerConfig);
+			
+			// Handler for drawn line
+			sdca.handleDrawLine ();
 		},
 		
 		
@@ -282,6 +285,34 @@ var sdca = (function ($) {
 					// Run the layerviewer for these settings and layers
 					layerviewer.initialise (_settings, _layerConfig);
 				});
+			});
+		},
+		
+		
+		// Handler for drawn line
+		handleDrawLine: function ()
+		{
+			// Run when the captured geometry value changes; this is due to the .trigger ('change') in layerviewer.drawing () as a result of the draw.create/draw.update events
+			$('#geometry').on ('change', function (e) {
+				
+				// Capture the data, which will be GeoJSON
+				var geojson = e.target.value;
+				
+				// Send the data to the API
+				$.ajax ({
+					type: 'GET',
+					url: '/api/v1/locations.json',
+					dataType: 'json',
+					data: {
+						line: geojson,
+						bbox: '0,0,0,0',	// Random value to avoid rejection from sample API
+						zoom: 14			// Random value to avoid rejection from sample API
+					},
+					success: function (data, textStatus, jqXHR) {
+						alert ('[Prototype development:]\n\nThe response was:\n\n' + JSON.stringify (data));
+					},
+				});
+				
 			});
 		},
 		
