@@ -47,16 +47,25 @@ class sdcaModel
 	# Data for locations test
 	public function locationsModel (&$error = false)
 	{
+		# Get the line
+		if (!isSet ($_GET['line']) || !strlen ($_GET['line'])) {
+			$error = 'No line supplied';
+			return false;
+		}
+		
 		# Base values
 		$fields = array (
 			'lsoa11',
-			'ST_AsGeoJSON(geometry, 5) AS geometry',
+			//'ST_AsGeoJSON(geometry, 5) AS geometry',
 		);
 		$constraints = array (
+			'ST_Intersects(ST_GeomFromGeoJSON(:line), geometry)'
 		);
-		$parameters = $this->bbox;
-		$limit = 1;
-
+		$parameters = array (
+			'line' => '{"type": "LineString", "coordinates": ' . $_GET['line'] . '}',
+		);
+		$limit = false;
+		
 		# Return the model
 		return array (
 			'table' => $this->tablePrefix . 'carbon_full',

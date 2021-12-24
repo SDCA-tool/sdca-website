@@ -373,7 +373,7 @@ class api
 			}
 			
 		} catch (PDOException $e) {
-			// var_dump ($e->getMessage (), $query);
+			// var_dump ($e->getMessage (), $query, $parameters);
 			$error = 'An invalid query was sent to the database.';
 			return false;
 		}
