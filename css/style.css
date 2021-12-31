@@ -1,5 +1,5 @@
 /* Resets from gov.uk style */
-.govuk-width-container {max-width: none; margin-left: 40px; margin-right: 40px;}
+body .govuk-width-container {max-width: none; margin-left: 40px; margin-right: 40px;}
 
 /* Layout */
 #application {width: 100%; height: 600px; position: relative;}

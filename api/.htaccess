@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteRule ^$ /api/index.php?action=documentation [L]
+RewriteRule ^v1/([a-z]+).(json|geojson|csv)$ /api/index.php?action=$1&format=$2 [L,QSA]
