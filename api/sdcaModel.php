@@ -73,10 +73,32 @@ class sdcaModel
 			'constraints' => $constraints,
 			'parameters' => $parameters,
 			'limit' => $limit,
+			'format' => 'flatjson',
 		);
 	}
-
-
+	
+	
+	# Processing function for locations model
+	#!# Currently just an example
+	public function locationsModelProcessing ($data)
+	{
+		# Example - Get each LSOA
+		$lsoas = array ();
+		foreach ($data as $row) {
+			$lsoas[] = $row['lsoa11'];
+		}
+		$parameter = implode (',', $lsoas);
+		
+		# Provide base data to calculation script
+		$command = '/var/www/sdca/sdca-package/test.R' . ' ' . $parameter;
+		$result = exec ($command);
+		$result = (int) $result;
+		
+		# Return the result
+		return array ('result' => $result);
+	}
+	
+	
 	# Documentation
 	public static function locationsDocumentation ()
 	{
