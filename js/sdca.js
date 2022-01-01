@@ -258,12 +258,18 @@ var sdca = (function ($) {
 										'type': type,
 										'source': dataset.id,
 										'source-layer': dataset.id
+										// paint is added below, if defined; if not present as a key, the layerviewer will use default styling
 									}
 								},
 								popupHtml: (dataset.has_attributes == 'TRUE' ? false : '<p>' + sdca.htmlspecialchars (dataset.title) + '</p>'),
 								popupLabels: popupLabels,
 								popupDescriptions: popupDescriptions,
 							};
+							
+							// Define style if present
+							if (styles[dataset.id]) {
+								_layerConfig[dataset.id].vector.layer.paint = styles[dataset.id];
+							}
 							
 							// Create a UI nav menu entry
 							$clone = $('nav #selector ul li.template').clone (true);
