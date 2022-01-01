@@ -73,10 +73,64 @@ class sdcaModel
 			'constraints' => $constraints,
 			'parameters' => $parameters,
 			'limit' => $limit,
+			'format' => 'flatjson',
 		);
 	}
-
-
+	
+	
+	# Processing function for locations model
+	#!# Currently just an example
+	public function locationsModelProcessing ($data)
+	{
+		# Example - Get each LSOA
+		$lsoas = array ();
+		foreach ($data as $row) {
+			$lsoas[] = $row['lsoa11'];
+		}
+		$parameter = implode (',', $lsoas);
+		
+		# Provide base data to calculation script
+		$command = '/var/www/sdca/sdca-package/test.R';
+		$result = $this->createProcess ($command, $parameter);
+		$result = (int) $result;
+		
+		# Return the result
+		return array ('result' => $result);
+	}
+	
+	
+	# Function to handle running a command process securely without writing out any files
+	public static function createProcess ($command, $string)
+	{
+		# Set the descriptors
+		$descriptorspec = array (
+			0 => array ('pipe', 'r'),  // stdin is a pipe that the child will read from
+			1 => array ('pipe', 'w'),  // stdout is a pipe that the child will write to
+			//2 => array ('file', '/tmp/error-output.txt', 'a'), // stderr is a file to write to - uncomment this line for debugging
+		);
+		
+		# Assume failure unless the command works
+		$returnStatus = 1;
+		
+		# Create the process
+		$command = str_replace ("\r\n", "\n", $command);	// Standardise to Unix newlines
+		$process = proc_open ($command, $descriptorspec, $pipes);
+		if (is_resource ($process)) {
+			fwrite ($pipes[0], $string);
+			fclose ($pipes[0]);
+			$output = stream_get_contents ($pipes[1]);
+			fclose ($pipes[1]);
+			$returnStatus = proc_close ($process);
+		}
+		
+		# Return false as the output if the return status is a failure
+		if ($returnStatus) {return false;}	// Unix return status >0 is failure
+		
+		# Return the output
+		return $output;
+	}
+	
+	
 	# Documentation
 	public static function locationsDocumentation ()
 	{

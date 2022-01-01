@@ -101,6 +101,12 @@ class api
 			$data = $data[0];
 		}
 		
+		# Post-process the data if required
+		$postProcessingMethod = $method . 'Processing';
+		if (method_exists ($this->sdcaModel, $postProcessingMethod)) {
+			$data = $this->sdcaModel->{$postProcessingMethod} ($data);
+		}
+		
 		# If the model specifies an output format, use that
 		if (isSet ($model['format'])) {
 			$format = $model['format'];
