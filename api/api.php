@@ -107,6 +107,11 @@ class api
 			$data = $this->sdcaModel->{$postProcessingMethod} ($data);
 		}
 		
+		# Detect error
+		if (isSet ($data['error'])) {
+			return $this->error ($data['error']);
+		}
+		
 		# If the model specifies an output format, use that
 		if (isSet ($model['format'])) {
 			$format = $model['format'];
@@ -414,6 +419,9 @@ class api
 	# Error response
 	private function error ($string)
 	{
+		# Send generic error status
+		http_response_code (500);
+		
 		# Assemble and return the error
 		$data = array ('error' => $string);
 		return $this->responseJson ($data);

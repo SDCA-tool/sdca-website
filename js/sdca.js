@@ -319,6 +319,10 @@ var sdca = (function ($) {
 					success: function (data, textStatus, jqXHR) {
 						alert ('[Prototype development:]\n\nThe response was:\n\n' + JSON.stringify (data));
 					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						var responseBody = JSON.parse (jqXHR.responseText);
+						alert ('[Prototype development:]\n\nError:\n\n' + responseBody.error);
+					},
 				});
 				
 			});
