@@ -90,7 +90,7 @@ class sdcaModel
 		$parameter = implode (',', $lsoas);
 		
 		# Provide base data to calculation script
-		$command = $_SERVER['DOCUMENT_ROOT'] . '/api/test.R';
+		$command = $_SERVER['DOCUMENT_ROOT'] . '/api/sdca.R';
 		$result = $this->createProcess ($command, $parameter);
 		$result = json_decode ($result, true);
 		
