@@ -92,10 +92,10 @@ class sdcaModel
 		# Provide base data to calculation script
 		$command = $_SERVER['DOCUMENT_ROOT'] . '/api/test.R';
 		$result = $this->createProcess ($command, $parameter);
-		$result = (int) $result;
+		$result = json_decode ($result, true);
 		
 		# Return the result
-		return array ('result' => $result);
+		return $result;
 	}
 	
 	
