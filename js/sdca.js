@@ -306,6 +306,9 @@ var sdca = (function ($) {
 				// Capture the data, which will be GeoJSON
 				var geojson = e.target.value;
 				
+				// End if the line has been cleared
+				if (geojson === '') {return;}
+				
 				// Send the data to the API
 				$.ajax ({
 					type: 'GET',
