@@ -68,7 +68,7 @@ class sdcaModel
 		
 		# Return the model
 		return array (
-			'table' => $this->tablePrefix . 'carbon_full',
+			'table' => $this->tablePrefix . 'carbon',
 			'fields' => $fields,
 			'constraints' => $constraints,
 			'parameters' => $parameters,
