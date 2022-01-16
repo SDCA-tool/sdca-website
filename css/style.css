@@ -77,9 +77,13 @@ ul.tabs li.ui-state-active a {background-color: #333; color: white;}
 .ui-autocomplete-loading {background: white url("/images/ui-anim_basic_16x16.gif") right center no-repeat;}
 
 /* Results */
-#results {position: absolute; top: 30px; right: 350px; height: calc(100% - 30px - 120px - 50px - 20px); width: calc(250px - 20px); background: rgba(0,0,0,0.8); z-index: 95; padding: 10px;}
+#results {position: absolute; top: 15px; right: 350px; height: calc(100% - 15px - 120px - 50px - 20px); width: calc(250px - 20px); background: rgba(0,0,0,0.8); z-index: 95; padding: 10px; overflow-y: auto;}
 #results {display: none;}	/* Will be overriden to appear upon result */
-#results h3 {margin-top: 0; padding-top: 0; color: #e6e6e6;}
+#results h3 {margin: 0 0 10px; padding: 0; color: #e6e6e6;}
+#results p, #results table {font-size: 0.69em;}
+#results p {margin: 0 0 5px; padding-bottom: 0;}
+#results table th, #results table td {text-align: left; border-bottom: 1px solid #444;}
+#results table td.notes {min-width: 100px;}
 
 
 /* Mobile styles; see: https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions */

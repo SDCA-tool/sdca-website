@@ -320,7 +320,7 @@ var sdca = (function ($) {
 						zoom: 14			// Random value to avoid rejection from sample API
 					},
 					success: function (data, textStatus, jqXHR) {
-						sdca.showResult (data);
+						sdca.showResults (data);
 					},
 					error: function (jqXHR, textStatus, errorThrown) {
 						var responseBody = JSON.parse (jqXHR.responseText);
@@ -332,18 +332,38 @@ var sdca = (function ($) {
 		},
 		
 		
-		// Function to show the result
-		showResult: function (data)
+		// Function to show the results
+		showResults: function (data)
 		{
 			// Show the result box
 			$('#results').fadeIn (500).css ('display', 'block');
 			
-			// Assemble the result string
-			var result = '<h3>Results [example]</h3>';
-			result += '<p>' + sdca.htmlspecialchars (JSON.stringify (data)) + '</p>';
+			// Create the PAS2080 table
+			var pas2080Labels = {
+				pas2080_code: 'Code',
+				emissions: 'Emissions',
+				emissions_high: 'High',
+				emissions_low: 'Low',
+				confidence: 'Confidence',
+				notes: 'Notes'
+			};
+			var pas2080 = sdca.htmlTable (data.pas2080, pas2080Labels);
 			
-			// Show the result in the box
-			$('#results').html (result);
+			// Create the time series table
+			var timeseriesLabels = {
+				year: 'Year',
+				emissions: 'Emissions',
+				emissions_cumulative: 'Emissions (cumulative)',
+			};
+			var timeseries = sdca.htmlTable (data.timeseries, timeseriesLabels);
+			
+			// Populate the results in the interface
+			$('#results p.payback_time span').text (data.payback_time[0]);
+			$('#results p.emissions_whole_life span').text (layerviewer.number_format (data.emissions_whole_life[0]));
+			$('#results p.netzero_compatible span').html ((data.netzero_compatible[0] == 'yes' ? '&#x2705;' : '&#x274c;'));
+			$('#results p.comments span').text (data.comments[0]);
+			$('#results div.pas2080').html (pas2080);
+			$('#results div.timeseries').html (timeseries);
 		},
 		
 		
