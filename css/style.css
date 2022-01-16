@@ -76,8 +76,12 @@ ul.tabs li.ui-state-active a {background-color: #333; color: white;}
 #geocoder input {width: 280px;}
 .ui-autocomplete-loading {background: white url("/images/ui-anim_basic_16x16.gif") right center no-repeat;}
 
+/* Drawing */
+#drawing {height: 130px; bottom: 25px;}
+body #application nav #drawing a {border-bottom: 0;}
+
 /* Results */
-#results {position: absolute; top: 15px; right: 350px; height: calc(100% - 15px - 120px - 50px - 20px); width: calc(250px - 20px); background: rgba(0,0,0,0.8); z-index: 95; padding: 10px; overflow-y: auto;}
+#results {position: absolute; top: 15px; right: 350px; height: calc(100% - 25px - 130px - 35px - 15px); width: calc(250px - 20px); background: rgba(0,0,0,0.8); z-index: 95; padding: 10px; overflow-y: auto;}
 #results {display: none;}	/* Will be overriden to appear upon result */
 #results h3 {margin: 0 0 10px; padding: 0; color: #e6e6e6;}
 #results p, #results table {font-size: 0.69em;}
