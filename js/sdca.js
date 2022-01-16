@@ -347,6 +347,36 @@ var sdca = (function ($) {
 		},
 		
 		
+		// Function to create an HTML table from a dataset
+		htmlTable: function (data, labels)
+		{
+			// Start the table
+			var html  = '<table>';
+			
+			// Headers, using first row as keys, finding labels where they exist
+			html += '<tr>';
+			$.each (data[0], function (field, value) {
+				html += '<th>' + sdca.htmlspecialchars ((labels[field] || field)) + '</td>';
+			});
+			html += '</tr>';
+			
+			// Add data for each row
+			$.each (data, function (index, row) {
+				html += '<tr>';
+				$.each (row, function (field, value) {
+					html += '<td class="' + field + '">' + sdca.htmlspecialchars (value) + '</td>';
+				});
+				html += '</tr>';
+			});
+			
+			// End the table
+			html += '</table>';
+			
+			// Return the HTML
+			return html;
+		},
+		
+		
 		// Function to make data entity-safe
 		htmlspecialchars: function (string)
 		{
