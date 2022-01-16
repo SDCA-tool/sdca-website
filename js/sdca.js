@@ -327,7 +327,13 @@ var sdca = (function ($) {
 						alert ('[Prototype development:]\n\nError:\n\n' + responseBody.error);
 					},
 				});
-				
+			});
+			
+			// Clear results panel when any drawing button clicked
+			$('#drawingcontrols a').click (function () {
+				$('#results').fadeOut ('500', function () {
+					$(this).css ('display', 'none');
+				});
 			});
 		},
 		
