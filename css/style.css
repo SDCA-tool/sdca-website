@@ -63,7 +63,6 @@ input[type=checkbox] {margin-right: 5px;}
 #sections div.filters ul {list-style: none; margin: 0; padding: 0;}
 #sections div.filters ul li {margin-bottom: 0;}		/* Reset main rule above */
 
-
 /* Legend */
 #legend {background-color: #515151; color: #ffffff; padding: 15px; border-radius: 10px; opacity: 0.85; width: auto; max-width: 140px;}
 
@@ -76,6 +75,11 @@ ul.tabs li.ui-state-active a {background-color: #333; color: white;}
 /* Geocoder */
 #geocoder input {width: 280px;}
 .ui-autocomplete-loading {background: white url("/images/ui-anim_basic_16x16.gif") right center no-repeat;}
+
+/* Results */
+#results {position: absolute; top: 30px; right: 350px; height: calc(100% - 30px - 120px - 50px - 20px); width: calc(250px - 20px); background: rgba(0,0,0,0.8); z-index: 95; padding: 10px;}
+#results {display: none;}	/* Will be overriden to appear upon result */
+#results h3 {margin-top: 0; padding-top: 0; color: #e6e6e6;}
 
 
 /* Mobile styles; see: https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions */

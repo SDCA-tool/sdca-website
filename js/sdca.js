@@ -320,7 +320,7 @@ var sdca = (function ($) {
 						zoom: 14			// Random value to avoid rejection from sample API
 					},
 					success: function (data, textStatus, jqXHR) {
-						alert ('[Prototype development:]\n\nThe response was:\n\n' + JSON.stringify (data));
+						sdca.showResult (data);
 					},
 					error: function (jqXHR, textStatus, errorThrown) {
 						var responseBody = JSON.parse (jqXHR.responseText);
@@ -329,6 +329,21 @@ var sdca = (function ($) {
 				});
 				
 			});
+		},
+		
+		
+		// Function to show the result
+		showResult: function (data)
+		{
+			// Show the result box
+			$('#results').fadeIn (500).css ('display', 'block');
+			
+			// Assemble the result string
+			var result = '<h3>Results [example]</h3>';
+			result += '<p>' + sdca.htmlspecialchars (JSON.stringify (data)) + '</p>';
+			
+			// Show the result in the box
+			$('#results').html (result);
 		},
 		
 		
