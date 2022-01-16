@@ -330,7 +330,7 @@ var sdca = (function ($) {
 			});
 			
 			// Clear results panel when any drawing button clicked
-			$('#drawingcontrols a').click (function () {
+			$('#drawing a').click (function () {
 				$('#results').fadeOut ('500', function () {
 					$(this).css ('display', 'none');
 				});
