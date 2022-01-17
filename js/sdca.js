@@ -329,11 +329,16 @@ var sdca = (function ($) {
 				});
 			});
 			
-			// Clear results panel when any drawing button clicked
+			// Clear results when any drawing button clicked
 			$('#drawing a').click (function () {
+				
+				// Fade out panel
 				$('#results').fadeOut ('500', function () {
 					$(this).css ('display', 'none');
 				});
+				
+				// Remove the geometries added to the map, if present
+				layerviewer.eraseDirectGeojson ('results');
 			});
 		},
 		
@@ -370,6 +375,10 @@ var sdca = (function ($) {
 			$('#results p.comments span').text (data.comments[0]);
 			$('#results div.pas2080').html (pas2080);
 			$('#results div.timeseries').html (timeseries);
+			
+			// Add the geometries to the map
+			var featureCollection = JSON.parse (data.geometry);
+			layerviewer.addDirectGeojson (featureCollection, 'results', {iconUrl: '/images/marker.svg'});
 		},
 		
 		
