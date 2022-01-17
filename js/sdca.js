@@ -376,9 +376,19 @@ var sdca = (function ($) {
 			$('#results div.pas2080').html (pas2080);
 			$('#results div.timeseries').html (timeseries);
 			
+			// Define icons based on data value
+			var layerConfig = {
+				iconField: 'type',
+				icons: {
+					error: '/images/markers/red.svg',
+					warning: '/images/markers/orange.svg',
+					info: '/images/markers/blue.svg',
+				}
+			};
+			
 			// Add the geometries to the map
 			var featureCollection = JSON.parse (data.geometry);
-			layerviewer.addDirectGeojson (featureCollection, 'results', {iconUrl: '/images/marker.svg'});
+			layerviewer.addDirectGeojson (featureCollection, 'results', layerConfig);
 		},
 		
 		
