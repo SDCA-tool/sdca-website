@@ -10,6 +10,9 @@ var sdca = (function ($) {
 	// Settings defaults
 	var _settings = {
 		
+		// Base URL
+		baseUrl: '/calculator/',
+		
 		// CycleStreets API; obtain a key at https://www.cyclestreets.net/api/apply/
 		apiBaseUrl: 'https://api.cyclestreets.net',
 		apiKey: 'YOUR_API_KEY',
