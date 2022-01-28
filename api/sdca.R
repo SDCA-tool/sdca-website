@@ -1,5 +1,7 @@
 #!/usr/bin/env Rscript
 
+# Check if new version of R package exists
+remotes::install_github("sdca-tool/sdca-package", upgrade = "never", quiet = TRUE)
 
 # Load Package
 library(sdca)
