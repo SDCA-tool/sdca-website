@@ -195,9 +195,9 @@ var sdca = (function ($) {
 		loadDatasets: function ()
 		{
 			// Load the datasets and field definitions
-			$.getJSON ('/datasets.json', function (datasets) {
-				$.getJSON ('/fields.json', function (fields) {
-					$.getJSON ('/styles.json', function (styles) {
+			$.getJSON ('/lexicon/datasets.json', function (datasets) {
+				$.getJSON ('/lexicon/fields.json', function (fields) {
+					$.getJSON ('/lexicon/styles.json', function (styles) {
 						
 						// #!# Duplicate fields, pending layer merging work
 						fields.carbon_full = fields.lsoa;
