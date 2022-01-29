@@ -91,6 +91,8 @@ class sdcaModel
 		
 		#!# For now, mock with the sample data, pending implementation of the lookups
 		$parameter = file_get_contents ($_SERVER['DOCUMENT_ROOT'] . '/lexicon/example_r_input.json');
+		$parameter = str_replace ('D:/GitHub/SDCA-tool/sdca-data-prep/data/UKdem.tif', '/var/www/sdca/data/dem/UKdem.tif', $parameter);
+		$parameter = str_replace ('D:/GitHub/SDCA-tool/sdca-data-prep/data/landcover.tif', '/var/www/sdca/data/landcover/landcover.tif', $parameter);
 		
 		# Provide base data to calculation script
 		$command = $_SERVER['DOCUMENT_ROOT'] . '/api/sdca.R';
