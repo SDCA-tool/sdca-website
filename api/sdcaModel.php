@@ -89,6 +89,9 @@ class sdcaModel
 		}
 		$parameter = implode (',', $lsoas);
 		
+		#!# For now, mock with the sample data, pending implementation of the lookups
+		$parameter = file_get_contents ($_SERVER['DOCUMENT_ROOT'] . '/lexicon/example_r_input.json');
+		
 		# Provide base data to calculation script
 		$command = $_SERVER['DOCUMENT_ROOT'] . '/api/sdca.R';
 		$result = $this->createProcess ($command, $parameter);
