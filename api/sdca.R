@@ -8,11 +8,22 @@ library(sdca)
 
 # Get data values from STDIN
 # See: https://datafireball.com/2013/10/10/putting-your-r-code-into-pipeline/comment-page-1/
-input = file('stdin', 'r');
-args = readLines(input, n=1, warn=FALSE)
+# input = file('stdin', 'r')
+# args = readLines(input, n=1, warn=FALSE)
+
+# Alt method from:
+# https://www.r-bloggers.com/2015/09/passing-arguments-to-an-r-script-from-command-lines/
+args = commandArgs(trailingOnly=TRUE)
+
+# Check if args contains a file path or json
+if(nchar(args) < 100){
+  file = TRUE
+} else {
+  file = FALSE
+}
 
 # Process the data
-result = try(process_results(args), silent = TRUE)
+result = try(process_results(args, file), silent = TRUE)
 
 # Check if the function worked
 if("try-error" %in% class(result)){
