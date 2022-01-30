@@ -65,7 +65,7 @@ class api
 		}
 		
 		# Load the model, passing in API parameters
-		$this->sdcaModel = new sdcaModel ($bbox, $zoom, $_GET);
+		$this->sdcaModel = new sdcaModel ($this, $bbox, $zoom, $_GET);
 		
 		# Ensure a valid action has been supplied
 		$method = $this->getMethod ($error);
@@ -168,7 +168,7 @@ class api
 		$html .= "\n<p>Use <tt>.json</tt> to return GeoJSON, or <tt>.csv</tt> (or <tt>.json</tt> with <tt>&amp;format=csv</tt>) to return CSV. The examples below use the GeoJSON output format.</p>";
 		
 		# Load the class
-		$sdcaModel = new sdcaModel (NULL, NULL, $_GET);
+		$sdcaModel = new sdcaModel ($this, NULL, NULL, $_GET);
 		
 		# Determine the documentation methods in the class
 		$apiCalls = array ();
@@ -370,7 +370,7 @@ class api
 	
 	
 	# Database function to get data
-	private function getData ($query, $parameters = array (), &$error = false)
+	public function getData ($query, $parameters = array (), &$error = false)
 	{
 		# Prepare the statement and bind parameters
 		try {

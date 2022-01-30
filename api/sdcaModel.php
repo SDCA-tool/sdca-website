@@ -8,8 +8,11 @@ class sdcaModel
 
 
 	# Constructor
-	public function __construct ($bbox, $zoom, $get)
+	public function __construct ($api, $bbox, $zoom, $get)
 	{
+		# Property handles
+		$this->api = $api;	// For use with ->getData()
+		
 		# Set values provided by the API
 		$this->bbox = $bbox;	// Validated
 		$this->zoom = $zoom;	// Validated
