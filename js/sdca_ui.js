@@ -28,7 +28,7 @@ var sdcaui = (function ($) {
 			// Locate and save the target div we will be populating with panels
 			_sdcaPanelContainer = $('#' + _sdcaPanelContainerId);
 			if (!_sdcaPanelContainerId) {
-				console.log('Could not find a container')
+				console.log('Could not find a container');
 			}
 
 			// Hide all panels except the first one
@@ -39,7 +39,8 @@ var sdcaui = (function ($) {
 				$(_defaultSdcaPanelId).html()
 			);
 		},
-
+		
+		
 		// Clicking a button or a with data-sdca-target-panel switches to that panel
 		buttons: function () {
 			$('body').on('click', 'button, a', function (event) {
@@ -48,28 +49,28 @@ var sdcaui = (function ($) {
 
 				// If we are saving the previous HTML in memory, do it
 				if ($(this).data('save-html') == true) {
-					_previousSdcaPanelHtml = $(_sdcaPanelContainer).html()
+					_previousSdcaPanelHtml = $(_sdcaPanelContainer).html();
 				}
 
 				// If there's a target panel, load that
 				if ($(this).data('sdca-target-panel')) {
 					var targetPanelId = $(this).data('sdca-target-panel');
-					var targetPanelHtml = $(targetPanelId).html()
-					$(_sdcaPanelContainer).html(targetPanelHtml)
+					var targetPanelHtml = $(targetPanelId).html();
+					$(_sdcaPanelContainer).html(targetPanelHtml);
 				}
 
 				// If we should load saved html, do that
 				if ($(this).data('load-saved-html') == true) {
-					$(_sdcaPanelContainer).html(_previousSdcaPanelHtml)
+					$(_sdcaPanelContainer).html(_previousSdcaPanelHtml);
 				}
-			})
+			});
 		},
-
+		
+		
 		dataLayerPanel: function () {
 			// At launch, hide data layers panel
 			$('#data-layers-panel').hide();
-		},
-
+		}
 	};
 
 }(jQuery));
