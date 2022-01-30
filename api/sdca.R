@@ -9,7 +9,7 @@ library(sdca)
 # Get data values from STDIN
 # See: https://datafireball.com/2013/10/10/putting-your-r-code-into-pipeline/comment-page-1/
 input = file('stdin', 'r')
-args = try(readLines(input, n=1, warn=FALSE), silent = TRUE)
+args = try(readLines(input, warn=FALSE), silent = TRUE)
 
 
 # Alt method from:
