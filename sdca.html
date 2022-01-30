@@ -34,6 +34,15 @@
   <!-- SDCA stylesheet -->
   <link href="/css/sdca.css" rel="stylesheet">
 
+  <!-- SDCA UI custom JS -->
+  <script src="/js/lib/jquery/jquery.min.js"></script>
+  <script src="/js/sdca_ui.js"></script>
+  <script>
+		$(function() {
+			sdcaui.initialise ();
+		});
+	</script>
+
 </head>
 
 <body class="govuk-template__body full-width">
@@ -98,221 +107,212 @@
         <div class="govuk-grid-column-two-thirds govuk-!-padding-0">
           <div id="map">
             <img src="/images/placeholders/map.png" alt="Map of the UK" />
-            <button class="govuk-button govuk-button--secondary filter-button" data-module="govuk-button">
+            <button class="govuk-button govuk-button--secondary filter-button" data-save-html="true" data-sdca-target-panel="#data-layers-panel" data-module="govuk-button" id="explore-data-layers">
               Explore data layers
             </button>
           </div>
         </div>
 
-        <div class="govuk-grid-column-one-third govuk-!-margin-top-4">
-          <div class="govuk-tabs" data-module="govuk-tabs">
+        <!-- Layer panel, will be shown in the #sdca-panel-container container-->
+        <div class="sdca-layers-panel" id="data-layers-panel">
+          <a href="#" class="govuk-back-link" data-load-saved-html="true">Back</a>
+          <h2 class="govuk-heading-m">Data layers</h2>
+        </div>
+
+        <!-- Panels -->
+        <div class="sdca-panel" id="design-scheme">
+          <h2 class="govuk-heading-m">How to use this tool</h2>
+          <p class="govuk-body">To calculate the <a href="/methodology/">carbon impact of a scheme</a>, you can
+            search for interventions like railway tracks, bridges, or stations.</p>
+
+          <h2 class="govuk-heading-m">Current interventions</h2>
+          <p class="govuk-body">Interventions you have drawn on the map will appear here.</p>
+
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Track (double)
+              </dt>
+              <dd class="govuk-summary-list__value">
+                3km
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="#">
+                  Change<span class="govuk-visually-hidden"> track intervention</span>
+                </a>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Bridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+                0.5km
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="#">
+                  Change<span class="govuk-visually-hidden"> bridge intervention</span>
+                </a>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Underpass
+              </dt>
+              <dd class="govuk-summary-list__value">
+                20km
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="#">
+                  Change<span class="govuk-visually-hidden"> intervention</span>
+                </a>
+              </dd>
+            </div>
+          </dl>
+
+          <button class="govuk-button" data-module="govuk-button">
+            Add an intervention
+          </button>
+
+          <h2 class="govuk-heading-m">When you're done</h2>
+          <p class="govuk-body">After you have added your interventions to the map, you can calculate the results
+          </p>
+
+          <button class="govuk-button" data-module="govuk-button" data-sdca-target-panel="#view-results">
+            Calculate
+          </button>
+        </div>
+
+        <div class="sdca-panel" id="view-results">
+          <a href="#" class="govuk-back-link" data-sdca-target-panel="#design-scheme">Back to the design</a>
+          <h2 class="govuk-heading-m">Calculated results</h2> <a class="govuk-link" href="#">
+            Change the design<span class="govuk-visually-hidden"> of the intervention</span>
+          </a>
+          <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-2">
+            <h1 class="govuk-panel__title">
+              Net zero compatible
+            </h1>
+            <div class="govuk-panel__body">
+              Payback time:<br><strong>10 years</strong>
+            </div>
+          </div>
+
+          <div class="govuk-tabs nested-tabs" data-module="govuk-tabs">
             <h2 class="govuk-tabs__title">
               Contents
             </h2>
             <ul class="govuk-tabs__list">
               <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                <a class="govuk-tabs__tab" href="#design-scheme">
-                  Design scheme
+                <a class="govuk-tabs__tab" href="#summary">
+                  Summary
                 </a>
               </li>
               <li class="govuk-tabs__list-item">
-                <a class="govuk-tabs__tab" href="#view-results">
-                  View results
+                <a class="govuk-tabs__tab" href="#emissions-by-type">
+                  Emissions by type
+                </a>
+              </li>
+              <li class="govuk-tabs__list-item">
+                <a class="govuk-tabs__tab" href="#emissions-by-year">
+                  Emissions-by-year
                 </a>
               </li>
             </ul>
-            <div class="govuk-tabs__panel" id="design-scheme">
-              <h2 class="govuk-heading-m">How to use this tool</h2>
-              <p class="govuk-body">To calculate the <a href="/methodology/">carbon impact of a scheme</a>, you can
-                search for interventions like railway tracks, bridges, or stations.</p>
-
-              <h2 class="govuk-heading-m">Current interventions</h2>
-              <p class="govuk-body">Interventions you have drawn on the map will appear here.</p>
-
-              <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Track (double)
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    3km
-                  </dd>
-                  <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" href="#">
-                      Change<span class="govuk-visually-hidden"> track intervention</span>
-                    </a>
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Bridge
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    0.5km
-                  </dd>
-                  <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" href="#">
-                      Change<span class="govuk-visually-hidden"> bridge intervention</span>
-                    </a>
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Underpass
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    20km
-                  </dd>
-                  <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" href="#">
-                      Change<span class="govuk-visually-hidden"> intervention</span>
-                    </a>
-                  </dd>
-                </div>
-              </dl>
-
-              <button class="govuk-button" data-module="govuk-button">
-                Add an intervention
-              </button>
-
-              <h2 class="govuk-heading-m">When you're done</h2>
-              <p class="govuk-body">After you have added your interventions to the map, you can calculate the results
-              </p>
-
-              <button disabled="disabled" class="govuk-button" data-module="govuk-button">
-                Calculate
-              </button>
-
-
+            <div class="govuk-tabs__panel" id="summary">
+              <table class="govuk-table">
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Case manager</th>
+                    <th scope="col" class="govuk-table__header">Cases opened</th>
+                    <th scope="col" class="govuk-table__header">Cases closed</th>
+                  </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">David Francis</td>
+                    <td class="govuk-table__cell">3</td>
+                    <td class="govuk-table__cell">0</td>
+                  </tr>
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">Paul Farmer</td>
+                    <td class="govuk-table__cell">1</td>
+                    <td class="govuk-table__cell">0</td>
+                  </tr>
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">Rita Patel</td>
+                    <td class="govuk-table__cell">2</td>
+                    <td class="govuk-table__cell">0</td>
+                  </tr>
+                </tbody>
+              </table>
+          
             </div>
-            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="view-results">
-              <h2 class="govuk-heading-m">Calculated results</h2> <a class="govuk-link" href="#">
-                Change the design<span class="govuk-visually-hidden"> of the intervention</span>
-              </a>
-              <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-2">
-                <h1 class="govuk-panel__title">
-                  Net zero compatible
-                </h1>
-                <div class="govuk-panel__body">
-                  Payback time:<br><strong>10 years</strong>
-                </div>
-              </div>
-
-              <!-- Begin summary tabs-->
-              <div class="govuk-tabs nested-tabs" data-module="govuk-tabs">
-                <h2 class="govuk-tabs__title">
-                  Contents
-                </h2>
-                <ul class="govuk-tabs__list">
-                  <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                    <a class="govuk-tabs__tab" href="#summary">
-                      Summary
-                    </a>
-                  </li>
-                  <li class="govuk-tabs__list-item">
-                    <a class="govuk-tabs__tab" href="#emissions-by-type">
-                      Emissions by type
-                    </a>
-                  </li>
-                  <li class="govuk-tabs__list-item">
-                    <a class="govuk-tabs__tab" href="#emissions-by-year">
-                      Emissions-by-year
-                    </a>
-                  </li>
-                </ul>
-                <div class="govuk-tabs__panel" id="summary">
-                  <table class="govuk-table">
-                    <thead class="govuk-table__head">
-                      <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">Case manager</th>
-                        <th scope="col" class="govuk-table__header">Cases opened</th>
-                        <th scope="col" class="govuk-table__header">Cases closed</th>
-                      </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                      <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">David Francis</td>
-                        <td class="govuk-table__cell">3</td>
-                        <td class="govuk-table__cell">0</td>
-                      </tr>
-                      <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">Paul Farmer</td>
-                        <td class="govuk-table__cell">1</td>
-                        <td class="govuk-table__cell">0</td>
-                      </tr>
-                      <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">Rita Patel</td>
-                        <td class="govuk-table__cell">2</td>
-                        <td class="govuk-table__cell">0</td>
-                      </tr>
-                    </tbody>
-                  </table>
-              
-                </div>
-                <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="emissions-by-type">
-                  <table class="govuk-table">
-                    <thead class="govuk-table__head">
-                      <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">Case manager</th>
-                        <th scope="col" class="govuk-table__header">Cases opened</th>
-                        <th scope="col" class="govuk-table__header">Cases closed</th>
-                      </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                      <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">David Francis</td>
-                        <td class="govuk-table__cell">24</td>
-                        <td class="govuk-table__cell">18</td>
-                      </tr>
-                      <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">Paul Farmer</td>
-                        <td class="govuk-table__cell">16</td>
-                        <td class="govuk-table__cell">20</td>
-                      </tr>
-                      <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">Rita Patel</td>
-                        <td class="govuk-table__cell">24</td>
-                        <td class="govuk-table__cell">27</td>
-                      </tr>
-                    </tbody>
-                  </table>
-              
-                </div>
-                <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="emissions-by-year">
-                  <table class="govuk-table">
-                    <thead class="govuk-table__head">
-                      <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">Case manager</th>
-                        <th scope="col" class="govuk-table__header">Cases opened</th>
-                        <th scope="col" class="govuk-table__header">Cases closed</th>
-                      </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                      <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">David Francis</td>
-                        <td class="govuk-table__cell">98</td>
-                        <td class="govuk-table__cell">95</td>
-                      </tr>
-                      <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">Paul Farmer</td>
-                        <td class="govuk-table__cell">122</td>
-                        <td class="govuk-table__cell">131</td>
-                      </tr>
-                      <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">Rita Patel</td>
-                        <td class="govuk-table__cell">126</td>
-                        <td class="govuk-table__cell">142</td>
-                      </tr>
-                    </tbody>
-                  </table>
-              
-                </div>
-              </div>
-
-
-              <!-- end summary tabs-->
-
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="emissions-by-type">
+              <table class="govuk-table">
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Case manager</th>
+                    <th scope="col" class="govuk-table__header">Cases opened</th>
+                    <th scope="col" class="govuk-table__header">Cases closed</th>
+                  </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">David Francis</td>
+                    <td class="govuk-table__cell">24</td>
+                    <td class="govuk-table__cell">18</td>
+                  </tr>
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">Paul Farmer</td>
+                    <td class="govuk-table__cell">16</td>
+                    <td class="govuk-table__cell">20</td>
+                  </tr>
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">Rita Patel</td>
+                    <td class="govuk-table__cell">24</td>
+                    <td class="govuk-table__cell">27</td>
+                  </tr>
+                </tbody>
+              </table>
+          
             </div>
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="emissions-by-year">
+              <table class="govuk-table">
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Case manager</th>
+                    <th scope="col" class="govuk-table__header">Cases opened</th>
+                    <th scope="col" class="govuk-table__header">Cases closed</th>
+                  </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">David Francis</td>
+                    <td class="govuk-table__cell">98</td>
+                    <td class="govuk-table__cell">95</td>
+                  </tr>
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">Paul Farmer</td>
+                    <td class="govuk-table__cell">122</td>
+                    <td class="govuk-table__cell">131</td>
+                  </tr>
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">Rita Patel</td>
+                    <td class="govuk-table__cell">126</td>
+                    <td class="govuk-table__cell">142</td>
+                  </tr>
+                </tbody>
+              </table>
+          
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="govuk-grid-column-one-third govuk-!-margin-top-4" id="sdca-panel-container">
+          <!-- Panels will be placed here by JS-->
+
           </div>
         </div>
       </div>
