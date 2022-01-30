@@ -26,12 +26,12 @@ if("try-error" %in% class(args)){
   result = jsonlite::toJSON(result)
   cat(result)
 } else {
-  if(length(args) > 1){
+  #if(length(args) > 1){
     args = paste(args, collapse = "")
-    result = list(error = paste(substr(args,1,50), collapse = ", "))
-    result = jsonlite::toJSON(result)
-    cat(result)
-  } else {
+    #result = list(error = paste(substr(args,1,50), collapse = ", "))
+    #result = jsonlite::toJSON(result)
+    #cat(result)
+  #} else {
     # Check if args contains a file path or json
     if(nchar(args) < 100){
       file = TRUE
@@ -50,7 +50,7 @@ if("try-error" %in% class(args)){
     
     # Print the result, without newlines or a count
     cat(result)
-  }
+  #}
 }
 
 
