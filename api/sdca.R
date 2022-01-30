@@ -26,7 +26,7 @@ if("try-error" %in% class(args)){
   cat(result)
 } else {
   if(length(args) > 1){
-    result = list(error = paste(substr(args,1,10), collapse = ", "))
+    result = list(error = paste(substr(args,1,50), collapse = ", "))
     result = jsonlite::toJSON(result)
     cat(result)
   } else {
