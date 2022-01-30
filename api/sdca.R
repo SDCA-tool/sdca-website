@@ -9,7 +9,7 @@ library(sdca)
 # Get data values from STDIN
 # See: https://datafireball.com/2013/10/10/putting-your-r-code-into-pipeline/comment-page-1/
 input = file('stdin', 'r')
-args = readLines(input, n=1, warn=FALSE)
+args = try(readLines(input, n=1, warn=FALSE), silent = TRUE)
 
 # Alt method from:
 # https://www.r-bloggers.com/2015/09/passing-arguments-to-an-r-script-from-command-lines/
