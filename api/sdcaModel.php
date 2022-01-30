@@ -117,10 +117,10 @@ class sdcaModel
 		$json['desire_lines'] = $mockDataJson['desire_lines'];
 		
 		# Value for path_dem file
-		$json['path_dem'] = $mockDataJson['path_dem'];
+		$json['path_dem'] = '/var/www/sdca/data/dem/UKdem.tif';
 		
 		# Value for path_landcover file
-		$json['path_landcover'] = $mockDataJson['path_landcover'];
+		$json['path_landcover'] = '/var/www/sdca/data/landcover/landcover.tif';
 		
 		# Values for material_sites
 		$json['material_sites'] = $mockDataJson['material_sites'];
