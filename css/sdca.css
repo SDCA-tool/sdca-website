@@ -8,4 +8,8 @@ body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
 #map button.filter-button {position: absolute; top: 0; right: 0; margin: 25px;}
 
 .nested-tabs .govuk-tabs__tab {font-size: 14px;}
-.js-enabled .govuk-tabs__list-item {padding: 14px 12px 16px}
+.nested-tabs .govuk-tabs__list-item {padding: 14px 12px 16px}
+
+.govuk-panel {padding: 20px}
+.govuk-panel__title {font-size: 1.5rem}
+.govuk-panel__body {font-size: 1rem;}
