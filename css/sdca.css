@@ -3,5 +3,6 @@ body.full-width .govuk-width-container {max-width: 100vw;}
 body.full-width .govuk-grid-row {margin-left: 0; margin-right: 0;}
 body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
 
-#map {width: 100%;}
+#map {width: 100%; position: relative;}
 #map img {width: 100%; height: calc(100vh - 250px); object-fit: cover;}
+#map button.filter-button {position: absolute; top: 0; right: 0; margin: 25px;}
