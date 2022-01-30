@@ -164,10 +164,17 @@ class sdcaModel
 		$json['intervention_assets_parameters'] = $intervention_assets_parameters;
 		
 		# Values for asset_components
-		$json['asset_components'] = $this->databaseConnection->select ($this->settings['database'], 'asset_components', array ('intervention_asset' => $assets));
+		$asset_components = $this->databaseConnection->select ($this->settings['database'], 'asset_components', array ('intervention_asset' => $assets));
+		$json['asset_components'] = $asset_components;
 		
 		# Values for carbon_factors
-		$json['carbon_factors'] = $mockDataJson['carbon_factors'];
+		$cf_names = array ();
+		foreach ($asset_components as $asset_component) {
+			$cf_names[] = $asset_component['cf_name'];
+		}
+		$cf_names = array_unique ($cf_names);
+		$carbon_factors = $this->databaseConnection->select ($this->settings['database'], 'carbon_factors', array ('cf_name' => $cf_names));
+		$json['carbon_factors'] = $carbon_factors;
 		
 		# Values for desire_lines
 		$json['desire_lines'] = $mockDataJson['desire_lines'];
