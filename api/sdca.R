@@ -40,8 +40,9 @@ if("try-error" %in% class(args)){
     }
     
     # Process the data
-    result = try(process_results(args, file), silent = TRUE)
-    
+    result = try(
+      suppressMessages(suppressWarnings(process_results(args, file))), silent = TRUE)
+
     # Check if the function worked
     if("try-error" %in% class(result)){
       result = list(error = gsub("[\r\n]", "", result[1]))
