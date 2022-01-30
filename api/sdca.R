@@ -1,4 +1,4 @@
-#!/usr/bin/env Rscript
+#!/usr/bin/Rscript
 
 # Check if new version of R package exists
 remotes::install_github("sdca-tool/sdca-package", upgrade = "never", quiet = TRUE)
