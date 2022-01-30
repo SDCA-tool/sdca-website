@@ -164,7 +164,7 @@ class sdcaModel
 		$json['intervention_assets_parameters'] = $intervention_assets_parameters;
 		
 		# Values for asset_components
-		$json['asset_components'] = $mockDataJson['asset_components'];
+		$json['asset_components'] = $this->databaseConnection->select ($this->settings['database'], 'asset_components', array ('intervention_asset' => $assets));
 		
 		# Values for carbon_factors
 		$json['carbon_factors'] = $mockDataJson['carbon_factors'];
@@ -183,6 +183,7 @@ class sdcaModel
 		
 		# Construct as string
 		$stdin = json_encode ($json);
+		//echo $stdin;
 		
 		# Provide base data to calculation script
 		$command = $_SERVER['DOCUMENT_ROOT'] . '/api/sdca.R';
