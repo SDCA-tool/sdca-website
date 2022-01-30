@@ -126,7 +126,7 @@ class sdcaModel
 		$json['user_input'] = array (json_encode ($user_input));
 		
 		# Values for intervention_assets
-		$json['intervention_assets'] = $mockDataJson['intervention_assets'];
+		$json['intervention_assets'] = $this->api->getData ("SELECT * FROM intervention_assets WHERE intervention = :intervention", array ('intervention' => $input['intervention']));
 		
 		# Values for intervention_assets_parameters
 		$json['intervention_assets_parameters'] = $mockDataJson['intervention_assets_parameters'];
