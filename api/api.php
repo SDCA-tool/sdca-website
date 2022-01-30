@@ -37,14 +37,12 @@ class api
 		}
 		
 		# Connect to the database
-		try {
-			$this->databaseConnection = new PDO ("mysql:host={$this->settings['hostname']};dbname={$this->settings['database']}", $this->settings['username'], $this->settings['password']);
-			$this->databaseConnection->setAttribute (PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$this->databaseConnection->setAttribute (PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-		} catch (PDOException $e) {
-			// var_dump ($e->getMessage (), $query);
+		require_once ('database.php');
+		$this->databaseConnection = new database ($this->settings['hostname'], $this->settings['username'], $this->settings['password'], $this->settings['database'], 'mysql', false, false, $nativeTypes = true);
+		if (!$this->databaseConnection->connection) {
 			return $this->error ('Unable to connect to the database.');
 		}
+		$this->databaseConnection->setStrictWhere (true);
 		
 		# Ensure a valid format has been supplied
 		$format = $this->getFormat ($error);
@@ -65,7 +63,7 @@ class api
 		}
 		
 		# Load the model, passing in API parameters
-		$this->sdcaModel = new sdcaModel ($this, $bbox, $zoom, $_GET);
+		$this->sdcaModel = new sdcaModel ($this->databaseConnection, $this->settings, $bbox, $zoom, $_GET);
 		
 		# Ensure a valid action has been supplied
 		$method = $this->getMethod ($error);
@@ -87,7 +85,7 @@ class api
 		
 		# Get the data
 		if (isSet ($model['query'])) {
-			$data = $this->getData ($model['query']);
+			$data = $this->getData ($model['query'], array ());
 		} else {
 			$data = $this->select ($model['table'], $model['fields'], $model['constraints'], $model['limit'], $model['parameters'], $error);
 		}
@@ -168,7 +166,7 @@ class api
 		$html .= "\n<p>Use <tt>.json</tt> to return GeoJSON, or <tt>.csv</tt> (or <tt>.json</tt> with <tt>&amp;format=csv</tt>) to return CSV. The examples below use the GeoJSON output format.</p>";
 		
 		# Load the class
-		$sdcaModel = new sdcaModel ($this, NULL, NULL, $_GET);
+		$sdcaModel = new sdcaModel ($this->databaseConnection, $this->settings, NULL, NULL, $_GET);
 		
 		# Determine the documentation methods in the class
 		$apiCalls = array ();
@@ -358,11 +356,8 @@ class api
 		;';
 		
 		# Get the data
-		$data = $this->getData ($query, $parameters, $error);
-		if ($error) {
-			// $error will now be set
-			return false;
-		}
+		#!# Error handling needed
+		$data = $this->databaseConnection->getData ($query, false, true, $parameters);
 		
 		# Return the data
 		return $data;
@@ -370,24 +365,11 @@ class api
 	
 	
 	# Database function to get data
-	public function getData ($query, $parameters = array (), &$error = false)
+	private function getData ($query, $parameters = array ())
 	{
-		# Prepare the statement and bind parameters
-		try {
-			$preparedStatement = $this->databaseConnection->prepare ($query);
-			$preparedStatement->execute ($parameters);
-			
-			# Get the data
-			$data = array ();
-			if ($preparedStatement->execute ()) {
-				$data = $preparedStatement->fetchAll ();
-			}
-			
-		} catch (PDOException $e) {
-			// var_dump ($e->getMessage (), $query, $parameters);
-			$error = 'An invalid query was sent to the database.';
-			return false;
-		}
+		# Get the data
+		#!# Error handling needed
+		$data = $this->databaseConnection->getData ($query, false, true, $parameters);
 		
 		# Return the data
 		return $data;

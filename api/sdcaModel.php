@@ -8,10 +8,11 @@ class sdcaModel
 
 
 	# Constructor
-	public function __construct ($api, $bbox, $zoom, $get)
+	public function __construct ($databaseConnection, $settings, $bbox, $zoom, $get)
 	{
 		# Property handles
-		$this->api = $api;	// For use with ->getData()
+		$this->databaseConnection = $databaseConnection;
+		$this->settings = $settings;
 		
 		# Set values provided by the API
 		$this->bbox = $bbox;	// Validated
@@ -126,7 +127,7 @@ class sdcaModel
 		$json['user_input'] = array (json_encode ($user_input));
 		
 		# Values for intervention_assets
-		$json['intervention_assets'] = $this->api->getData ("SELECT * FROM intervention_assets WHERE intervention = :intervention", array ('intervention' => $input['intervention']));
+		$json['intervention_assets'] = $this->databaseConnection->select ($this->settings['database'], 'intervention_assets', array ('intervention' => $input['intervention']));
 		
 		# Values for intervention_assets_parameters
 		$json['intervention_assets_parameters'] = $mockDataJson['intervention_assets_parameters'];
