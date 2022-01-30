@@ -13,7 +13,7 @@ library(sdca)
 
 # Alt method from:
 # https://www.r-bloggers.com/2015/09/passing-arguments-to-an-r-script-from-command-lines/
-args = try(commandArgs(trailingOnly=TRUE), silent = TRUE)
+args = try(commandArgs(trailingOnly=FALSE), silent = TRUE)
 
 # Check if the input arrived
 if("try-error" %in% class(args)){
