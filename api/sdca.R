@@ -11,6 +11,7 @@ library(sdca)
 input = file('stdin', 'r')
 args = try(readLines(input, n=1, warn=FALSE), silent = TRUE)
 
+
 # Alt method from:
 # https://www.r-bloggers.com/2015/09/passing-arguments-to-an-r-script-from-command-lines/
 #args = try(commandArgs(trailingOnly=FALSE), silent = TRUE)
@@ -26,6 +27,7 @@ if("try-error" %in% class(args)){
   cat(result)
 } else {
   if(length(args) > 1){
+    args = paste(args, collapse = "")
     result = list(error = paste(substr(args,1,50), collapse = ", "))
     result = jsonlite::toJSON(result)
     cat(result)
