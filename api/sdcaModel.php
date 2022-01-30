@@ -150,10 +150,18 @@ class sdcaModel
 		foreach ($input['features'] as $intervention) {
 			$interventions[] = $intervention['properties']['intervention'];
 		}
-		$json['intervention_assets'] = $this->databaseConnection->select ($this->settings['database'], 'intervention_assets', array ('intervention' => $interventions));
+		$intervention_assets = $this->databaseConnection->select ($this->settings['database'], 'intervention_assets', array ('intervention' => $interventions));
+		$json['intervention_assets'] = $intervention_assets;
 		
 		# Values for intervention_assets_parameters
-		$json['intervention_assets_parameters'] = $mockDataJson['intervention_assets_parameters'];
+		$assets = array ();
+		foreach ($intervention_assets as $intervention_asset) {
+			$assets[] = $intervention_asset['asset'];
+		}
+		$assets = array_unique ($assets);
+		$intervention_assets_parameters = $this->databaseConnection->select ($this->settings['database'], 'intervention_assets_parameters', array ('asset' => $assets), array (), true, 'asset,parameter');
+		$intervention_assets_parameters = array_unique ($intervention_assets_parameters, SORT_REGULAR);		// #!# Pending data cleanup to remove duplicate rows in intervention_assets_parameters
+		$json['intervention_assets_parameters'] = $intervention_assets_parameters;
 		
 		# Values for asset_components
 		$json['asset_components'] = $mockDataJson['asset_components'];
