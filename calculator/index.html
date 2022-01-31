@@ -97,25 +97,50 @@
 
 
 
-  <!-- SDCA stylesheet -->
-  <link href="/css/sdca.css" rel="stylesheet">
+	<!-- Content starts here -->
 
-  <!-- SDCA UI custom JS -->
+	<link rel="stylesheet" href="/js/lib/mapbox-gl-js/mapbox-gl.css" />
+	<script src="/js/lib/mapbox-gl-js/mapbox-gl.min.js"></script>
 	<script src="/js/lib/jquery/jquery.min.js"></script>
-  <script src="/js/sdca_ui.js"></script>
-  <script>
-    $(function () {
-      sdcaui.initialise();
-    });
-  </script>
-
+	
+	<script src="/js/lib/jquery-ui/jquery-ui.min.js"></script>
+	
+	<script src="/js/lib/jQuery-Touch-Events/src/1.0.9/jquery.mobile-events.min.js"></script>
+	
+	<script src="/js/lib/mapbox-gl-draw/mapbox-gl-draw.js"></script>
+	<link rel="stylesheet" href="/js/lib/mapbox-gl-draw/mapbox-gl-draw.css" />
+	
+	<script src="/js/lib/js-cookie/js.cookie.js"></script>
+	
+	<!-- Vex dialogs; see: https://github.hubspot.com/vex/ -->
+	<script src="/js/lib/vex-4.1.0/dist/js/vex.combined.min.js"></script>
+	<link rel="stylesheet" href="/js/lib/vex-4.1.0/dist/css/vex.css" />
+	<link rel="stylesheet" href="/js/lib/vex-4.1.0/dist/css/vex-theme-plain.css" />
+	
+	<!-- GeoJSON extent library; see: https://github.com/mapbox/geojson-extent -->
+	<script src="/js/lib/geojson-extent/geojson-extent.js"></script>
+	
+	<!-- LayerViewer library, providing the application logic -->
+	<script src="/js/lib/Mapboxgljs.LayerViewer/src/layerviewer.js?220117"></script>
+	<link rel="stylesheet" type="text/css" href="/js/lib/Mapboxgljs.LayerViewer/src/layerviewer.css?220117" />
+	<script src="/js/lib/Mapboxgljs.LayerViewer/lib/geocoder.js"></script>
+	
+	<!-- Map application and its config, implementing the LayerViewer library -->
+	<script src="/.config.js"></script>
+	<script src="/js/sdca.js?220117"></script>
+	<link rel="stylesheet" type="text/css" href="/css/sdca.css" />
+	<script>
+		$(function() {
+			sdca.initialise (config);
+		});
+	</script>
 
 
 
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-!-padding-0">
-          <div id="map" style="width: 100%; height: 600px; background-image: url('/images/placeholders/map.png'); background-size: contain;">
+          <div id="map" style="width: 100%; height: 600px;">
             
             <!-- Map will appear here -->
             
@@ -123,6 +148,39 @@
 				<input type="text" name="location" autocomplete="off" placeholder="Search locations and move map" tabindex="1" spellcheck="false" />
 			</div>
 			
+			<div id="drawing">
+				<div class="panes">
+					<div class="pane">
+						<h3>Draw line</h3>
+						<div id="drawingcontrols">
+							<ul>
+								<li><a><span class="draw line"></span>draw line</a></li>
+							</ul>
+						</div>
+						<!--
+						<p>Click the points to mark an area on the map.</p>
+						<p>Double-click to complete the shape.</p>
+						<p>Zoom in and pan to select the correct area.</p>
+						-->
+						<input id="geometry" name="loc_json" type="hidden" value="" />
+					</div>
+				</div>
+				<ul class="undo-clear">
+					<!--<li><a class="edit-undo"><span class="icon-undo"></span><span class="txt">undo</span></a></li>-->
+					<li><a class="edit-clear"><span class="icon-clear"></span><span class="txt">clear</span></a></li>
+				</ul>
+			</div>
+
+			<div id="results">
+				<h3>Results [example]</h3>
+				<p class="netzero_compatible">Net zero compatible?&nbsp; <span>?</span></p>
+				<p class="payback_time">Payback time: <strong><span>?</span> years</strong></p>
+				<p class="emissions_whole_life">Whole life emissions: <strong><span>?</span> MtCO<sub>2</sub>e</strong></p>
+				<p class="comments">Comments:<br /><span>?</span></p>
+				<div class="pas2080"></div>
+				<div class="timeseries"></div>
+			</div>
+
             <button class="govuk-button govuk-button--secondary filter-button" data-save-html="true"
               data-sdca-target-panel="#data-layers" data-module="govuk-button" id="explore-data-layers">
               Explore data layers
@@ -146,57 +204,51 @@
             Select all that apply.
           </div>
 
+
           <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
             <div class="govuk-accordion__section ">
               <div class="govuk-accordion__section-header">
                 <h2 class="govuk-accordion__section-heading">
                   <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
-                    Writing well for the web
+                    Main data layers
                   </span>
                 </h2>
               </div>
               <div id="accordion-default-content-1" class="govuk-accordion__section-content"
                 aria-labelledby="accordion-default-heading-1">
-                <p class='govuk-body'>This is the content for Writing well for the web.</p>
+
+				<div id="layerselector">
+					<ul>
+						<li class="trafficcounts">
+							<input type="checkbox" name="show[]" id="show_trafficcounts" />
+							<a href="#trafficcounts" title="Traffic data" class="tooltip">Traffic counts</a>
+						</li>
+						<li class="planningapplications">
+							<input type="checkbox" name="show[]" id="show_planningapplications" />
+							<a href="#planningapplications" title="Planning applications" class="tooltip">Planning applications</a>
+						</li>
+						
+						<!-- Template -->
+						<li class="template">
+							<input type="checkbox" name="show[]" id="show_template" />
+							<a href="#template" title="Template" class="tooltip">Template</a>
+						</li>
+					</ul>
+				</div>
+
               </div>
             </div>
             <div class="govuk-accordion__section ">
               <div class="govuk-accordion__section-header">
                 <h2 class="govuk-accordion__section-heading">
                   <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
-                    Writing well for specialists
+                    Another subsection
                   </span>
                 </h2>
               </div>
               <div id="accordion-default-content-2" class="govuk-accordion__section-content"
                 aria-labelledby="accordion-default-heading-2">
-                <p class='govuk-body'>This is the content for Writing well for specialists.</p>
-              </div>
-            </div>
-            <div class="govuk-accordion__section ">
-              <div class="govuk-accordion__section-header">
-                <h2 class="govuk-accordion__section-heading">
-                  <span class="govuk-accordion__section-button" id="accordion-default-heading-3">
-                    Know your audience
-                  </span>
-                </h2>
-              </div>
-              <div id="accordion-default-content-3" class="govuk-accordion__section-content"
-                aria-labelledby="accordion-default-heading-3">
-                <p class='govuk-body'>This is the content for Know your audience.</p>
-              </div>
-            </div>
-            <div class="govuk-accordion__section ">
-              <div class="govuk-accordion__section-header">
-                <h2 class="govuk-accordion__section-heading">
-                  <span class="govuk-accordion__section-button" id="accordion-default-heading-4">
-                    How people read
-                  </span>
-                </h2>
-              </div>
-              <div id="accordion-default-content-4" class="govuk-accordion__section-content"
-                aria-labelledby="accordion-default-heading-4">
-                <p class='govuk-body'>This is the content for How people read.</p>
+                <p class='govuk-body'>This will have a second grouping of layers.</p>
               </div>
             </div>
           </div>

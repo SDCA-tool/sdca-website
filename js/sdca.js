@@ -7,11 +7,16 @@ var sdca = (function ($) {
 	
 	'use strict';
 	
+	
 	// Settings defaults
 	var _settings = {
 		
 		// Base URL
 		baseUrl: '/calculator/',
+		
+		// Selector for nav
+		selector: '#layerselector',
+		useJqueryTabsRendering: false,
 		
 		// CycleStreets API; obtain a key at https://www.cyclestreets.net/api/apply/
 		apiBaseUrl: 'https://api.cyclestreets.net',
@@ -166,6 +171,13 @@ var sdca = (function ($) {
 	};
 	
 	
+	// Panel state control; this has a main panel state (design-scheme/view-results), but the data-layers screen can temporarily displace the main state
+	var _panels = ['data-layers', 'design-scheme', 'view-results'];
+	var _actualCurrentPanel = 'design-scheme';		// The panel actually in place
+	var _currentMainPanel = 'design-scheme';	// The main panel currently, even if temporarily overriden
+	var _previousMainPanel = false;				// The main panel previously
+	
+	
 	return {
 		
 	// Public functions
@@ -180,6 +192,9 @@ var sdca = (function ($) {
 				}
 			});
 			
+			// Manage panels
+			sdca.managePanels ();
+			
 			// Load layers from datasets file, and then initialise layers
 			sdca.loadDatasets ();
 				
@@ -188,6 +203,58 @@ var sdca = (function ($) {
 			
 			// Handler for drawn line
 			sdca.handleDrawLine ();
+		},
+		
+		
+		// Panel management
+		managePanels: function ()
+		{
+			// Data layers toggle
+			$('button#explore-data-layers').click (function () {
+				if (_actualCurrentPanel == 'data-layers') {	// I.e. clicked again as implied toggle-off
+					sdca.switchPanel (_currentMainPanel, true);
+				} else {
+					sdca.switchPanel ('data-layers', true);
+				}
+			});
+			
+			// Data layers back button
+			$('#data-layers .govuk-back-link').click (function () {
+				sdca.switchPanel (_currentMainPanel, true);
+			});
+			
+			// Calculate button
+			$('button#calculate').click (function () {
+				sdca.switchPanel ('view-results');
+			});
+			
+			// Back to the design button
+			$('#view-results .govuk-back-link').click (function () {
+				sdca.switchPanel ('design-scheme');
+			});
+		},
+		
+		
+		// Panel switching
+		switchPanel: function (newCurrentPanel, temporaryState)
+		{
+			// Loop through each panel to show the new one and hide others
+			$.each (_panels, function (index, panel) {
+				if (panel == newCurrentPanel) {
+					$('#' + panel + '.sdca-panel').show ();
+				} else {
+					$('#' + panel + '.sdca-panel').hide ();
+				}
+			});
+			
+			// Update the main state, if not a temporary change
+			if (!temporaryState) {
+				_previousMainPanel = _actualCurrentPanel;
+				_currentMainPanel = newCurrentPanel;
+			}
+			
+			// Set the state of the panel actually currently in place, even if temporary
+			_actualCurrentPanel = newCurrentPanel;
 		},
 		
 		
@@ -275,13 +342,13 @@ var sdca = (function ($) {
 							}
 							
 							// Create a UI nav menu entry
-							$clone = $('nav #selector ul li.template').clone (true);
+							$clone = $('#layerselector ul li.template').clone (true);
 							$clone.removeClass ('template').addClass (dataset.id);
 							$clone.find ('input[type="checkbox"').attr ('id', 'show_' + dataset.id);
 							$clone.find ('a').attr ('href', '#' + dataset.id);
 							$clone.find ('a').attr ('title', dataset.description);
 							$clone.html ($clone.html ().replace ('Template', dataset.title));
-							$clone.appendTo ('nav #selector ul');
+							$clone.appendTo ('#layerselector ul');
 							
 							// Create the information panel
 							$clone = $('#sections div.template').clone (true);
