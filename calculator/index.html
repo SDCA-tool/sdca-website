@@ -148,29 +148,6 @@
 				<input type="text" name="location" autocomplete="off" placeholder="Search locations and move map" tabindex="1" spellcheck="false" />
 			</div>
 			
-			<div id="drawing">
-				<div class="panes">
-					<div class="pane">
-						<h3>Draw line</h3>
-						<div id="drawingcontrols">
-							<ul>
-								<li><a><span class="draw line"></span>draw line</a></li>
-							</ul>
-						</div>
-						<!--
-						<p>Click the points to mark an area on the map.</p>
-						<p>Double-click to complete the shape.</p>
-						<p>Zoom in and pan to select the correct area.</p>
-						-->
-						<input id="geometry" name="loc_json" type="hidden" value="" />
-					</div>
-				</div>
-				<ul class="undo-clear">
-					<!--<li><a class="edit-undo"><span class="icon-undo"></span><span class="txt">undo</span></a></li>-->
-					<li><a class="edit-clear"><span class="icon-clear"></span><span class="txt">clear</span></a></li>
-				</ul>
-			</div>
-
             <button class="govuk-button govuk-button--secondary filter-button" data-save-html="true"
               data-sdca-target-panel="#data-layers" data-module="govuk-button" id="explore-data-layers">
               Explore data layers
@@ -298,9 +275,17 @@
             </div>
           </dl>
 
-          <button class="govuk-button" data-module="govuk-button">
-            Add an intervention
+          <button class="govuk-button draw line" data-module="govuk-button">
+            Add an intervention - draw on the map
           </button>
+
+          &nbsp;
+
+          <button class="govuk-button govuk-button--secondary edit-clear" data-module="govuk-button">
+            Clear line
+          </button>
+          
+          <input id="geometry" name="loc_json" type="hidden" value="" />
 
           <h2 class="govuk-heading-m">When you're done</h2>
           <p class="govuk-body">After you have added your interventions to the map, you can calculate the results
