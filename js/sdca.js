@@ -368,6 +368,9 @@ var sdca = (function ($) {
 			// Run when the captured geometry value changes; this is due to the .trigger ('change') in layerviewer.drawing () as a result of the draw.create/draw.update events
 			$('button#calculate').click (function (e) {
 				
+				// Show the loading spinner
+				$('.loading-spinner').css ('display', 'inline-block');
+				
 				// Capture the data, which will be GeoJSON
 				var geojson = $('#geometry').val ();
 				
@@ -387,6 +390,9 @@ var sdca = (function ($) {
 					success: function (data, textStatus, jqXHR) {
 						sdca.showResults (data);
 						sdca.switchPanel ('view-results');
+						
+						// Reset the loading spinner
+						$('.loading-spinner').css ('display', 'none');
 					},
 					error: function (jqXHR, textStatus, errorThrown) {
 						var responseBody = JSON.parse (jqXHR.responseText);

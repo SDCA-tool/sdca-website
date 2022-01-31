@@ -20,6 +20,11 @@ body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
 #data-layers.sdca-panel {display: none;}
 #view-results.sdca-panel {display: none;}
 
+/* Loading spinner - see: https://github.com/alphagov/govuk-design-system-backlog/issues/28 and commit dated 13 Feb 2020 */
+.loading-spinner {display: none; border: 4px solid #fff; border-radius: 50%; border-top-color: gray; width: 8px; height: 8px; -webkit-animation: spin 2s linear infinite; animation: spin 2s linear infinite; margin: 0;}
+@-webkit-keyframes spin { 0% {-webkit-transform: rotate(0deg);} 100% {-webkit-transform: rotate(360deg);} }
+@keyframes spin { 0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);} }
+
 /* Results */
 .govuk-panel--confirmation.failure {background-color: DarkRed;}
 
