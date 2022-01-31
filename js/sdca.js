@@ -371,10 +371,10 @@ var sdca = (function ($) {
 		handleDrawLine: function ()
 		{
 			// Run when the captured geometry value changes; this is due to the .trigger ('change') in layerviewer.drawing () as a result of the draw.create/draw.update events
-			$('#geometry').on ('change', function (e) {
+			$('button#calculate').click (function (e) {
 				
 				// Capture the data, which will be GeoJSON
-				var geojson = e.target.value;
+				var geojson = $('#geometry').val ();
 				
 				// End if the line has been cleared
 				if (geojson === '') {return;}
