@@ -186,11 +186,31 @@ class sdcaModel
 		$json['path_landcover'] = '/var/www/sdca/data/landcover/landcover.tif';
 		
 		# Values for material_sites
-		$json['material_sites'] = $mockDataJson['material_sites'];
+		# "The logic is st_centroid(user_input) then find the nearest location for each material_sites. Material_Types (there are 11 types of site). Then measure the straight line distance between the centroid and the 11 sites in km."
+		#!# Needs tests - has been checked manually for now
+		#!# Would ideally retrieve the site to help testing, but this has the groupwise problem which is hard to solve on a derived distance value
+		#!# MySQL 8.0 does not yet have geometry support in ST_Centroid, however the casting from 0 to 4326 should be a reasonable approximation - centroid here is "ST_GeomFromGeoJSON(ST_AsGeoJSON( ST_Centroid(ST_GeomFromGeoJSON(:geometry, 1, 0)) ), 1, 4326)"
+		$query = "
+			SELECT Material_Types, MIN(distance_km) AS distance_km
+			FROM (
+				SELECT
+					id,
+					site,
+					material_types AS Material_Types,
+					(ST_Distance( ST_GeomFromGeoJSON(ST_AsGeoJSON( ST_Centroid(ST_GeomFromGeoJSON(:geometry, 1, 0)) ), 1, 4326), geometry) / 1000) AS distance_km
+				FROM materialsites
+				ORDER BY material_types,distance_km
+			) AS distances
+			GROUP BY material_types
+			ORDER BY material_types
+		;";
+		#!# Currently sending first only, pending structure discussion
+		$preparedStatementValues = array ('geometry' => json_encode ($input['features'][0]['geometry']));
+		$json['material_sites'] = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
 		
 		# Construct as string
-		$stdin = json_encode ($json);
-		//echo $stdin;
+		$stdin = json_encode ($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+		// echo $stdin; die;
 		
 		# Provide base data to calculation script
 		$command = $_SERVER['DOCUMENT_ROOT'] . '/api/sdca.R';
