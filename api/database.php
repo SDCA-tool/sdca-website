@@ -2,7 +2,7 @@
 
 /*
  * Coding copyright Martin Lucas-Smith, University of Cambridge, 2003-21
- * Version 3.0.18
+ * Version 3.1.0
  * Uses prepared statements (see https://stackoverflow.com/questions/60174/how-can-i-prevent-sql-injection-in-php ) where possible
  * Distributed under the terms of the GNU Public Licence - https://www.gnu.org/copyleft/gpl.html
  * Requires PHP 4.1+ with register_globals set to 'off'
@@ -29,7 +29,7 @@ class database
 	
 	
 	# Function to connect to the database
-	public function __construct ($hostname, $username, $password, $database = NULL, $vendor = 'mysql', $logFile = false, $userForLogging = false, $nativeTypes = false /* NB: a future release will change this to true */, $setNamesUtf8 = true, $driverOptions = array ())
+	public function __construct ($hostname, $username, $password, $database = NULL, $vendor = 'mysql', $logFile = false, $userForLogging = false, $nativeTypes = false /* NB: a future release will change this to true */, $setNamesUtf8 = true, $driverOptions = array (), $nativeTypesDecimalHandling = false)
 	{
 		# Assign the user for logging
 		$this->logFile = $logFile;
@@ -56,6 +56,9 @@ class database
 				$driverOptions[PDO::ATTR_STRINGIFY_FETCHES] = false;	// This seems to be the default anyway
 			}
 		}
+		
+		# Set a flag to handle conversion of DECIMAL(x,y)
+		$this->nativeTypesDecimalHandling = $nativeTypesDecimalHandling;
 		
 		# Enable exception throwing; see: https://php.net/pdo.error-handling
 		$driverOptions[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
@@ -453,7 +456,7 @@ class database
 	
 	
 	# Implementation for getData
-	private function _getData ($query, $associative = false, $keyed = true, $preparedStatementValues = array (), $onlyFields = array (), $expectMode = false)
+	private function _getData ($query, $associative = false, $keyed = true, $preparedStatementValues = array (), $onlyFields = array (), $expectMode = false, $datasource = array () /* database, table, for use with DECIMAL handling */)
 	{
 		# Global the query and any values
 		$this->query = $query;
@@ -496,6 +499,22 @@ class database
 			$statement->setFetchMode ($mode);
 			while ($row = $statement->fetch ()) {
 				$data[] = $row;
+			}
+		}
+		
+		# Fix up DECIMAL handling if required - unlike databases, PHP has no native decimal type, so the output is dynamically changed so that e.g. DECIMAL(10,0) becomes int and DECIMAL(7,5) becomes float; see: https://bugs.php.net/bug.php?id=69974
+		#!# Currently only implemented for select()
+		#!# Currently assumes associative
+		if ($this->nativeTypesDecimalHandling && $datasource) {
+			$fields = $this->getFields ($datasource[0], $datasource[1]);
+			foreach ($fields as $field => $fieldSpecification) {
+				if (preg_match ('/^decimal\(([0-9]+),([0-9]+)\)$/', $fieldSpecification['Type'], $matches)) {
+					$castTo = ($matches[2] === '0' ? 'int' : 'float');
+					foreach ($data as $index => $record) {
+						if ($castTo == 'int')   {$data[$index][$field] = (int)   $record[$field];}
+						if ($castTo == 'float') {$data[$index][$field] = (float) $record[$field];}
+					}
+				}
 			}
 		}
 		
@@ -1228,7 +1247,7 @@ class database
 		$query = "SELECT {$what} FROM `{$database}`.`{$table}`{$where}{$orderBy}{$limit};\n";
 		
 		# Get the data
-		$data = $this->_getData ($query, ($associative ? "{$database}.{$table}" : false), $keyed, $conditions);
+		$data = $this->_getData ($query, ($associative ? "{$database}.{$table}" : false), $keyed, $conditions, array (), false, $datasource = array ($database, $table));
 		
 		# Return the data
 		return $data;
