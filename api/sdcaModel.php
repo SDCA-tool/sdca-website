@@ -177,7 +177,28 @@ class sdcaModel
 		$json['carbon_factors'] = $carbon_factors;
 		
 		# Values for desire_lines
-		$json['desire_lines'] = $mockDataJson['desire_lines'];
+		#!# MySQL 8.0 does not yet have geometry support in ST_Buffer ("#3618 - st_buffer(LINESTRING) has not been implemented for geographic spatial reference systems."), so both the data and the supplied geography have been converted to SRID = 0 as initial prototype
+		#!# Buffer size of 0.02 degrees has been used as an approximation to 2000m, but this needs to be implemented properly
+		$query = "
+			SELECT
+				ST_AsGeoJSON(geometrySrid0) AS geometry,
+				`from`, `to`, cycle, drive, passenger, walk, rail, bus, lgv, hgv
+			FROM desire_lines
+			WHERE ST_Within( geometrySrid0, ST_Buffer( ST_GeomFromGeoJSON(:geometry, 1, 0), 0.02) );
+		;";
+		$preparedStatementValues = array ('geometry' => json_encode ($input));
+		$desire_linesRaw = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
+		$desire_lines = array ('type' => 'FeatureCollection', 'features' => array ());
+		foreach ($desire_linesRaw as $row) {
+			$geometry = $row['geometry'];
+			unset ($row['geometry']);
+			$desire_lines['features'][] = array (
+					'type' => 'Feature',
+					'properties' => $row,
+					'geometry' => json_decode ($geometry),
+			);
+		}
+		$json['desire_lines'] = array (json_encode ($desire_lines));
 		
 		# Value for path_dem file
 		$json['path_dem'] = '/var/www/sdca/data/dem/UKdem.tif';
