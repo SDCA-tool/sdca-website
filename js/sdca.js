@@ -403,9 +403,7 @@ var sdca = (function ($) {
 			$('#drawing a').click (function () {
 				
 				// Fade out panel
-				$('#results').fadeOut ('500', function () {
-					$(this).css ('display', 'none');
-				});
+				// #!# Needs to be reimplemented for new UI - should reset panel
 				
 				// Remove the geometries added to the map, if present
 				layerviewer.eraseDirectGeojson ('results');
@@ -416,8 +414,8 @@ var sdca = (function ($) {
 		// Function to show the results
 		showResults: function (data)
 		{
-			// Show the result box
-			$('#results').fadeIn (500).css ('display', 'block');
+			// Switch panel
+			$('button#calculate').click ();
 			
 			// Create the PAS2080 table
 			var pas2080Labels = {
@@ -439,12 +437,15 @@ var sdca = (function ($) {
 			var timeseries = sdca.htmlTable (data.timeseries, timeseriesLabels);
 			
 			// Populate the results in the interface
-			$('#results p.payback_time span').text (data.payback_time[0]);
-			$('#results p.emissions_whole_life span').text (layerviewer.number_format (data.emissions_whole_life[0]));
-			$('#results p.netzero_compatible span').html ((data.netzero_compatible[0] == 'yes' ? '&#x2705;' : '&#x274c;'));
-			$('#results p.comments span').text (data.comments[0]);
-			$('#results div.pas2080').html (pas2080);
-			$('#results div.timeseries').html (timeseries);
+			$('.netzero_compatible').text ((data.netzero_compatible[0] == 'yes' ? 'Net zero compatible' : 'Not net zero compatible'));
+			if (data.netzero_compatible[0] == 'no') {
+				$('.govuk-panel--confirmation').addClass ('failure');
+			}
+			$('.payback_time').text (data.payback_time[0] + ' years');
+			$('.emissions_whole_life').text (layerviewer.number_format (data.emissions_whole_life[0]));
+			$('.comments').text (data.comments[0]);
+			$('.pas2080').html (pas2080);
+			$('.timeseries').html (timeseries);
 			
 			// Define icons based on data value
 			var layerConfig = {
@@ -466,20 +467,20 @@ var sdca = (function ($) {
 		htmlTable: function (data, labels)
 		{
 			// Start the table
-			var html  = '<table>';
+			var html  = '<table class="govuk-table">';
 			
 			// Headers, using first row as keys, finding labels where they exist
-			html += '<tr>';
+			html += '<tr class="govuk-table__row">';
 			$.each (data[0], function (field, value) {
-				html += '<th>' + sdca.htmlspecialchars ((labels[field] || field)) + '</td>';
+				html += '<th scope="col" class="govuk-table__header">' + sdca.htmlspecialchars ((labels[field] || field)) + '</td>';
 			});
 			html += '</tr>';
 			
 			// Add data for each row
 			$.each (data, function (index, row) {
-				html += '<tr>';
+				html += '<tr class="govuk-table__row">';
 				$.each (row, function (field, value) {
-					html += '<td class="' + field + '">' + sdca.htmlspecialchars (value) + '</td>';
+					html += '<td class="govuk-table__cell ' + field + '">' + sdca.htmlspecialchars (value) + '</td>';
 				});
 				html += '</tr>';
 			});

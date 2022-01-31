@@ -20,18 +20,11 @@ body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
 #data-layers.sdca-panel {display: none;}
 #view-results.sdca-panel {display: none;}
 
+/* Results */
+.govuk-panel--confirmation.failure {background-color: DarkRed;}
 
 
 /* Drawing */
 #drawing {height: 130px; bottom: 25px; right: 20px;}
 body #application nav #drawing a {border-bottom: 0;}
-
-/* Results */
-#results {position: absolute; top: 15px; right: 20px; height: calc(100% - 25px - 130px - 35px - 15px); width: calc(250px - 20px); background: rgba(0,0,0,0.8); z-index: 95; padding: 10px; overflow-y: auto;}
-#results {display: none;}   /* Will be overriden to appear upon result */
-#results h3 {margin: 0 0 10px; padding: 0; color: #e6e6e6;}
-#results p, #results table {font-size: 0.69em; color: white;}
-#results p {margin: 0 0 5px; padding-bottom: 0;}
-#results table th, #results table td {text-align: left; border-bottom: 1px solid #444;}
-#results table td.notes {min-width: 100px;}
 

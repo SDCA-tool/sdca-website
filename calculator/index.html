@@ -171,16 +171,6 @@
 				</ul>
 			</div>
 
-			<div id="results">
-				<h3>Results [example]</h3>
-				<p class="netzero_compatible">Net zero compatible?&nbsp; <span>?</span></p>
-				<p class="payback_time">Payback time: <strong><span>?</span> years</strong></p>
-				<p class="emissions_whole_life">Whole life emissions: <strong><span>?</span> MtCO<sub>2</sub>e</strong></p>
-				<p class="comments">Comments:<br /><span>?</span></p>
-				<div class="pas2080"></div>
-				<div class="timeseries"></div>
-			</div>
-
             <button class="govuk-button govuk-button--secondary filter-button" data-save-html="true"
               data-sdca-target-panel="#data-layers" data-module="govuk-button" id="explore-data-layers">
               Explore data layers
@@ -326,11 +316,11 @@
           <a href="#" class="govuk-back-link" data-sdca-target-panel="#design-scheme">Back to the design</a>
           <h2 class="govuk-heading-m">Calculated results for the scheme</h2>
           <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-2">
-            <h1 class="govuk-panel__title">
-              Net zero compatible
+            <h1 class="govuk-panel__title netzero_compatible">
+              Net zero compatible?
             </h1>
             <div class="govuk-panel__body">
-              Payback time:<br><strong>10 years</strong>
+              Payback time:<br><strong><span class="payback_time">?</span></strong>
             </div>
           </div>
 
@@ -351,7 +341,7 @@
               </li>
               <li class="govuk-tabs__list-item">
                 <a class="govuk-tabs__tab" href="#emissions-by-year">
-                  Emissions-by-year
+                  Emissions by year
                 </a>
               </li>
             </ul>
@@ -359,32 +349,28 @@
               <table class="govuk-table">
                 <thead class="govuk-table__head">
                   <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Case manager</th>
-                    <th scope="col" class="govuk-table__header">Cases opened</th>
-                    <th scope="col" class="govuk-table__header">Cases closed</th>
+                    <th scope="col" class="govuk-table__header">Scheme performance</th>
+                    <th scope="col" class="govuk-table__header"></th>
                   </tr>
                 </thead>
                 <tbody class="govuk-table__body">
                   <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">David Francis</td>
-                    <td class="govuk-table__cell">3</td>
-                    <td class="govuk-table__cell">0</td>
+                    <td class="govuk-table__cell">Whole life emissions</td>
+                    <td class="govuk-table__cell emissions_whole_life">?</td>
                   </tr>
                   <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">Paul Farmer</td>
-                    <td class="govuk-table__cell">1</td>
-                    <td class="govuk-table__cell">0</td>
+                    <td class="govuk-table__cell">Payback time</td>
+                    <td class="govuk-table__cell payback_time">?</td>
                   </tr>
                   <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">Rita Patel</td>
-                    <td class="govuk-table__cell">2</td>
-                    <td class="govuk-table__cell">0</td>
+                    <td class="govuk-table__cell">Comments</td>
+                    <td class="govuk-table__cell comments">?</td>
                   </tr>
                 </tbody>
               </table>
 
             </div>
-            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="emissions-by-type">
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden pas2080" id="emissions-by-type">
               <table class="govuk-table">
                 <thead class="govuk-table__head">
                   <tr class="govuk-table__row">
@@ -413,7 +399,7 @@
               </table>
 
             </div>
-            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="emissions-by-year">
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden timeseries" id="emissions-by-year">
               <table class="govuk-table">
                 <thead class="govuk-table__head">
                   <tr class="govuk-table__row">
