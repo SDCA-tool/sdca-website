@@ -93,12 +93,6 @@ class sdcaModel
 		}
 		$parameter = implode (',', $lsoas);
 		
-		#!# For now, mock with the sample data, pending implementation of the lookups
-		$parameter = file_get_contents ($_SERVER['DOCUMENT_ROOT'] . '/lexicon/example_r_input.json');
-		$parameter = str_replace ('D:/GitHub/SDCA-tool/sdca-data-prep/data/UKdem.tif', '/var/www/sdca/data/dem/UKdem.tif', $parameter);
-		$parameter = str_replace ('D:/GitHub/SDCA-tool/sdca-data-prep/data/landcover.tif', '/var/www/sdca/data/landcover/landcover.tif', $parameter);
-		$mockDataJson = json_decode ($parameter, true);
-		
 		# Mock the user input, which is a feature collection
 		$input = array (
 			'type' => 'FeatureCollection',
@@ -121,7 +115,7 @@ class sdcaModel
 						'mode_class' => 'Rail',
 						'mode' => 'High speed rail',
 						'intervention_class' => 'New construction',
-						'intervention' => 'Overbridge',
+						'intervention' => 'Viaduct',
 					),
 					'geometry' => json_decode ('{"type": "LineString", "coordinates": [[-2.621440887451172,51.443950667096615],[-2.6061630249023438,51.43367817535588]]}', true),
 				),
@@ -132,14 +126,14 @@ class sdcaModel
 						'mode_class' => 'Rail',
 						'mode' => 'High speed rail',
 						'intervention_class' => 'New construction',
-						'intervention' => 'Underbridge',
+						'intervention' => 'Viaduct',
 					),
 					'geometry' => json_decode ('{"type": "LineString", "coordinates": [[-2.6071929931640625, 51.43453430457666],[-2.5865936279296875,51.443094714358566]]}', true),
 				),
 			),
 		);
 		
-		# Construct the JSON to be sent to the API
+		# Construct the JSON to be sent to the API; see example_r_input.json
 		$json = array ();
 		
 		# Value for user_input
@@ -177,7 +171,28 @@ class sdcaModel
 		$json['carbon_factors'] = $carbon_factors;
 		
 		# Values for desire_lines
-		$json['desire_lines'] = $mockDataJson['desire_lines'];
+		#!# MySQL 8.0 does not yet have geometry support in ST_Buffer ("#3618 - st_buffer(LINESTRING) has not been implemented for geographic spatial reference systems."), so both the data and the supplied geography have been converted to SRID = 0 as initial prototype
+		#!# Buffer size of 0.02 degrees has been used as an approximation to 2000m, but this needs to be implemented properly
+		$query = "
+			SELECT
+				ST_AsGeoJSON(geometrySrid0) AS geometry,
+				`from`, `to`, cycle, drive, passenger, walk, rail, bus, lgv, hgv
+			FROM desire_lines
+			WHERE ST_Within( geometrySrid0, ST_Buffer( ST_GeomFromGeoJSON(:geometry, 1, 0), 0.02) );
+		;";
+		$preparedStatementValues = array ('geometry' => json_encode ($input));
+		$desire_linesRaw = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
+		$desire_lines = array ('type' => 'FeatureCollection', 'features' => array ());
+		foreach ($desire_linesRaw as $row) {
+			$geometry = $row['geometry'];
+			unset ($row['geometry']);
+			$desire_lines['features'][] = array (
+					'type' => 'Feature',
+					'properties' => $row,
+					'geometry' => json_decode ($geometry),
+			);
+		}
+		$json['desire_lines'] = array (json_encode ($desire_lines));
 		
 		# Value for path_dem file
 		$json['path_dem'] = '/var/www/sdca/data/dem/UKdem.tif';
