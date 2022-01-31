@@ -6,72 +6,76 @@
 var sdcaui = (function ($) {
 
 	'use strict';
-
-	var _sdcaPanelContainerId = 'sdca-panel-container'; // where the SDCA panels will be shown
-	var _sdcaPanelContainer = false; // Store the jQuery object of the container 
-	var _previousSdcaPanelHtml = ''; // Store the previous panel HTML (used for back)
-	var _defaultSdcaPanelId = '#design-scheme'; // Default panel to show at launch
-
+	
+	// Panel state control; this has a main panel state (design-scheme/view-results), but the data-layers screen can temporarily displace the main state
+	var _panels = ['data-layers', 'design-scheme', 'view-results'];
+	var _actualCurrentPanel = 'design-scheme';		// The panel actually in place
+	var _currentMainPanel = 'design-scheme';	// The main panel currently, even if temporarily overriden
+	var _previousMainPanel = false;				// The main panel previously
+	
+	
 	return {
 
 		// Public functions
 
 		// Main function
-		initialise: function () {
-			sdcaui.panels();
-			sdcaui.dataLayerPanel();
-			sdcaui.buttons();
-		},
-
-		// Enable panels
-		panels: function () {
-			// Locate and save the target div we will be populating with panels
-			_sdcaPanelContainer = $('#' + _sdcaPanelContainerId);
-			if (!_sdcaPanelContainerId) {
-				console.log('Could not find a container');
-			}
-
-			// Hide all panels except the first one
-			$('.sdca-panel').hide();
-
-			// Populate the default panel
-			$(_sdcaPanelContainer).html(
-				$(_defaultSdcaPanelId).html()
-			);
+		initialise: function ()
+		{
+			// Manage panels
+			sdcaui.managePanels ();
 		},
 		
 		
-		// Clicking a button or a with data-sdca-target-panel switches to that panel
-		buttons: function () {
-			$('body').on('click', 'button, a', function (event) {
-
-				event.preventDefault();
-
-				// If we are saving the previous HTML in memory, do it
-				if ($(this).data('save-html') == true) {
-					_previousSdcaPanelHtml = $(_sdcaPanelContainer).html();
+		// Panel management
+		managePanels: function ()
+		{
+			// Data layers toggle
+			$('button#explore-data-layers').click (function () {
+				if (_actualCurrentPanel == 'data-layers') {	// I.e. clicked again as implied toggle-off
+					sdcaui.switchPanel (_currentMainPanel, true);
+				} else {
+					sdcaui.switchPanel ('data-layers', true);
 				}
-
-				// If there's a target panel, load that
-				if ($(this).data('sdca-target-panel')) {
-					var targetPanelId = $(this).data('sdca-target-panel');
-					var targetPanelHtml = $(targetPanelId).html();
-					$(_sdcaPanelContainer).html(targetPanelHtml);
-				}
-
-				// If we should load saved html, do that
-				if ($(this).data('load-saved-html') == true) {
-					$(_sdcaPanelContainer).html(_previousSdcaPanelHtml);
-				}
+			});
+			
+			// Data layers back button
+			$('#data-layers .govuk-back-link').click (function () {
+				sdcaui.switchPanel (_currentMainPanel, true);
+			});
+			
+			// Calculate button
+			$('button#calculate').click (function () {
+				sdcaui.switchPanel ('view-results');
+			});
+			
+			// Back to the design button
+			$('#view-results .govuk-back-link').click (function () {
+				sdcaui.switchPanel ('design-scheme');
 			});
 		},
 		
 		
-		dataLayerPanel: function () {
-			// At launch, hide data layers panel
-			$('#data-layers-panel').hide();
+		// Panel switching
+		switchPanel: function (newCurrentPanel, temporaryState)
+		{
+			// Loop through each panel to show the new one and hide others
+			$.each (_panels, function (index, panel) {
+				if (panel == newCurrentPanel) {
+					$('#' + panel + '.sdca-panel').show ();
+				} else {
+					$('#' + panel + '.sdca-panel').hide ();
+				}
+			});
+			
+			// Update the main state, if not a temporary change
+			if (!temporaryState) {
+				_previousMainPanel = _actualCurrentPanel;
+				_currentMainPanel = newCurrentPanel;
+			}
+			
+			// Set the state of the panel actually currently in place, even if temporary
+			_actualCurrentPanel = newCurrentPanel;
 		}
 	};
 
 }(jQuery));
-

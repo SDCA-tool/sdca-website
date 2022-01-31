@@ -7,9 +7,14 @@ body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
 #map img {width: 100%; height: calc(100vh - 250px); object-fit: cover;}
 #map button.filter-button {position: absolute; top: 0; right: 0; margin: 25px;}
 
-.nested-tabs .govuk-tabs__tab {font-size: 14px;}
-.nested-tabs .govuk-tabs__list-item {padding: 14px 12px 16px}
-
 .govuk-panel {padding: 20px}
 .govuk-panel__title {font-size: 1.5rem}
 .govuk-panel__body {font-size: 1rem;}
+
+.nested-tabs .govuk-tabs__tab {font-size: 14px;}
+.nested-tabs .govuk-tabs__list-item {padding: 14px 12px 16px}
+
+/* Panels initial state */
+#data-layers.sdca-panel {display: none;}
+#view-results.sdca-panel {display: none;}
+

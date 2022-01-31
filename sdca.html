@@ -108,14 +108,19 @@
           <div id="map">
             <img src="/images/placeholders/map.png" alt="Map of the UK" />
             <button class="govuk-button govuk-button--secondary filter-button" data-save-html="true"
-              data-sdca-target-panel="#data-layers-panel" data-module="govuk-button" id="explore-data-layers">
+              data-sdca-target-panel="#data-layers" data-module="govuk-button" id="explore-data-layers">
               Explore data layers
             </button>
           </div>
         </div>
 
-        <!-- Layer panel, will be shown in the #sdca-panel-container container-->
-        <div class="sdca-layers-panel" id="data-layers-panel">
+        <div class="govuk-grid-column-one-third govuk-!-margin-top-4" id="sdca-panel-container">
+
+
+        <!-- Panels -->
+
+        <!-- Data layers panel -->
+        <div class="sdca-panel" id="data-layers">
           <a href="#" class="govuk-back-link" data-load-saved-html="true">Back</a>
           <h2 class="govuk-heading-l">Explore data layers</h2>
           <p class="govuk-body">Use this panel to select different data layers to better understand the context for your
@@ -182,7 +187,8 @@
 
         </div>
 
-        <!-- Panels -->
+
+        <!-- Design scheme panel -->
         <div class="sdca-panel" id="design-scheme">
           <h2 class="govuk-heading-m">How to use this tool</h2>
           <p class="govuk-body">To calculate the <a href="/methodology/">carbon impact of a scheme</a>, you can
@@ -241,11 +247,12 @@
           <p class="govuk-body">After you have added your interventions to the map, you can calculate the results
           </p>
 
-          <button class="govuk-button" data-module="govuk-button" data-sdca-target-panel="#view-results">
+          <button class="govuk-button" data-module="govuk-button" data-sdca-target-panel="#view-results" id="calculate">
             Calculate
           </button>
         </div>
 
+        <!-- View results panel -->
         <div class="sdca-panel" id="view-results">
           <a href="#" class="govuk-back-link" data-sdca-target-panel="#design-scheme">Back to the design</a>
           <h2 class="govuk-heading-m">Calculated results</h2> <a class="govuk-link" href="#">
@@ -373,8 +380,9 @@
 
         </div>
 
-        <div class="govuk-grid-column-one-third govuk-!-margin-top-4" id="sdca-panel-container">
-          <!-- Panels will be placed here by JS-->
+
+
+
         </div>
       </div>
 
