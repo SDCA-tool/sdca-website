@@ -93,12 +93,6 @@ class sdcaModel
 		}
 		$parameter = implode (',', $lsoas);
 		
-		#!# For now, mock with the sample data, pending implementation of the lookups
-		$parameter = file_get_contents ($_SERVER['DOCUMENT_ROOT'] . '/lexicon/example_r_input.json');
-		$parameter = str_replace ('D:/GitHub/SDCA-tool/sdca-data-prep/data/UKdem.tif', '/var/www/sdca/data/dem/UKdem.tif', $parameter);
-		$parameter = str_replace ('D:/GitHub/SDCA-tool/sdca-data-prep/data/landcover.tif', '/var/www/sdca/data/landcover/landcover.tif', $parameter);
-		$mockDataJson = json_decode ($parameter, true);
-		
 		# Mock the user input, which is a feature collection
 		$input = array (
 			'type' => 'FeatureCollection',
@@ -139,7 +133,7 @@ class sdcaModel
 			),
 		);
 		
-		# Construct the JSON to be sent to the API
+		# Construct the JSON to be sent to the API; see example_r_input.json
 		$json = array ();
 		
 		# Value for user_input
