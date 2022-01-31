@@ -38,7 +38,7 @@ class api
 		
 		# Connect to the database
 		require_once ('database.php');
-		$this->databaseConnection = new database ($this->settings['hostname'], $this->settings['username'], $this->settings['password'], $this->settings['database'], 'mysql', false, false, $nativeTypes = true);
+		$this->databaseConnection = new database ($this->settings['hostname'], $this->settings['username'], $this->settings['password'], $this->settings['database'], 'mysql', false, false, $nativeTypes = true, true, array (), $nativeTypesDecimalHandling = true);
 		if (!$this->databaseConnection->connection) {
 			return $this->error ('Unable to connect to the database.');
 		}
