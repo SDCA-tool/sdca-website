@@ -223,11 +223,6 @@ var sdca = (function ($) {
 				sdca.switchPanel (_currentMainPanel, true);
 			});
 			
-			// Calculate button
-			$('button#calculate').click (function () {
-				sdca.switchPanel ('view-results');
-			});
-			
 			// Back to the design button
 			$('#view-results .govuk-back-link').click (function () {
 				sdca.switchPanel ('design-scheme');
@@ -391,6 +386,7 @@ var sdca = (function ($) {
 					},
 					success: function (data, textStatus, jqXHR) {
 						sdca.showResults (data);
+						sdca.switchPanel ('view-results');
 					},
 					error: function (jqXHR, textStatus, errorThrown) {
 						var responseBody = JSON.parse (jqXHR.responseText);
@@ -414,9 +410,6 @@ var sdca = (function ($) {
 		// Function to show the results
 		showResults: function (data)
 		{
-			// Switch panel
-			$('button#calculate').click ();
-			
 			// Create the PAS2080 table
 			var pas2080Labels = {
 				pas2080_code: 'Code',
