@@ -236,19 +236,6 @@
           <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
-                Viaduct
-              </dt>
-              <dd class="govuk-summary-list__value">
-                ?km
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="#">
-                  Change<span class="govuk-visually-hidden"> viaduct intervention</span>
-                </a>
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
                 Bridge
               </dt>
               <dd class="govuk-summary-list__value">
@@ -273,10 +260,39 @@
                 </a>
               </dd>
             </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+		
+				<div class="govuk-form-group">
+				<!--
+				  <label class="govuk-label" for="sort">
+				    Type of intervention
+				  </label>
+				-->
+				  <select class="govuk-select" id="sort" name="sort">
+				    <option value="">Scheme type:</option>
+				    <option value="railway" disabled="disabled">Railway</option>
+				    <option value="road" disabled="disabled">Road</option>
+				    <option value="cycleway" disabled="disabled">Cycleway</option>
+				    <option value="viaduct" selected="selected">Viaduct</option>
+				    <option value="bridge" disabled="disabled">Bridge</option>
+				  </select>
+				</div>
+
+              </dt>
+              <dd class="govuk-summary-list__value">
+                ?km
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="#">
+                  Change<span class="govuk-visually-hidden"> viaduct intervention</span>
+                </a>
+              </dd>
+            </div>
           </dl>
 
           <button class="govuk-button draw line" data-module="govuk-button">
-            Add an intervention - draw on the map
+            Draw intervention on the map
           </button>
 
           &nbsp;
