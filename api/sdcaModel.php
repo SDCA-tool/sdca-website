@@ -204,8 +204,7 @@ class sdcaModel
 			GROUP BY material_types
 			ORDER BY material_types
 		;";
-		#!# Currently sending first only, pending structure discussion
-		$preparedStatementValues = array ('geometry' => json_encode ($input['features'][0]['geometry']));
+		$preparedStatementValues = array ('geometry' => json_encode ($input));
 		$json['material_sites'] = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
 		
 		# Construct as string
