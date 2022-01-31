@@ -365,6 +365,15 @@ var sdca = (function ($) {
 		// Handler for drawn line
 		handleDrawLine: function ()
 		{
+			// Only show the submit button once a geometry is present
+			$('#geometry').on ('change', function (e) {
+				if ($('#geometry').val ()) {
+					$('#calculate, .edit-clear').css ('visibility', 'visible');
+				} else {
+					$('#calculate, .edit-clear').css ('visibility', 'hidden');
+				}
+			});
+
 			// Run when the captured geometry value changes; this is due to the .trigger ('change') in layerviewer.drawing () as a result of the draw.create/draw.update events
 			$('button#calculate').click (function (e) {
 				

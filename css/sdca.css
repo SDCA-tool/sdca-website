@@ -32,4 +32,5 @@ body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
 /* Drawing */
 #drawing {height: 130px; bottom: 25px; right: 20px;}
 body #application nav #drawing a {border-bottom: 0;}
+#calculate, .edit-clear {visibility: hidden;}
 
