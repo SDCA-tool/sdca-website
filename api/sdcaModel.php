@@ -226,7 +226,10 @@ class sdcaModel
 		
 		# Construct as string
 		$stdin = json_encode ($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-		// echo $stdin; die;
+		
+		# Show input to the package if required
+		#!# Temporary option - to be removed after debugging
+		if (isSet ($_GET['showinput']) && $_GET['showinput'] == 'true') {echo $stdin; die;}
 		
 		# Provide base data to calculation script
 		$command = $_SERVER['DOCUMENT_ROOT'] . '/api/sdca.R';
