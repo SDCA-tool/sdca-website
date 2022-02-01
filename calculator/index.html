@@ -336,64 +336,976 @@
               <input class="govuk-input" id="filter-interventions" name="filter-interventions" type="text">
             </div>
 
-            <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
-              <div class="govuk-accordion__section ">
+            <div class="govuk-accordion" data-module="govuk-accordion" id="interventions-accordion">
+              <div class="govuk-accordion__section" id="intervention-high-speed-rail">
                 <div class="govuk-accordion__section-header">
-                  <h2 class="govuk-accordion__section-heading">
-                    <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
-                      High speed rail
-                    </span>
-                  </h2>
+                <h2 class="govuk-accordion__section-heading">
+                  <span class="govuk-accordion__section-button" id="interventions-accordion-heading-high-speed-rail">
+                  High speed rail
+                  </span>
+                </h2>
                 </div>
-                <div id="accordion-default-content-1" class="govuk-accordion__section-content"
-                  aria-labelledby="accordion-default-heading-1">
-
-
-                  <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                      <dt class="govuk-summary-list__key">
-                        New standard route
-                      </dt>
-                      <dd class="govuk-summary-list__value">
-                        New route including all associated assets
-                      </dd>
-                      <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
-                          Add to map<span class="govuk-visually-hidden"> a new standard route</span>
-                        </a>
-                      </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                      <dt class="govuk-summary-list__key">
-                        Station - local - at grade
-                      </dt>
-                      <dd class="govuk-summary-list__value">
-                        Additional local station on existing route
-                      </dd>
-                      <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
-                          Add to map <span class="govuk-visually-hidden"> a new station - local - at grade</span>
-                        </a>
-                      </dd>
-                    </div>
-                  </dl>
-
-                </div>
-              </div>
-              <div class="govuk-accordion__section ">
-                <div class="govuk-accordion__section-header">
-                  <h2 class="govuk-accordion__section-heading">
-                    <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
-                      Heavy rail
-                    </span>
-                  </h2>
-                </div>
-                <div id="accordion-default-content-2" class="govuk-accordion__section-content"
-                  aria-labelledby="accordion-default-heading-2">
-                  <p class='govuk-body'>This is the content for Heavy rail</p>
-                </div>
-              </div>
+                <div id="interventions-accordion-content-high-speed-rail" class="govuk-accordion__section-content" aria-labelledby="interventions-accordion-content-high-speed-rail">
+        
+                <dl class="govuk-summary-list">
+                  <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    New high speed route
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    New route including all associated assets
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                    Add to map<span class="govuk-visually-hidden"> a new New high speed route</span>
+                    </a>
+                  </dd>
+                  </div>
+                
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - at grade
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional station at grade on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - at grade</span>
+              </a>
+              </dd>
             </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - underground
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional station below ground on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - underground</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - elevated
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional station above grade on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - elevated</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Track (double)
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New track including required earthworks
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Track (double)</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              OLE system
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New overhead line equipment
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new OLE system</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Point and crossings
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New points and crossings
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Point and crossings</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Bridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New bridge including track
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Bridge</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Overbridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New overbridge
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Overbridge</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Underbridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New underbridge
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Underbridge</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Green bridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New green bridge
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Green bridge</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Underpass
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New underpass
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Underpass</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Viaduct
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New viaduct including track
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Viaduct</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Tunnel
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New tunnel including track and earthworks
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Tunnel</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Rail maintenance depot
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New rail maintenance depot
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Rail maintenance depot</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Rail freight terminal
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New rail freight terminal
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Rail freight terminal</span>
+              </a>
+              </dd>
+            </div>
+              </dl>
+        
+                </div>
+                </div>
+              
+              <div class="govuk-accordion__section" id="intervention-heavy-rail">
+                <div class="govuk-accordion__section-header">
+                <h2 class="govuk-accordion__section-heading">
+                  <span class="govuk-accordion__section-button" id="interventions-accordion-heading-heavy-rail">
+                  Heavy rail
+                  </span>
+                </h2>
+                </div>
+                <div id="interventions-accordion-content-heavy-rail" class="govuk-accordion__section-content" aria-labelledby="interventions-accordion-content-heavy-rail">
+        
+                <dl class="govuk-summary-list">
+                  <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    New standard route
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    New route including all associated assets
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                    Add to map<span class="govuk-visually-hidden"> a new New standard route</span>
+                    </a>
+                  </dd>
+                  </div>
+                
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - local - at grade
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional local station on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - local - at grade</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - local - underground
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional local station below ground on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - local - underground</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - local - elevated
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional local station above grade on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - local - elevated</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - destination - at grade
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional high capacity station on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - destination - at grade</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - destination - underground
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional high capacity station below ground on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - destination - underground</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - destination - elevated
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional high capacity station above grade on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - destination - elevated</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Track
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New track including required earthworks
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Track</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Bridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New bridge including track
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Bridge</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Overbridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New overbridge
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Overbridge</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Underbridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New underbridge
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Underbridge</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Green bridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New green bridge
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Green bridge</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Underpass
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New underpass
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Underpass</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Viaduct
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New viaduct including track
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Viaduct</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Tunnel
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New tunnel including track and earthworks
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Tunnel</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Rail maintenance yard
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New rail maintenance yard
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Rail maintenance yard</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Rail freight terminal
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New rail freight terminal
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Rail freight terminal</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Single track to double track
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Add additional track
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Single track to double track</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Double track to quadruple track
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Add additional track
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Double track to quadruple track</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Freight to passenger line
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Upgrade freight to passenger line
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Freight to passenger line</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Overhead line equipment (OLE) - single track
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Add OLE
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Overhead line equipment (OLE) - single track</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Overhead line equipment (OLE) - twin track
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Add OLE
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Overhead line equipment (OLE) - twin track</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Line electrification
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Electrify an existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Line electrification</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - platform lengthening
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Extend the platform at an existing station
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - platform lengthening</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station removal
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Remove existing station
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station removal</span>
+              </a>
+              </dd>
+            </div>
+              </dl>
+        
+                </div>
+                </div>
+              
+              <div class="govuk-accordion__section" id="intervention-light-rail">
+                <div class="govuk-accordion__section-header">
+                <h2 class="govuk-accordion__section-heading">
+                  <span class="govuk-accordion__section-button" id="interventions-accordion-heading-light-rail">
+                  Light rail
+                  </span>
+                </h2>
+                </div>
+                <div id="interventions-accordion-content-light-rail" class="govuk-accordion__section-content" aria-labelledby="interventions-accordion-content-light-rail">
+        
+                <dl class="govuk-summary-list">
+                  <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    New metro line
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    New route including all associated assets
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                    Add to map<span class="govuk-visually-hidden"> a new New metro line</span>
+                    </a>
+                  </dd>
+                  </div>
+                
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - local - at grade
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional local station on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - local - at grade</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - local - underground
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional local station below ground on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - local - underground</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - local - elevated
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional local station above grade on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - local - elevated</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - destination - at grade
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional high capacity station on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - destination - at grade</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - destination - underground
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional high capacity station below ground on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - destination - underground</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - destination - elevated
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Additional high capacity station above grade on existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - destination - elevated</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Track
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New track including required earthworks
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Track</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Bridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New bridge including track
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Bridge</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Overbridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New overbridge
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Overbridge</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Underbridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New underbridge
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Underbridge</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Green bridge
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New green bridge
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Green bridge</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Underpass
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New underpass
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Underpass</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Viaduct
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New viaduct including track
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Viaduct</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Tunnel
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New tunnel including track and earthworks
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Tunnel</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Rail maintenance yard
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New rail maintenance yard
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Rail maintenance yard</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Rail freight terminal
+              </dt>
+              <dd class="govuk-summary-list__value">
+              New rail freight terminal
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Rail freight terminal</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Single track to double track
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Add additional track
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Single track to double track</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Double track to quadruple track
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Add additional track
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Double track to quadruple track</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Freight to passenger line
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Upgrade freight to passenger line
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Freight to passenger line</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Overhead line equipment (OLE) - single track
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Add OLE
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Overhead line equipment (OLE) - single track</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Overhead line equipment (OLE) - twin track
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Add OLE
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Overhead line equipment (OLE) - twin track</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Line electrification
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Electrify an existing route
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Line electrification</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station - platform lengthening
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Extend the platform at an existing station
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station - platform lengthening</span>
+              </a>
+              </dd>
+            </div>
+              
+              <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+              Station removal
+              </dt>
+              <dd class="govuk-summary-list__value">
+              Remove existing station
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                Add to map<span class="govuk-visually-hidden"> a new Station removal</span>
+              </a>
+              </dd>
+            </div>
+              </dl>
+        
+                </div>
+                </div>
+              </div>
 
           </div>
 

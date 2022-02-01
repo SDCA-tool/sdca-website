@@ -199,7 +199,6 @@ var sdca = (function ($) {
 
 			// Filter and populate interventions
 			sdca.retrieveInterventions ();
-			sdca.populateInterventions();
 			
 			// Load layers from datasets file, and then initialise layers
 			sdca.loadDatasets ();
@@ -252,8 +251,7 @@ var sdca = (function ($) {
 
 
 		// Get the different intervention types and populate them
-		retrieveInterventions: function ()
-		{
+		retrieveInterventions: function () {
 			// Stream and parse the CSV file
 			Papa.parse(_interventionsCsvUrl, {
 				header: true,
@@ -261,14 +259,94 @@ var sdca = (function ($) {
 				skipEmptyLines: true,
 				complete: function (fields) {
 					_interventions = fields;
+
+					sdca.populateInterventions();
 				}
 			});
 		},
 
 
-		populateInterventions: function ()
-		{	
-			//TODO
+		populateInterventions: function () {
+			var mode = ''; // i.e. High speed rail
+
+			// Empty any template 
+			// !TODO remove	
+			$('#interventions-accordion').empty();
+
+			// Iterate through each intervention
+			$.each(_interventions.data, function (indexInArray, intervention) {
+
+				// Save the python-case intervention mode (i.e. high-speed-rail)
+				mode = sdca.convertLabelToPython(intervention.mode)
+
+				// If we already have an accordion header for this, 
+				if ($('#intervention-' + mode).length > 0) {
+
+					// Append a new list row
+					$('#interventions-accordion-content-' + mode + ' .govuk-summary-list').append(
+						`
+						<div class="govuk-summary-list__row">
+							<dt class="govuk-summary-list__key">
+							${intervention.intervention}
+							</dt>
+							<dd class="govuk-summary-list__value">
+							${intervention.intervention_description}
+							</dd>
+							<dd class="govuk-summary-list__actions">
+							<a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+								Add to map<span class="govuk-visually-hidden"> a new ${intervention.intervention}</span>
+							</a>
+							</dd>
+						</div>
+						`
+					)
+				} else {
+
+					// Otherwise, append a new sectiona
+					$('#interventions-accordion').append(
+						`
+						<div class="govuk-accordion__section" id="intervention-${mode}">
+							<div class="govuk-accordion__section-header">
+							<h2 class="govuk-accordion__section-heading">
+								<span class="govuk-accordion__section-button" id="interventions-accordion-heading-${mode}">
+								${intervention.mode}
+								</span>
+							</h2>
+							</div>
+							<div id="interventions-accordion-content-${mode}" class="govuk-accordion__section-content"
+							aria-labelledby="interventions-accordion-content-${mode}">
+			
+							<dl class="govuk-summary-list">
+								<div class="govuk-summary-list__row">
+								<dt class="govuk-summary-list__key">
+									${intervention.intervention}
+								</dt>
+								<dd class="govuk-summary-list__value">
+									${intervention.intervention_description}
+								</dd>
+								<dd class="govuk-summary-list__actions">
+									<a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+									Add to map<span class="govuk-visually-hidden"> a new ${intervention.intervention}</span>
+									</a>
+								</dd>
+								</div>
+							</dl>
+			
+							</div>
+					 	 </div>
+						`
+					)
+				}
+			});
+
+			// Initialise the accordion with the new HTML
+			window.GOVUKFrontend.initAll()
+		},
+
+		// Convert normal case into python case. 
+		convertLabelToPython: function (label) {
+			// "High speed rail" => "high-speed-rail"
+			return label.replace(/\s+/g, '-').toLowerCase();
 		},
 		
 		
