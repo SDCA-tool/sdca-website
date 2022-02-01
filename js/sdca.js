@@ -174,7 +174,11 @@ var sdca = (function ($) {
 	var _isTempPanel = false; // If we have a temp (i.e. data layers) panel in view
 	var _currentPanelId = null; // Store the current panel in view
 	var _previousPanelId = null; // The previous panel. Used when exiting the _tempPanel
+	
+	var _interventions = null; // Store the parsed interventions CSV
 	var _currentIntervention = ''; // Store the type of the current intervention
+
+	var _interventionsCsvUrl = 'https://raw.githubusercontent.com/SDCA-tool/sdca-data/main/data_tables/interventions.csv';
 	
 	return {
 		
@@ -192,6 +196,10 @@ var sdca = (function ($) {
 			
 			// Manage panels
 			sdca.managePanels ();
+
+			// Filter and populate interventions
+			sdca.retrieveInterventions ();
+			sdca.populateInterventions();
 			
 			// Load layers from datasets file, and then initialise layers
 			sdca.loadDatasets ();
@@ -240,6 +248,27 @@ var sdca = (function ($) {
 
 			// Save the panel as current
 			_currentPanelId = panelToShow;
+		},
+
+
+		// Get the different intervention types and populate them
+		retrieveInterventions: function ()
+		{
+			// Stream and parse the CSV file
+			Papa.parse(_interventionsCsvUrl, {
+				header: true,
+				download: true,
+				skipEmptyLines: true,
+				complete: function (fields) {
+					_interventions = fields;
+				}
+			});
+		},
+
+
+		populateInterventions: function ()
+		{	
+			//TODO
 		},
 		
 		
