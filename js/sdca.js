@@ -337,14 +337,15 @@ var sdca = (function ($) {
 							}
 							
 							// Create a UI nav menu entry
-							$clone = $('#layerselector ul li.template').clone (true);
-							$clone.removeClass ('template').addClass (dataset.id);
+							$clone = $('.layertemplate').clone (true);
+							$clone.removeClass ('layertemplate');
 							$clone.find ('input[type="checkbox"').attr ('id', 'show_' + dataset.id);
-							$clone.find ('a').attr ('href', '#' + dataset.id);
-							$clone.find ('a').attr ('title', dataset.description);
-							$clone.html ($clone.html ().replace ('Template', dataset.title));
-							$clone.appendTo ('#layerselector ul');
+							$clone.find ('input[type="checkbox"').attr ('value', dataset.id);
+							$clone.find ('label').text (dataset.title);
+							$clone.find ('label').attr ('for', 'show_' + dataset.id);
+							$clone.appendTo ('#accordion-default-content-1 .govuk-checkboxes');
 							
+							/*
 							// Create the information panel
 							$clone = $('#sections div.template').clone (true);
 							$clone.removeClass ('template');
@@ -352,6 +353,7 @@ var sdca = (function ($) {
 							$clone.find ('h2').html (dataset.title);
 							$clone.find ('p').html (dataset.description);
 							$clone.appendTo ('#sections');
+							*/
 						});
 						
 						// Run the layerviewer for these settings and layers
