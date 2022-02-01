@@ -169,14 +169,12 @@ var sdca = (function ($) {
 				+ '<p><a href="{properties.url}"><img src="/images/icons/bullet_go.png" /> <strong>View full details</a></strong></p>'
 		}
 	};
-	
-	
-	// Panel state control; this has a main panel state (design-scheme/view-results), but the data-layers screen can temporarily displace the main state
-	var _panels = ['data-layers', 'design-scheme', 'view-results'];
-	var _actualCurrentPanel = 'design-scheme';		// The panel actually in place
-	var _currentMainPanel = 'design-scheme';	// The main panel currently, even if temporarily overriden
-	var _previousMainPanel = false;				// The main panel previously
-	
+
+	var _startupPanelId = 'design-scheme'; // Panel to show at startup
+	var _isTempPanel = false; // If we have a temp (i.e. data layers) panel in view
+	var _currentPanelId = null; // Store the current panel in view
+	var _previousPanelId = null; // The previous panel. Used when exiting the _tempPanel
+	var _currentIntervention = ''; // Store the type of the current intervention
 	
 	return {
 		
@@ -209,47 +207,39 @@ var sdca = (function ($) {
 		// Panel management
 		managePanels: function ()
 		{
-			// Data layers toggle
-			$('button#explore-data-layers').click (function () {
-				if (_actualCurrentPanel == 'data-layers') {	// I.e. clicked again as implied toggle-off
-					sdca.switchPanel (_currentMainPanel, true);
-				} else {
-					sdca.switchPanel ('data-layers', true);
+			// If a button is clicked with a target panel, go to that panel
+			$('body').on('click', 'button, a', function () {
+				var panel = $(this).data('sdca-target-panel');
+				if (panel !== undefined) {
+					// Are we currently exiting a temporary panel (i.e. layer viewer)
+					if (_isTempPanel) {
+						sdca.switchPanel(_previousPanelId)
+					} else {
+						sdca.switchPanel(panel)
+					}
 				}
 			});
-			
-			// Data layers back button
-			$('#data-layers .govuk-back-link').click (function () {
-				sdca.switchPanel (_currentMainPanel, true);
-			});
-			
-			// Back to the design button
-			$('#view-results .govuk-back-link').click (function () {
-				sdca.switchPanel ('design-scheme');
-			});
+
+			// At startup, show the desired panel
+			sdca.switchPanel(_startupPanelId);
 		},
 		
 		
 		// Panel switching
-		switchPanel: function (newCurrentPanel, temporaryState)
-		{
-			// Loop through each panel to show the new one and hide others
-			$.each (_panels, function (index, panel) {
-				if (panel == newCurrentPanel) {
-					$('#' + panel + '.sdca-panel').show ();
-				} else {
-					$('#' + panel + '.sdca-panel').hide ();
-				}
-			});
+		switchPanel: function (panelToShow)
+		{	
+			// Save the previous panel
+			_previousPanelId = _currentPanelId;
 			
-			// Update the main state, if not a temporary change
-			if (!temporaryState) {
-				_previousMainPanel = _actualCurrentPanel;
-				_currentMainPanel = newCurrentPanel;
-			}
-			
-			// Set the state of the panel actually currently in place, even if temporary
-			_actualCurrentPanel = newCurrentPanel;
+			// Only show the desired sdca panel
+			$('.sdca-panel').hide();
+			$('#' + panelToShow).show();
+
+			// Is this panel a temporary one? Set status
+			_isTempPanel = ($('#' + panelToShow).data('sdca-is-temp-panel') ? true : false)
+
+			// Save the panel as current
+			_currentPanelId = panelToShow;
 		},
 		
 		
@@ -371,6 +361,8 @@ var sdca = (function ($) {
 			$('#geometry').on ('change', function (e) {
 				if ($('#geometry').val ()) {
 					$('#calculate, .edit-clear').css ('visibility', 'visible');
+					$('.finish-drawing').show();
+					$('.draw.line').addClass('govuk-button--secondary').text('Continue drawing on map');
 				} else {
 					$('#calculate, .edit-clear').css ('visibility', 'hidden');
 				}
