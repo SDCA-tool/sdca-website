@@ -83,16 +83,8 @@ class sdcaModel
 	
 	
 	# Processing function for locations model
-	#!# Currently just an example
 	public function locationsModelProcessing ($data)
 	{
-		# Example - Get each LSOA
-		$lsoas = array ();
-		foreach ($data as $row) {
-			$lsoas[] = $row['lsoa11'];
-		}
-		$parameter = implode (',', $lsoas);
-		
 		# Mock the user input, which is a feature collection
 		$input = array (
 			'type' => 'FeatureCollection',
