@@ -179,8 +179,6 @@ var sdca = (function ($) {
 	var _currentIntervention = {}; // Store the type of the current intervention
 
 	var _drawingHappening = false;
-
-	var _interventionsCsvUrl = 'https://raw.githubusercontent.com/SDCA-tool/sdca-data/main/data_tables/interventions.csv';
 	
 	return {
 		
@@ -253,16 +251,10 @@ var sdca = (function ($) {
 
 		// Get the different intervention types and populate them
 		retrieveInterventions: function () {
-			// Stream and parse the CSV file
-			Papa.parse(_interventionsCsvUrl, {
-				header: true,
-				download: true,
-				skipEmptyLines: true,
-				complete: function (fields) {
-					_interventions = fields;
-
-					sdca.populateInterventions();
-				}
+			// Get the interventions JSON file
+			$.getJSON ('/lexicon/data_tables/interventions.json', function (interventions) {
+				_interventions = interventions;
+				sdca.populateInterventions();
 			});
 		},
 
@@ -274,7 +266,7 @@ var sdca = (function ($) {
 			$('#interventions-accordion').empty();
 
 			// Iterate through each intervention
-			$.each(_interventions.data, function (indexInArray, intervention) {
+			$.each(_interventions, function (indexInArray, intervention) {
 
 				// Save the python-case intervention mode (i.e. high-speed-rail)
 				mode = sdca.convertLabelToPython(intervention.mode)
@@ -516,7 +508,7 @@ var sdca = (function ($) {
 				// Update the length
 				var geojson = JSON.parse($('#geometry').val());
 				var line = turf.lineString(geojson);
-				var length = turf.length(line, {units: 'miles'});
+				var length = turf.length(line, {units: 'miles'}).toFixed(2);
 				$('.distance').text(length + 'miles');
 
 			});
