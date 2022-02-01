@@ -5,7 +5,7 @@ body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
 
 #map {width: 100%; min-height: 600px; height: calc(100vh - 260px); position: relative;}
 #map button.filter-button {position: absolute; top: 0; right: 0; margin: 25px; z-index: 1;}
-#geocoder input {width: 280px;}
+#geocoder input {width: 280px; border: 2px solid #0b0c0c; box-shadow: none;}
 .ui-autocomplete-loading {background: white url("/images/ui-anim_basic_16x16.gif") right center no-repeat;}
 
 .govuk-panel {padding: 20px}

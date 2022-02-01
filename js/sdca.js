@@ -211,10 +211,9 @@ var sdca = (function ($) {
 			sdca.handleDrawLine ();
 		},
 		
-		
+
 		// Panel management
-		managePanels: function ()
-		{
+		managePanels: function () {
 			// If a button is clicked with a target panel, go to that panel
 			$('body').on('click', 'button, a', function () {
 				var panel = $(this).data('sdca-target-panel');
@@ -231,14 +230,13 @@ var sdca = (function ($) {
 			// At startup, show the desired panel
 			sdca.switchPanel(_startupPanelId);
 		},
-		
-		
+
+
 		// Panel switching
-		switchPanel: function (panelToShow)
-		{	
+		switchPanel: function (panelToShow) {
 			// Save the previous panel
 			_previousPanelId = _currentPanelId;
-			
+
 			// Only show the desired sdca panel
 			$('.sdca-panel').hide();
 			$('#' + panelToShow).show();
@@ -272,7 +270,7 @@ var sdca = (function ($) {
 			var mode = ''; // i.e. High speed rail
 
 			$('#interventions-accordion').empty();
-			
+
 			// Iterate through each intervention
 			$.each(_interventions.data, function (indexInArray, intervention) {
 
@@ -294,8 +292,7 @@ var sdca = (function ($) {
 					)
 				}
 			});
-
-
+			
 			// Initialise the accordion with the new HTML
 			window.GOVUKFrontend.initAll()
 
@@ -309,7 +306,7 @@ var sdca = (function ($) {
 
 				// Update the draw panel with this description
 				$('.intervention-name').text(_currentIntervention.mode + ' - ' + _currentIntervention.intervention);
-				$('.intervention-description').text(_currentIntervention.intervention-description);
+				$('.intervention-description').text(_currentIntervention.intervention - description);
 			});
 		},
 
@@ -338,11 +335,11 @@ var sdca = (function ($) {
 				`)
 		},
 
-		
+
 		// Generate intervention row HTML
 		generateInterventionRowHtml: function (intervention) {
-			return (						
-			`
+			return (
+				`
 			<div class="govuk-summary-list__row">
 				<dt class="govuk-summary-list__key">
 				${intervention.intervention}
@@ -375,7 +372,7 @@ var sdca = (function ($) {
 				if ($('#interventions-accordion .govuk-accordion__show-all-text').first().text() == 'Show all sections') {
 					$('#interventions-accordion .govuk-accordion__show-all-text').click();
 				}
-				
+
 				var value = $(this).val().toLowerCase();
 
 				// Filter rows
@@ -389,7 +386,7 @@ var sdca = (function ($) {
 				});
 			});
 		},
-		
+
 		
 		// Function to load layers from datasets file
 		loadDatasets: function ()
