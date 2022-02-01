@@ -176,7 +176,7 @@ var sdca = (function ($) {
 	var _previousPanelId = null; // The previous panel. Used when exiting the _tempPanel
 	
 	var _interventions = null; // Store the parsed interventions CSV
-	var _currentIntervention = ''; // Store the type of the current intervention
+	var _currentIntervention = {}; // Store the type of the current intervention
 
 	var _interventionsCsvUrl = 'https://raw.githubusercontent.com/SDCA-tool/sdca-data/main/data_tables/interventions.csv';
 	
@@ -197,12 +197,13 @@ var sdca = (function ($) {
 			// Manage panels
 			sdca.managePanels ();
 
-			// Filter and populate interventions
+			// Retrieve, populate and filter
 			sdca.retrieveInterventions ();
+			sdca.filterInterventions()
 			
 			// Load layers from datasets file, and then initialise layers
 			sdca.loadDatasets ();
-				
+			
 			// Initialisation is wrapped within loadDatasets
 			// layerviewer.initialise (_settings, _layerConfig);
 			
@@ -266,6 +267,7 @@ var sdca = (function ($) {
 		},
 
 
+		// Populate interventions in hTML
 		populateInterventions: function () {
 			var mode = ''; // i.e. High speed rail
 
@@ -293,9 +295,9 @@ var sdca = (function ($) {
 							${intervention.intervention_description}
 							</dd>
 							<dd class="govuk-summary-list__actions">
-							<a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+								<a class="govuk-link" data-sdca-intervention="${intervention.intervention}" data-sdca-intervention-description="${intervention.intervention_description}" data-sdca-target-panel="draw-intervention" href="#">
 								Add to map<span class="govuk-visually-hidden"> a new ${intervention.intervention}</span>
-							</a>
+								</a>
 							</dd>
 						</div>
 						`
@@ -325,7 +327,7 @@ var sdca = (function ($) {
 									${intervention.intervention_description}
 								</dd>
 								<dd class="govuk-summary-list__actions">
-									<a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+									<a class="govuk-link" data-sdca-intervention="${intervention.intervention}" data-sdca-intervention-description="${intervention.intervention_description}" data-sdca-target-panel="draw-intervention" href="#">
 									Add to map<span class="govuk-visually-hidden"> a new ${intervention.intervention}</span>
 									</a>
 								</dd>
@@ -341,12 +343,45 @@ var sdca = (function ($) {
 
 			// Initialise the accordion with the new HTML
 			window.GOVUKFrontend.initAll()
+
+			// If we click on the link to add a new intervention, save the type for global access
+			$('body').on('click', '#interventions-accordion .govuk-summary-list__actions a.govuk-link', function () {
+				_currentIntervention = {
+					intervention: $(this).data('sdca-intervention'),
+					description: $(this).data('sdca-intervention-description')
+				}
+			});
 		},
+
 
 		// Convert normal case into python case. 
 		convertLabelToPython: function (label) {
 			// "High speed rail" => "high-speed-rail"
 			return label.replace(/\s+/g, '-').toLowerCase();
+		},
+
+
+		// Enable filtering of interventions
+		filterInterventions: function () {
+			$('#filter-interventions').on('keyup', function () {
+				// Once we type, expand all the accordion sections to facilitate discovery
+				// GOV.UK design system has no programmatic access like jQuery or Bootstrap, so manually simulate click
+				if ($('#interventions-accordion .govuk-accordion__show-all-text').first().text() == 'Show all sections') {
+					$('#interventions-accordion .govuk-accordion__show-all-text').click();
+				}
+				
+				var value = $(this).val().toLowerCase();
+
+				// Filter rows
+				$('.govuk-summary-list__row').filter(function () {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				});
+
+				// Hide any empty sections
+				$('.govuk-accordion__section').filter(function () {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				});
+			});
 		},
 		
 		
