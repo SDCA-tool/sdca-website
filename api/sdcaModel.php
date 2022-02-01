@@ -85,47 +85,9 @@ class sdcaModel
 	# Processing function for locations model
 	public function locationsModelProcessing ($data)
 	{
-		# Mock the user input, which is a feature collection
-		$input = array (
-			'type' => 'FeatureCollection',
-			'features' => array (
-				array (
-					'type' => 'Feature',
-					'properties' => array (
-						'infrastructure_type' => 'transport',
-						'mode_class' => 'Rail',
-						'mode' => 'High speed rail',
-						'intervention_class' => 'New construction',
-						'intervention' => 'Viaduct',
-					),
-					'geometry' => json_decode ('{"type": "LineString", "coordinates": ' . $_GET['line'] . '}'),
-				),
-/*
-				array (
-					'type' => 'Feature',
-					'properties' => array (
-						'infrastructure_type' => 'transport',
-						'mode_class' => 'Rail',
-						'mode' => 'High speed rail',
-						'intervention_class' => 'New construction',
-						'intervention' => 'Viaduct',
-					),
-					'geometry' => json_decode ('{"type": "LineString", "coordinates": [[-2.621440887451172,51.443950667096615],[-2.6061630249023438,51.43367817535588]]}', true),
-				),
-				array (
-					'type' => 'Feature',
-					'properties' => array (
-						'infrastructure_type' => 'transport',
-						'mode_class' => 'Rail',
-						'mode' => 'High speed rail',
-						'intervention_class' => 'New construction',
-						'intervention' => 'Viaduct',
-					),
-					'geometry' => json_decode ('{"type": "LineString", "coordinates": [[-2.6071929931640625, 51.43453430457666],[-2.5865936279296875,51.443094714358566]]}', true),
-				),
-*/
-			),
-		);
+		# Obtain the user input
+		#!# Validation pending
+		$input = json_decode ($_GET['geojson'], true);
 		
 		# Construct the JSON to be sent to the API; see example_r_input.json
 		$json = array ();
