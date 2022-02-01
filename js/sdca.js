@@ -271,10 +271,8 @@ var sdca = (function ($) {
 		populateInterventions: function () {
 			var mode = ''; // i.e. High speed rail
 
-			// Empty any template 
-			// !TODO remove	
 			$('#interventions-accordion').empty();
-
+			
 			// Iterate through each intervention
 			$.each(_interventions.data, function (indexInArray, intervention) {
 
@@ -286,60 +284,17 @@ var sdca = (function ($) {
 
 					// Append a new list row
 					$('#interventions-accordion-content-' + mode + ' .govuk-summary-list').append(
-						`
-						<div class="govuk-summary-list__row">
-							<dt class="govuk-summary-list__key">
-							${intervention.intervention}
-							</dt>
-							<dd class="govuk-summary-list__value">
-							${intervention.intervention_description}
-							</dd>
-							<dd class="govuk-summary-list__actions">
-								<a class="govuk-link" data-sdca-intervention="${intervention.intervention}" data-sdca-intervention-description="${intervention.intervention_description}" data-sdca-target-panel="draw-intervention" href="#">
-								Add to map<span class="govuk-visually-hidden"> a new ${intervention.intervention}</span>
-								</a>
-							</dd>
-						</div>
-						`
+						sdca.generateInterventionRowHtml(intervention)
 					)
 				} else {
 
 					// Otherwise, append a new sectiona
 					$('#interventions-accordion').append(
-						`
-						<div class="govuk-accordion__section" id="intervention-${mode}">
-							<div class="govuk-accordion__section-header">
-							<h2 class="govuk-accordion__section-heading">
-								<span class="govuk-accordion__section-button" id="interventions-accordion-heading-${mode}">
-								${intervention.mode}
-								</span>
-							</h2>
-							</div>
-							<div id="interventions-accordion-content-${mode}" class="govuk-accordion__section-content"
-							aria-labelledby="interventions-accordion-content-${mode}">
-			
-							<dl class="govuk-summary-list">
-								<div class="govuk-summary-list__row">
-								<dt class="govuk-summary-list__key">
-									${intervention.intervention}
-								</dt>
-								<dd class="govuk-summary-list__value">
-									${intervention.intervention_description}
-								</dd>
-								<dd class="govuk-summary-list__actions">
-									<a class="govuk-link" data-sdca-intervention="${intervention.intervention}" data-sdca-intervention-description="${intervention.intervention_description}" data-sdca-target-panel="draw-intervention" href="#">
-									Add to map<span class="govuk-visually-hidden"> a new ${intervention.intervention}</span>
-									</a>
-								</dd>
-								</div>
-							</dl>
-			
-							</div>
-					 	 </div>
-						`
+						sdca.generateInterventionHeaderHtml(intervention)
 					)
 				}
 			});
+
 
 			// Initialise the accordion with the new HTML
 			window.GOVUKFrontend.initAll()
@@ -347,10 +302,61 @@ var sdca = (function ($) {
 			// If we click on the link to add a new intervention, save the type for global access
 			$('body').on('click', '#interventions-accordion .govuk-summary-list__actions a.govuk-link', function () {
 				_currentIntervention = {
+					mode: $(this).data('sdca-mode'),
 					intervention: $(this).data('sdca-intervention'),
 					description: $(this).data('sdca-intervention-description')
 				}
+
+				// Update the draw panel with this description
+				$('.intervention-name').text(_currentIntervention.mode + ' - ' + _currentIntervention.intervention);
+				$('.intervention-description').text(_currentIntervention.intervention-description);
 			});
+		},
+
+
+		// Generate intervention accordion header HTML
+		generateInterventionHeaderHtml: function (intervention) {
+			var mode = sdca.convertLabelToPython(intervention.mode);
+			return (`
+				<div class="govuk-accordion__section" id="intervention-${mode}">
+					<div class="govuk-accordion__section-header">
+					<h2 class="govuk-accordion__section-heading">
+						<span class="govuk-accordion__section-button" id="interventions-accordion-heading-${mode}">
+						${intervention.mode}
+						</span>
+					</h2>
+					</div>
+					<div id="interventions-accordion-content-${mode}" class="govuk-accordion__section-content"
+					aria-labelledby="interventions-accordion-content-${mode}">
+	
+					<dl class="govuk-summary-list">
+						${sdca.generateInterventionRowHtml(intervention)}
+					</dl>
+	
+					</div>
+					</div>
+				`)
+		},
+
+		
+		// Generate intervention row HTML
+		generateInterventionRowHtml: function (intervention) {
+			return (						
+			`
+			<div class="govuk-summary-list__row">
+				<dt class="govuk-summary-list__key">
+				${intervention.intervention}
+				</dt>
+				<dd class="govuk-summary-list__value">
+				${intervention.intervention_description}
+				</dd>
+				<dd class="govuk-summary-list__actions">
+					<a class="govuk-link" data-sdca-mode="${intervention.mode}" data-sdca-intervention="${intervention.intervention}" data-sdca-intervention-description="${intervention.intervention_description}" data-sdca-target-panel="draw-intervention" href="#">
+					Add to map<span class="govuk-visually-hidden"> a new ${intervention.intervention}</span>
+					</a>
+				</dd>
+			</div>
+			`)
 		},
 
 
