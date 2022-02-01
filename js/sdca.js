@@ -292,7 +292,7 @@ var sdca = (function ($) {
 					)
 				}
 			});
-			
+
 			// Initialise the accordion with the new HTML
 			window.GOVUKFrontend.initAll()
 
@@ -306,7 +306,7 @@ var sdca = (function ($) {
 
 				// Update the draw panel with this description
 				$('.intervention-name').text(_currentIntervention.mode + ' - ' + _currentIntervention.intervention);
-				$('.intervention-description').text(_currentIntervention.intervention - description);
+				$('.intervention-description').text(_currentIntervention.description);
 			});
 		},
 
