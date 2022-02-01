@@ -170,13 +170,17 @@ var sdca = (function ($) {
 		}
 	};
 	
+	var _startupPanelId = 'design-scheme'; // Panel to show at startup
+	var _isTempPanel = false; // If we have a temp (i.e. data layers) panel in view
+	var _currentPanelId = null; // Store the current panel in view
+	var _previousPanelId = null; // The previous panel. Used when exiting the _tempPanel
 	
-	// Panel state control; this has a main panel state (design-scheme/view-results), but the data-layers screen can temporarily displace the main state
-	var _panels = ['data-layers', 'design-scheme', 'view-results'];
-	var _actualCurrentPanel = 'design-scheme';		// The panel actually in place
-	var _currentMainPanel = 'design-scheme';	// The main panel currently, even if temporarily overriden
-	var _previousMainPanel = false;				// The main panel previously
-	
+	var _interventions = null; // Store the parsed interventions CSV
+	var _currentIntervention = {}; // Store the type of the current intervention
+
+	var _drawingHappening = false;
+
+	var _interventionsCsvUrl = 'https://raw.githubusercontent.com/SDCA-tool/sdca-data/main/data_tables/interventions.csv';
 	
 	return {
 		
@@ -191,13 +195,17 @@ var sdca = (function ($) {
 					_settings[setting] = config[setting];
 				}
 			});
+
+			// Load layers from datasets file, and then initialise layers
+			sdca.loadDatasets ();
 			
 			// Manage panels
 			sdca.managePanels ();
+
+			// Retrieve, populate and filter
+			sdca.retrieveInterventions ();
+			sdca.filterInterventions ()
 			
-			// Load layers from datasets file, and then initialise layers
-			sdca.loadDatasets ();
-				
 			// Initialisation is wrapped within loadDatasets
 			// layerviewer.initialise (_settings, _layerConfig);
 			
@@ -205,53 +213,182 @@ var sdca = (function ($) {
 			sdca.handleDrawLine ();
 		},
 		
-		
+
 		// Panel management
-		managePanels: function ()
-		{
-			// Data layers toggle
-			$('button#explore-data-layers').click (function () {
-				if (_actualCurrentPanel == 'data-layers') {	// I.e. clicked again as implied toggle-off
-					sdca.switchPanel (_currentMainPanel, true);
-				} else {
-					sdca.switchPanel ('data-layers', true);
+		managePanels: function () {
+			// If a button is clicked with a target panel, go to that panel
+			$('body').on('click', 'button, a', function () {
+				var panel = $(this).data('sdca-target-panel');
+				if (panel !== undefined) {
+					// Are we currently exiting a temporary panel (i.e. layer viewer)
+					if (_isTempPanel) {
+						sdca.switchPanel(_previousPanelId)
+					} else {
+						sdca.switchPanel(panel)
+					}
 				}
 			});
-			
-			// Data layers back button
-			$('#data-layers .govuk-back-link').click (function () {
-				sdca.switchPanel (_currentMainPanel, true);
-			});
-			
-			// Back to the design button
-			$('#view-results .govuk-back-link').click (function () {
-				sdca.switchPanel ('design-scheme');
-			});
+
+			// At startup, show the desired panel
+			sdca.switchPanel(_startupPanelId);
 		},
-		
-		
+
+
 		// Panel switching
-		switchPanel: function (newCurrentPanel, temporaryState)
-		{
-			// Loop through each panel to show the new one and hide others
-			$.each (_panels, function (index, panel) {
-				if (panel == newCurrentPanel) {
-					$('#' + panel + '.sdca-panel').show ();
-				} else {
-					$('#' + panel + '.sdca-panel').hide ();
+		switchPanel: function (panelToShow) {
+			// Save the previous panel
+			_previousPanelId = _currentPanelId;
+
+			// Only show the desired sdca panel
+			$('.sdca-panel').hide();
+			$('#' + panelToShow).show();
+
+			// Is this panel a temporary one? Set status
+			_isTempPanel = ($('#' + panelToShow).data('sdca-is-temp-panel') ? true : false)
+
+			// Save the panel as current
+			_currentPanelId = panelToShow;
+		},
+
+
+		// Get the different intervention types and populate them
+		retrieveInterventions: function () {
+			// Stream and parse the CSV file
+			Papa.parse(_interventionsCsvUrl, {
+				header: true,
+				download: true,
+				skipEmptyLines: true,
+				complete: function (fields) {
+					_interventions = fields;
+
+					sdca.populateInterventions();
 				}
 			});
-			
-			// Update the main state, if not a temporary change
-			if (!temporaryState) {
-				_previousMainPanel = _actualCurrentPanel;
-				_currentMainPanel = newCurrentPanel;
-			}
-			
-			// Set the state of the panel actually currently in place, even if temporary
-			_actualCurrentPanel = newCurrentPanel;
 		},
-		
+
+
+		// Populate interventions in hTML
+		populateInterventions: function () {
+			var mode = ''; // i.e. High speed rail
+
+			$('#interventions-accordion').empty();
+
+			// Iterate through each intervention
+			$.each(_interventions.data, function (indexInArray, intervention) {
+
+				// Save the python-case intervention mode (i.e. high-speed-rail)
+				mode = sdca.convertLabelToPython(intervention.mode)
+
+				// If we already have an accordion header for this, 
+				if ($('#intervention-' + mode).length > 0) {
+
+					// Append a new list row
+					$('#interventions-accordion-content-' + mode + ' .govuk-summary-list').append(
+						sdca.generateInterventionRowHtml(intervention)
+					)
+				} else {
+
+					// Otherwise, append a new sectiona
+					$('#interventions-accordion').append(
+						sdca.generateInterventionHeaderHtml(intervention)
+					)
+				}
+			});
+
+			// Initialise the accordion with the new HTML
+			window.GOVUKFrontend.initAll()
+
+			// If we click on the link to add a new intervention, save the type for global access
+			$('body').on('click', '#interventions-accordion .govuk-summary-list__actions a.govuk-link', function () {
+				_currentIntervention = {
+					mode: $(this).data('sdca-mode'),
+					intervention: $(this).data('sdca-intervention'),
+					description: $(this).data('sdca-intervention-description')
+				}
+
+				// Update the draw panel with this description
+				$('.intervention-name').text(_currentIntervention.mode + ' - ' + _currentIntervention.intervention);
+				$('.intervention-description').text(_currentIntervention.description);
+			});
+		},
+
+
+		// Generate intervention accordion header HTML
+		generateInterventionHeaderHtml: function (intervention) {
+			var mode = sdca.convertLabelToPython(intervention.mode);
+			return (`
+				<div class="govuk-accordion__section" id="intervention-${mode}">
+					<div class="govuk-accordion__section-header">
+					<h2 class="govuk-accordion__section-heading">
+						<span class="govuk-accordion__section-button" id="interventions-accordion-heading-${mode}">
+						${intervention.mode}
+						</span>
+					</h2>
+					</div>
+					<div id="interventions-accordion-content-${mode}" class="govuk-accordion__section-content"
+					aria-labelledby="interventions-accordion-content-${mode}">
+	
+					<dl class="govuk-summary-list">
+						${sdca.generateInterventionRowHtml(intervention)}
+					</dl>
+	
+					</div>
+					</div>
+				`)
+		},
+
+
+		// Generate intervention row HTML
+		generateInterventionRowHtml: function (intervention) {
+			return (
+				`
+			<div class="govuk-summary-list__row">
+				<dt class="govuk-summary-list__key">
+				${intervention.intervention}
+				</dt>
+				<dd class="govuk-summary-list__value">
+				${intervention.intervention_description}
+				</dd>
+				<dd class="govuk-summary-list__actions">
+					<a class="govuk-link" data-sdca-mode="${intervention.mode}" data-sdca-intervention="${intervention.intervention}" data-sdca-intervention-description="${intervention.intervention_description}" data-sdca-target-panel="draw-intervention" href="#">
+					Add to map<span class="govuk-visually-hidden"> a new ${intervention.intervention}</span>
+					</a>
+				</dd>
+			</div>
+			`)
+		},
+
+
+		// Convert normal case into python case. 
+		convertLabelToPython: function (label) {
+			// "High speed rail" => "high-speed-rail"
+			return label.replace(/\s+/g, '-').toLowerCase();
+		},
+
+
+		// Enable filtering of interventions
+		filterInterventions: function () {
+			$('#filter-interventions').on('keyup', function () {
+				// Once we type, expand all the accordion sections to facilitate discovery
+				// GOV.UK design system has no programmatic access like jQuery or Bootstrap, so manually simulate click
+				if ($('#interventions-accordion .govuk-accordion__show-all-text').first().text() == 'Show all sections') {
+					$('#interventions-accordion .govuk-accordion__show-all-text').click();
+				}
+
+				var value = $(this).val().toLowerCase();
+
+				// Filter rows
+				$('.govuk-summary-list__row').filter(function () {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				});
+
+				// Hide any empty sections
+				$('.govuk-accordion__section').filter(function () {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				});
+			});
+		},
+
 		
 		// Function to load layers from datasets file
 		loadDatasets: function ()
@@ -371,9 +508,28 @@ var sdca = (function ($) {
 			$('#geometry').on ('change', function (e) {
 				if ($('#geometry').val ()) {
 					$('#calculate, .edit-clear').css ('visibility', 'visible');
+					$('.drawing-complete').show();
 				} else {
 					$('#calculate, .edit-clear').css ('visibility', 'hidden');
 				}
+
+				// Update the length
+				var geojson = JSON.parse($('#geometry').val());
+				var line = turf.lineString(geojson);
+				var length = turf.length(line, {units: 'miles'});
+				$('.distance').text(length + 'miles');
+
+			});
+
+			// Help user by changing buttons once drawing mode is on
+			$('.draw.line').on('click', function () {
+				
+				// Update state
+				_drawingHappening = true;
+				
+				// Update UI
+				$('.draw.line').hide()
+				$('.stop-drawing').show();
 			});
 
 			// Run when the captured geometry value changes; this is due to the .trigger ('change') in layerviewer.drawing () as a result of the draw.create/draw.update events

@@ -28,7 +28,7 @@
     <script src="/html5-shiv/html5shiv.js"></script>
   <![endif]-->
 
-<!--
+  <!--
   <meta property="og:image" content="/assets/images/govuk-opengraph-image.png">
 -->
 
@@ -97,371 +97,434 @@
 
 
 
-	<!-- Content starts here -->
+      <!-- Content starts here -->
 
-	<link rel="stylesheet" href="/js/lib/mapbox-gl-js/mapbox-gl.css" />
-	<script src="/js/lib/mapbox-gl-js/mapbox-gl.min.js"></script>
-	<script src="/js/lib/jquery/jquery.min.js"></script>
-	
-	<script src="/js/lib/jquery-ui/jquery-ui.min.js"></script>
-	
-	<script src="/js/lib/jQuery-Touch-Events/src/1.0.9/jquery.mobile-events.min.js"></script>
-	
-	<script src="/js/lib/mapbox-gl-draw/mapbox-gl-draw.js"></script>
-	<link rel="stylesheet" href="/js/lib/mapbox-gl-draw/mapbox-gl-draw.css" />
-	
-	<script src="/js/lib/js-cookie/js.cookie.js"></script>
-	
-	<!-- Vex dialogs; see: https://github.hubspot.com/vex/ -->
-	<script src="/js/lib/vex-4.1.0/dist/js/vex.combined.min.js"></script>
-	<link rel="stylesheet" href="/js/lib/vex-4.1.0/dist/css/vex.css" />
-	<link rel="stylesheet" href="/js/lib/vex-4.1.0/dist/css/vex-theme-plain.css" />
-	
-	<!-- GeoJSON extent library; see: https://github.com/mapbox/geojson-extent -->
-	<script src="/js/lib/geojson-extent/geojson-extent.js"></script>
-	
-	<!-- LayerViewer library, providing the application logic -->
-	<script src="/js/lib/Mapboxgljs.LayerViewer/src/layerviewer.js?220117"></script>
-	<link rel="stylesheet" type="text/css" href="/js/lib/Mapboxgljs.LayerViewer/src/layerviewer.css?220117" />
-	<script src="/js/lib/Mapboxgljs.LayerViewer/lib/geocoder.js"></script>
-	
-	<!-- Map application and its config, implementing the LayerViewer library -->
-	<script src="/.config.js"></script>
-	<script src="/js/sdca.js?220117"></script>
-	<link rel="stylesheet" type="text/css" href="/css/sdca.css" />
-	<script>
-		$(function() {
-			sdca.initialise (config);
-		});
-	</script>
+      <link rel="stylesheet" href="/js/lib/mapbox-gl-js/mapbox-gl.css" />
+      <script src="/js/lib/mapbox-gl-js/mapbox-gl.min.js"></script>
+      <script src="/js/lib/jquery/jquery.min.js"></script>
+
+      <script src="/js/lib/jquery-ui/jquery-ui.min.js"></script>
+
+      <script src="/js/lib/jQuery-Touch-Events/src/1.0.9/jquery.mobile-events.min.js"></script>
+
+      <script src="/js/lib/mapbox-gl-draw/mapbox-gl-draw.js"></script>
+      <link rel="stylesheet" href="/js/lib/mapbox-gl-draw/mapbox-gl-draw.css" />
+
+      <script src="/js/lib/js-cookie/js.cookie.js"></script>
+
+      <!-- Vex dialogs; see: https://github.hubspot.com/vex/ -->
+      <script src="/js/lib/vex-4.1.0/dist/js/vex.combined.min.js"></script>
+      <link rel="stylesheet" href="/js/lib/vex-4.1.0/dist/css/vex.css" />
+      <link rel="stylesheet" href="/js/lib/vex-4.1.0/dist/css/vex-theme-plain.css" />
+
+      <!-- GeoJSON extent library; see: https://github.com/mapbox/geojson-extent -->
+      <script src="/js/lib/geojson-extent/geojson-extent.js"></script>
+
+      <!-- Papaparse library for parsing CSV-->
+      <script src="/js/lib/papaparse/papaparse.min.js"></script>
+
+      <!-- LayerViewer library, providing the application logic -->
+      <script src="/js/lib/Mapboxgljs.LayerViewer/src/layerviewer.js?220117"></script>
+      <link rel="stylesheet" type="text/css" href="/js/lib/Mapboxgljs.LayerViewer/src/layerviewer.css?220117" />
+      <script src="/js/lib/Mapboxgljs.LayerViewer/lib/geocoder.js"></script>
+
+      <!-- Turf for measuring-->
+      <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+
+      <!-- Map application and its config, implementing the LayerViewer library -->
+      <script src="/.config.js"></script>
+      <script src="/js/sdca.js?220117"></script>
+      <link rel="stylesheet" type="text/css" href="/css/sdca.css" />
+      <script>
+        $(function () {
+          sdca.initialise(config);
+        });
+      </script>
 
 
 
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-!-padding-0">
-          <div id="map" style="width: 100%; height: 600px;">
-            
+          <div id="map">
+
             <!-- Map will appear here -->
-            
-			<div id="geocoder" class="geocoder">
-				<input type="text" name="location" autocomplete="off" placeholder="Search locations and move map" tabindex="1" spellcheck="false" />
-			</div>
-			
-            <button class="govuk-button govuk-button--secondary filter-button" data-save-html="true"
-              data-sdca-target-panel="#data-layers" data-module="govuk-button" id="explore-data-layers">
+
+            <div id="geocoder" class="geocoder">
+              <input type="text" name="location" autocomplete="off" placeholder="Search locations and move map"
+                tabindex="1" spellcheck="false" />
+            </div>
+
+            <button class="govuk-button govuk-button--secondary filter-button" data-sdca-target-panel="data-layers"
+              data-module="govuk-button" id="explore-data-layers">
               Explore data layers
             </button>
-            
+
           </div>
         </div>
 
         <div class="govuk-grid-column-one-third govuk-!-margin-top-4" id="sdca-panel-container">
 
+          <!-- Panels -->
 
-        <!-- Panels -->
+          <!-- Data layers panel -->
+          <div class="sdca-panel" id="data-layers" data-sdca-is-temp-panel="true">
+            <a href="#" class="govuk-back-link" data-sdca-target-panel="false">Back</a>
+            <h2 class="govuk-heading-l">Explore data layers</h2>
+            <p class="govuk-body">Use this panel to select different data layers to better understand the context for
+              your
+              scheme.</p>
+            <div class="govuk-hint">
+              Select all that apply.
+            </div>
 
-        <!-- Data layers panel -->
-        <div class="sdca-panel" id="data-layers">
-          <a href="#" class="govuk-back-link" data-load-saved-html="true">Back</a>
-          <h2 class="govuk-heading-l">Explore data layers</h2>
-          <p class="govuk-body">Use this panel to select different data layers to better understand the context for your
-            scheme.</p>
-          <div class="govuk-hint">
-            Select all that apply.
+            <div id="layerselector">
+
+              <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+                <div class="govuk-accordion__section ">
+                  <div class="govuk-accordion__section-header">
+                    <h2 class="govuk-accordion__section-heading">
+                      <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
+                        Land use
+                      </span>
+                    </h2>
+                  </div>
+                  <div id="accordion-default-content-1" class="govuk-accordion__section-content"
+                    aria-labelledby="accordion-default-heading-1">
+
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                      <div class="govuk-checkboxes__item layertemplate">
+                        <input class="govuk-checkboxes__input" id="show_template" name="show[]" type="checkbox"
+                          value="template">
+                        <label class="govuk-label govuk-checkboxes__label" for="show_template">
+                          Template
+                        </label>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="govuk-accordion__section ">
+                  <div class="govuk-accordion__section-header">
+                    <h2 class="govuk-accordion__section-heading">
+                      <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+                        Transport data
+                      </span>
+                    </h2>
+                  </div>
+                  <div id="accordion-default-content-2" class="govuk-accordion__section-content"
+                    aria-labelledby="accordion-default-heading-2">
+
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="show_trafficcounts" name="show[]" type="checkbox"
+                          value="trafficcounts">
+                        <label class="govuk-label govuk-checkboxes__label" for="show_trafficcounts">
+                          Traffic counts
+                        </label>
+                      </div>
+                      <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="show_publictransport" name="show[]" type="checkbox"
+                          value="publictransport">
+                        <label class="govuk-label govuk-checkboxes__label" for="show_publictransport">
+                          Public transport
+                        </label>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="govuk-accordion__section ">
+                  <div class="govuk-accordion__section-header">
+                    <h2 class="govuk-accordion__section-heading">
+                      <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+                        Planning system data
+                      </span>
+                    </h2>
+                  </div>
+                  <div id="accordion-default-content-2" class="govuk-accordion__section-content"
+                    aria-labelledby="accordion-default-heading-2">
+
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="show_planningapplications" name="show[]"
+                        type="checkbox" value="planningapplications">
+                      <label class="govuk-label govuk-checkboxes__label" for="show_planningapplications">
+                        Planning applications
+                      </label>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div><!-- /#layerselector -->
+
           </div>
 
 
-		<div id="layerselector">
+          <!-- Design scheme panel -->
+          <div class="sdca-panel" id="design-scheme">
+            <h2 class="govuk-heading-l">Design scheme</h2>
+            <p class="govuk-body">To calculate the <a href="/methodology/">carbon impact of a scheme</a>, you can
+              search for interventions like railway tracks, bridges, or stations.</p>
 
-          <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
-            <div class="govuk-accordion__section ">
-              <div class="govuk-accordion__section-header">
-                <h2 class="govuk-accordion__section-heading">
-                  <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
-                    Land use
-                  </span>
-                </h2>
+            <h2 class="govuk-heading-m">Current interventions</h2>
+            <p class="govuk-body">Interventions you have drawn on the map will appear here.</p>
+
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Bridge
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  0.5km
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                    Change<span class="govuk-visually-hidden"> bridge intervention</span>
+                  </a>
+                </dd>
               </div>
-              <div id="accordion-default-content-1" class="govuk-accordion__section-content"
-                aria-labelledby="accordion-default-heading-1">
-
-				    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-				      <div class="govuk-checkboxes__item layertemplate">
-				        <input class="govuk-checkboxes__input" id="show_template" name="show[]" type="checkbox" value="template">
-				        <label class="govuk-label govuk-checkboxes__label" for="show_template">
-				          Template
-				        </label>
-				      </div>
-				    </div>
-
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Underpass
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  20km
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+                    Change<span class="govuk-visually-hidden"> underpass intervention</span>
+                  </a>
+                </dd>
               </div>
-            </div>
+            </dl>
 
-            <div class="govuk-accordion__section ">
-              <div class="govuk-accordion__section-header">
-                <h2 class="govuk-accordion__section-heading">
-                  <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
-                    Transport data
-                  </span>
-                </h2>
-              </div>
-              <div id="accordion-default-content-2" class="govuk-accordion__section-content"
-                aria-labelledby="accordion-default-heading-2">
+            <button class="govuk-button" data-module="govuk-button" data-sdca-target-panel="search-for-intervention">
+              Add an intervention
+            </button>
 
-				    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-				      <div class="govuk-checkboxes__item">
-				        <input class="govuk-checkboxes__input" id="show_trafficcounts" name="show[]" type="checkbox" value="trafficcounts">
-				        <label class="govuk-label govuk-checkboxes__label" for="show_trafficcounts">
-				          Traffic counts
-				        </label>
-				      </div>
-				      <div class="govuk-checkboxes__item">
-				        <input class="govuk-checkboxes__input" id="show_publictransport" name="show[]" type="checkbox" value="publictransport">
-				        <label class="govuk-label govuk-checkboxes__label" for="show_publictransport">
-				          Public transport
-				        </label>
-				      </div>
-				    </div>
+            <input id="geometry" name="loc_json" type="hidden" value="" />
 
-              </div>
-            </div>
+            <h2 class="govuk-heading-m">When you're done</h2>
+            <p class="govuk-body">When you have added your interventions to the map, you can calculate the results.</p>
 
-            <div class="govuk-accordion__section ">
-              <div class="govuk-accordion__section-header">
-                <h2 class="govuk-accordion__section-heading">
-                  <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
-                    Planning system data
-                  </span>
-                </h2>
-              </div>
-              <div id="accordion-default-content-2" class="govuk-accordion__section-content"
-                aria-labelledby="accordion-default-heading-2">
-
-				      <div class="govuk-checkboxes__item">
-				        <input class="govuk-checkboxes__input" id="show_planningapplications" name="show[]" type="checkbox" value="planningapplications">
-				        <label class="govuk-label govuk-checkboxes__label" for="show_planningapplications">
-				          Planning applications
-				        </label>
-				      </div>
-				    </div>
-
-              </div>
+            <button class="govuk-button" data-module="govuk-button"
+              id="calculate">
+              Calculate <div class="govuk-!-margin-left-1 loading-spinner"></div>
+            </button>
           </div>
 
-		</div><!-- /#layerselector -->
 
-        </div>
-
-
-        <!-- Design scheme panel -->
-        <div class="sdca-panel" id="design-scheme">
-          <h2 class="govuk-heading-m">How to use this tool</h2>
-          <p class="govuk-body">To calculate the <a href="/methodology/">carbon impact of a scheme</a>, you can
-            search for interventions like railway tracks, bridges, or stations.</p>
-
-          <h2 class="govuk-heading-m">Current interventions</h2>
-          <p class="govuk-body">Interventions you have drawn on the map will appear here.</p>
-
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Bridge
-              </dt>
-              <dd class="govuk-summary-list__value">
-                0.5km
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="#">
-                  Change<span class="govuk-visually-hidden"> bridge intervention</span>
-                </a>
-              </dd>
+          <!-- Search for intervention panel -->
+          <div class="sdca-panel" id="search-for-intervention">
+            <div class="govuk-breadcrumbs">
+              <ol class="govuk-breadcrumbs__list">
+                <li class="govuk-breadcrumbs__list-item">
+                  <a class="govuk-breadcrumbs__link" data-sdca-target-panel="design-scheme" href="#">Design scheme</a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item">
+                  <a class="govuk-breadcrumbs__link" data-sdca-target-panel="serach-for-interventions" href="#">Search
+                    for intervention</a>
+                </li>
+              </ol>
             </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Underpass
-              </dt>
-              <dd class="govuk-summary-list__value">
-                20km
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="#">
-                  Change<span class="govuk-visually-hidden"> underpass intervention</span>
-                </a>
-              </dd>
+
+            <div class="govuk-form-group">
+              <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" for="event-name">
+                  What is the name of the intervention?
+                </label>
+              </h1>
+              <input class="govuk-input" id="filter-interventions" name="filter-interventions" type="search">
             </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-		
-				<div class="govuk-form-group">
-				<!--
-				  <label class="govuk-label" for="sort">
-				    Type of intervention
-				  </label>
-				-->
-				  <select class="govuk-select" id="sort" name="sort">
-				    <option value="">Scheme type:</option>
-				    <option value="railway" disabled="disabled">Railway</option>
-				    <option value="road" disabled="disabled">Road</option>
-				    <option value="cycleway" disabled="disabled">Cycleway</option>
-				    <option value="viaduct" selected="selected">Viaduct</option>
-				    <option value="bridge" disabled="disabled">Bridge</option>
-				  </select>
-				</div>
 
-              </dt>
-              <dd class="govuk-summary-list__value">
-                ?km
-              </dd>
-              <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="#">
-                  Change<span class="govuk-visually-hidden"> viaduct intervention</span>
-                </a>
-              </dd>
-            </div>
-          </dl>
-
-          <button class="govuk-button draw line" data-module="govuk-button">
-            Draw intervention on the map
-          </button>
-
-          &nbsp;
-
-          <button class="govuk-button govuk-button--secondary edit-clear" data-module="govuk-button">
-            Clear line
-          </button>
-          
-          <input id="geometry" name="loc_json" type="hidden" value="" />
-
-          <h2 class="govuk-heading-m">When you're done</h2>
-          <p class="govuk-body">When you have added your interventions to the map, you can calculate the results.</p>
-
-          <button class="govuk-button" data-module="govuk-button" data-sdca-target-panel="#view-results" id="calculate">
-            Calculate <div class="govuk-!-margin-left-1 loading-spinner"></div>
-          </button>
-        </div>
-
-        <!-- View results panel -->
-        <div class="sdca-panel" id="view-results">
-          <a href="#" class="govuk-back-link" data-sdca-target-panel="#design-scheme">Back to the design</a>
-          <h2 class="govuk-heading-m">Calculated results for the scheme</h2>
-          <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-2">
-            <h1 class="govuk-panel__title netzero_compatible">
-              Net zero compatible?
-            </h1>
-            <div class="govuk-panel__body">
-              Payback time:<br><strong><span class="payback_time">?</span></strong>
-            </div>
-          </div>
-
-          <div class="govuk-tabs nested-tabs" data-module="govuk-tabs">
-            <h2 class="govuk-tabs__title">
-              Contents
-            </h2>
-            <ul class="govuk-tabs__list">
-              <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                <a class="govuk-tabs__tab" href="#summary">
-                  Summary
-                </a>
-              </li>
-              <li class="govuk-tabs__list-item">
-                <a class="govuk-tabs__tab" href="#emissions-by-type">
-                  Emissions by type
-                </a>
-              </li>
-              <li class="govuk-tabs__list-item">
-                <a class="govuk-tabs__tab" href="#emissions-by-year">
-                  Emissions by year
-                </a>
-              </li>
-            </ul>
-            <div class="govuk-tabs__panel" id="summary">
-              <table class="govuk-table">
-                <thead class="govuk-table__head">
-                  <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Scheme performance</th>
-                    <th scope="col" class="govuk-table__header"></th>
-                  </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                  <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">Whole life emissions</td>
-                    <td class="govuk-table__cell emissions_whole_life">?</td>
-                  </tr>
-                  <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">Payback time</td>
-                    <td class="govuk-table__cell payback_time">?</td>
-                  </tr>
-                  <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">Comments</td>
-                    <td class="govuk-table__cell comments">?</td>
-                  </tr>
-                </tbody>
-              </table>
-
-            </div>
-            <div class="govuk-tabs__panel govuk-tabs__panel--hidden pas2080" id="emissions-by-type">
-              <table class="govuk-table">
-                <thead class="govuk-table__head">
-                  <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Case manager</th>
-                    <th scope="col" class="govuk-table__header">Cases opened</th>
-                    <th scope="col" class="govuk-table__header">Cases closed</th>
-                  </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                  <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">David Francis</td>
-                    <td class="govuk-table__cell">24</td>
-                    <td class="govuk-table__cell">18</td>
-                  </tr>
-                  <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">Paul Farmer</td>
-                    <td class="govuk-table__cell">16</td>
-                    <td class="govuk-table__cell">20</td>
-                  </tr>
-                  <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">Rita Patel</td>
-                    <td class="govuk-table__cell">24</td>
-                    <td class="govuk-table__cell">27</td>
-                  </tr>
-                </tbody>
-              </table>
-
-            </div>
-            <div class="govuk-tabs__panel govuk-tabs__panel--hidden timeseries" id="emissions-by-year">
-              <table class="govuk-table">
-                <thead class="govuk-table__head">
-                  <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Case manager</th>
-                    <th scope="col" class="govuk-table__header">Cases opened</th>
-                    <th scope="col" class="govuk-table__header">Cases closed</th>
-                  </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                  <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">David Francis</td>
-                    <td class="govuk-table__cell">98</td>
-                    <td class="govuk-table__cell">95</td>
-                  </tr>
-                  <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">Paul Farmer</td>
-                    <td class="govuk-table__cell">122</td>
-                    <td class="govuk-table__cell">131</td>
-                  </tr>
-                  <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">Rita Patel</td>
-                    <td class="govuk-table__cell">126</td>
-                    <td class="govuk-table__cell">142</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="govuk-accordion" data-module="govuk-accordion" id="interventions-accordion">
+            
+            <!-- Interventions will be populated here-->
 
             </div>
           </div>
 
 
-        </div>
+          <!-- Draw intervention panel -->
+          <div class="sdca-panel" id="draw-intervention">
+            <div class="govuk-breadcrumbs">
+              <ol class="govuk-breadcrumbs__list">
+                <li class="govuk-breadcrumbs__list-item">
+                  <a class="govuk-breadcrumbs__link" href="#" data-sdca-target-panel="design-scheme">Design scheme</a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item">
+                  <a class="govuk-breadcrumbs__link" href="#" data-sdca-target-panel="search-for-intervention">Search
+                    for intervention</a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item">
+                  <a class="govuk-breadcrumbs__link" href="#" data-sdca-target-panel="draw-intervention">Draw
+                    intervention on map</a>
+                </li>
+              </ol>
+            </div>
+            <h2 class="govuk-heading-l">Draw an intervention on the map</h2>
+
+            <p class="govuk-body">Click on the map to draw the route. When you are finished, click the green button.</p>
+
+            <h2 class="govuk-heading-m intervention-name">High speed rail - New standard route</h2>
+
+            <p class="govuk-body intervention-description">New route including all associated assets</p>
+
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Total distance
+                </dt>
+                <dd class="govuk-summary-list__value distance">
+                  0km
+                </dd>
+              </div>
+            </dl>
+
+            <div class="govuk-button-group">
+              <button class="govuk-button draw line" data-module="govuk-button">
+                Start drawing on the map
+              </button>
+              <button class="govuk-button stop-drawing" data-module="govuk-button">
+                Stop drawing
+              </button>
+
+              <button class="govuk-button govuk-button--secondary edit-clear" data-module="govuk-button">
+                Clear line
+              </button>
+            </div>
+            <button class="govuk-button drawing-complete" data-module="govuk-button"
+              data-sdca-target-panel="design-scheme">
+              I have finished designing this intervention
+            </button>
+
+          </div>
+
+
+          <!-- View results panel -->
+          <div class="sdca-panel" id="view-results">
+            <a href="#" class="govuk-back-link" data-sdca-target-panel="design-scheme">Back to the design</a>
+            <h2 class="govuk-heading-m">Calculated results for the scheme</h2>
+            <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-2">
+              <h1 class="govuk-panel__title netzero_compatible">
+                Net zero compatible?
+              </h1>
+              <div class="govuk-panel__body">
+                Payback time:<br><strong><span class="payback_time">?</span></strong>
+              </div>
+            </div>
+
+            <div class="govuk-tabs nested-tabs" data-module="govuk-tabs">
+              <h2 class="govuk-tabs__title">
+                Contents
+              </h2>
+              <ul class="govuk-tabs__list">
+                <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                  <a class="govuk-tabs__tab" href="#summary">
+                    Summary
+                  </a>
+                </li>
+                <li class="govuk-tabs__list-item">
+                  <a class="govuk-tabs__tab" href="#emissions-by-type">
+                    Emissions by type
+                  </a>
+                </li>
+                <li class="govuk-tabs__list-item">
+                  <a class="govuk-tabs__tab" href="#emissions-by-year">
+                    Emissions by year
+                  </a>
+                </li>
+              </ul>
+              <div class="govuk-tabs__panel" id="summary">
+                <table class="govuk-table">
+                  <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                      <th scope="col" class="govuk-table__header">Scheme performance</th>
+                      <th scope="col" class="govuk-table__header"></th>
+                    </tr>
+                  </thead>
+                  <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">Whole life emissions</td>
+                      <td class="govuk-table__cell emissions_whole_life">?</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">Payback time</td>
+                      <td class="govuk-table__cell payback_time">?</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">Comments</td>
+                      <td class="govuk-table__cell comments">?</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+              <div class="govuk-tabs__panel govuk-tabs__panel--hidden pas2080" id="emissions-by-type">
+                <table class="govuk-table">
+                  <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                      <th scope="col" class="govuk-table__header">Case manager</th>
+                      <th scope="col" class="govuk-table__header">Cases opened</th>
+                      <th scope="col" class="govuk-table__header">Cases closed</th>
+                    </tr>
+                  </thead>
+                  <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">David Francis</td>
+                      <td class="govuk-table__cell">24</td>
+                      <td class="govuk-table__cell">18</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">Paul Farmer</td>
+                      <td class="govuk-table__cell">16</td>
+                      <td class="govuk-table__cell">20</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">Rita Patel</td>
+                      <td class="govuk-table__cell">24</td>
+                      <td class="govuk-table__cell">27</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+              <div class="govuk-tabs__panel govuk-tabs__panel--hidden timeseries" id="emissions-by-year">
+                <table class="govuk-table">
+                  <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                      <th scope="col" class="govuk-table__header">Case manager</th>
+                      <th scope="col" class="govuk-table__header">Cases opened</th>
+                      <th scope="col" class="govuk-table__header">Cases closed</th>
+                    </tr>
+                  </thead>
+                  <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">David Francis</td>
+                      <td class="govuk-table__cell">98</td>
+                      <td class="govuk-table__cell">95</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">Paul Farmer</td>
+                      <td class="govuk-table__cell">122</td>
+                      <td class="govuk-table__cell">131</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">Rita Patel</td>
+                      <td class="govuk-table__cell">126</td>
+                      <td class="govuk-table__cell">142</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+
+
+          </div>
 
 
 
@@ -500,9 +563,6 @@
   </footer>
 
   <script src="/javascript/govuk-frontend-4.0.0.min.js"></script>
-  <script>
-    window.GOVUKFrontend.initAll()
-  </script>
 </body>
 
 </html>
