@@ -169,7 +169,7 @@ var sdca = (function ($) {
 				+ '<p><a href="{properties.url}"><img src="/images/icons/bullet_go.png" /> <strong>View full details</a></strong></p>'
 		}
 	};
-
+	
 	var _startupPanelId = 'design-scheme'; // Panel to show at startup
 	var _isTempPanel = false; // If we have a temp (i.e. data layers) panel in view
 	var _currentPanelId = null; // Store the current panel in view
@@ -177,6 +177,8 @@ var sdca = (function ($) {
 	
 	var _interventions = null; // Store the parsed interventions CSV
 	var _currentIntervention = {}; // Store the type of the current intervention
+
+	var _drawingHappening = false;
 
 	var _interventionsCsvUrl = 'https://raw.githubusercontent.com/SDCA-tool/sdca-data/main/data_tables/interventions.csv';
 	
@@ -193,16 +195,16 @@ var sdca = (function ($) {
 					_settings[setting] = config[setting];
 				}
 			});
+
+			// Load layers from datasets file, and then initialise layers
+			sdca.loadDatasets ();
 			
 			// Manage panels
 			sdca.managePanels ();
 
 			// Retrieve, populate and filter
 			sdca.retrieveInterventions ();
-			sdca.filterInterventions()
-			
-			// Load layers from datasets file, and then initialise layers
-			sdca.loadDatasets ();
+			sdca.filterInterventions ()
 			
 			// Initialisation is wrapped within loadDatasets
 			// layerviewer.initialise (_settings, _layerConfig);
@@ -506,11 +508,21 @@ var sdca = (function ($) {
 			$('#geometry').on ('change', function (e) {
 				if ($('#geometry').val ()) {
 					$('#calculate, .edit-clear').css ('visibility', 'visible');
-					$('.finish-drawing').show();
-					$('.draw.line').addClass('govuk-button--secondary').text('Continue drawing on map');
+					$('.drawing-complete').show();
 				} else {
 					$('#calculate, .edit-clear').css ('visibility', 'hidden');
 				}
+			});
+
+			// Help user by changing buttons once drawing mode is on
+			$('.draw.line').on('click', function () {
+				
+				// Update state
+				_drawingHappening = true;
+				
+				// Update UI
+				$('.draw.line').hide()
+				$('.stop-drawing').show();
 			});
 
 			// Run when the captured geometry value changes; this is due to the .trigger ('change') in layerviewer.drawing () as a result of the draw.create/draw.update events
