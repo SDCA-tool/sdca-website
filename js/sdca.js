@@ -204,6 +204,8 @@ var sdca = (function ($) {
 		type: 'FeatureCollection',
 		features: []
 	};
+
+	var _currentlyEditingRegistryIndex = -1; // Store the intervention we are editing for deletion purposes
 	
 	return {
 		
@@ -230,6 +232,8 @@ var sdca = (function ($) {
 			sdca.filterInterventions ();
 			sdca.trackInterventions ();
 			sdca.registerIntervention ();
+			sdca.editIntervention ();
+			sdca.deleteIntervention ();
 
 			// Initialisation is wrapped within loadDatasets
 			// layerviewer.initialise (_settings, _layerConfig);
@@ -319,6 +323,15 @@ var sdca = (function ($) {
 		},
 
 
+		// Code to enter editing mode for an intervention
+		editIntervention: function () {
+			$('body').on('click', '.edit-intervention', function () {
+				// Set the registry index to the intervention we want to edit
+				_currentlyEditingRegistryIndex = $(this).data('sdca-registry-index');
+			});
+		},
+
+
 		// Code for handling adding, registering, removing interventions
 		trackInterventions: function () {
 			// If we click on the link to add a new intervention, save the type for global access
@@ -332,6 +345,31 @@ var sdca = (function ($) {
 
 			// Update the intervention list at startup
 			sdca.updateUserInterventionList();
+		},
+
+
+		// Handler for the delete intervention button
+		// !TODO needs to clear any drawings from map
+		deleteIntervention: function () {
+			$('#delete-intervention').on('click', function () {
+				// If we are creating a new intervention, the delete button just cancels whatever we are doing
+				// It doesn't actually delete anything, because nothing has been added to the registry yet
+				if (_currentlyEditingRegistryIndex < 0) {
+					// !TODO needs to clear map
+				} else {
+					// This sets the result of the [index] as undefined, but there's no need to delete it
+					delete _interventionRegistry.features[_currentlyEditingRegistryIndex];
+				}
+
+				// Done editing, set currently editing registry as false
+				_currentlyEditingRegistryIndex = -1;
+
+				// Regenerate user intervention list
+				sdca.updateUserInterventionList();
+
+				// ET go home
+				sdca.switchPanel('design-scheme');
+			});
 		},
 
 
@@ -383,7 +421,13 @@ var sdca = (function ($) {
 		// Update the list of user interventions
 		updateUserInterventionList: function () {
 			var html = '';
-			$.each(_interventionRegistry.features, function (indexInArray, feature) {
+			$.each(_interventionRegistry.features, function (indexInRegistry, feature) {
+				
+				if (feature == undefined) {
+					// i.e., we deleted it
+					return;
+				}
+				
 				// Calculate distance 
 				// !TODO This only calculates LineStrings for now
 				var distance = null;
@@ -395,10 +439,10 @@ var sdca = (function ($) {
 				}
 
 				// Generate the HTML
-				html += getSummaryListRow(feature.properties.intervention, feature.properties.mode, distance)
+				html += getSummaryListRow(indexInRegistry, feature.properties.intervention, feature.properties.mode, distance)
 			});
 
-			function getSummaryListRow(intervention, mode, distance) {
+			function getSummaryListRow(indexInRegistry, intervention, mode, distance) {
 				return (`
 				<div class="govuk-summary-list__row">
 					<dt class="govuk-summary-list__key">
@@ -408,7 +452,7 @@ var sdca = (function ($) {
 					${distance} kilometers
 					</dd>
 					<dd class="govuk-summary-list__actions">
-					<a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+					<a class="govuk-link edit-intervention" data-sdca-registry-index="${indexInRegistry}" data-sdca-target-panel="draw-intervention" href="#">
 						Change<span class="govuk-visually-hidden"> ${intervention} intervention</span>
 					</a>
 					</dd>
