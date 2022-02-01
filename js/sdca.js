@@ -179,6 +179,26 @@ var sdca = (function ($) {
 	var _currentIntervention = {}; // Store the type of the current intervention
 
 	var _drawingHappening = false;
+
+	var _dummyApiPayload = {
+		type: 'FeatureCollection',
+		features: [
+			{
+				type: 'Feature',
+				properties: {
+					infrastructure_type: 'transport',
+					mode_class: 'Rail',
+					mode: 'High speed rail',
+					intervention_class: 'New construction',
+					intervention: 'Viaduct'
+				},
+				geometry: {
+					type: 'LineString',
+					coordinates: []
+				}
+			}
+		]
+	}
 	
 	return {
 		
@@ -536,12 +556,18 @@ var sdca = (function ($) {
 				// End if the line has been cleared
 				if (geojson === '') {return;}
 				
+				// Build dummy payload
+				var dummyPayload = _dummyApiPayload;
+				dummyPayload.features[0].geometry.coordinates = JSON.parse(geojson);
+				dummyPayload = JSON.stringify(dummyPayload);
+				
 				// Send the data to the API
 				$.ajax ({
 					type: 'GET',
 					url: '/api/v1/locations.json',
 					dataType: 'json',
 					data: {
+						geojson: dummyPayload,
 						line: geojson,
 						bbox: '0,0,0,0',	// Random value to avoid rejection from sample API
 						zoom: 14			// Random value to avoid rejection from sample API
