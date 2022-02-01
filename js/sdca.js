@@ -175,8 +175,8 @@ var sdca = (function ($) {
 	var _currentPanelId = null; // Store the current panel in view
 	var _previousPanelId = null; // The previous panel. Used when exiting the _tempPanel
 	
-	var _interventions = null; // Store the parsed interventions CSV
-	var _currentIntervention = {}; // Store the type of the current intervention
+	var _interventions = null; // Store the parsed array of interventions JSON
+	var _currentInterventionIndex = null; // Store the intervention index relative to the parsed interventions JSON
 
 	var _drawingHappening = false;
 
@@ -198,7 +198,12 @@ var sdca = (function ($) {
 				}
 			}
 		]
-	}
+	};
+
+	var _interventionRegistry = {
+		type: 'FeatureCollection',
+		features: []
+	};
 	
 	return {
 		
@@ -220,17 +225,19 @@ var sdca = (function ($) {
 			// Manage panels
 			sdca.managePanels ();
 
-			// Retrieve, populate and filter
+			// Intervention handlers
 			sdca.retrieveInterventions ();
-			sdca.filterInterventions ()
-			
+			sdca.filterInterventions ();
+			sdca.trackInterventions ();
+			sdca.registerIntervention ();
+
 			// Initialisation is wrapped within loadDatasets
 			// layerviewer.initialise (_settings, _layerConfig);
-			
+
 			// Handler for drawn line
 			sdca.handleDrawLine ();
 		},
-		
+
 
 		// Panel management
 		managePanels: function () {
@@ -272,7 +279,7 @@ var sdca = (function ($) {
 		// Get the different intervention types and populate them
 		retrieveInterventions: function () {
 			// Get the interventions JSON file
-			$.getJSON ('/lexicon/data_tables/interventions.json', function (interventions) {
+			$.getJSON('/lexicon/data_tables/interventions.json', function (interventions) {
 				_interventions = interventions;
 				sdca.populateInterventions();
 			});
@@ -286,7 +293,7 @@ var sdca = (function ($) {
 			$('#interventions-accordion').empty();
 
 			// Iterate through each intervention
-			$.each(_interventions, function (indexInArray, intervention) {
+			$.each(_interventions, function (interventionIndex, intervention) {
 
 				// Save the python-case intervention mode (i.e. high-speed-rail)
 				mode = sdca.convertLabelToPython(intervention.mode)
@@ -296,37 +303,132 @@ var sdca = (function ($) {
 
 					// Append a new list row
 					$('#interventions-accordion-content-' + mode + ' .govuk-summary-list').append(
-						sdca.generateInterventionRowHtml(intervention)
+						sdca.generateInterventionRowHtml(intervention, interventionIndex)
 					)
 				} else {
 
 					// Otherwise, append a new sectiona
 					$('#interventions-accordion').append(
-						sdca.generateInterventionHeaderHtml(intervention)
+						sdca.generateInterventionHeaderHtml(intervention, interventionIndex)
 					)
 				}
 			});
 
 			// Initialise the accordion with the new HTML
 			window.GOVUKFrontend.initAll()
+		},
 
+
+		// Code for handling adding, registering, removing interventions
+		trackInterventions: function () {
 			// If we click on the link to add a new intervention, save the type for global access
 			$('body').on('click', '#interventions-accordion .govuk-summary-list__actions a.govuk-link', function () {
-				_currentIntervention = {
-					mode: $(this).data('sdca-mode'),
-					intervention: $(this).data('sdca-intervention'),
-					description: $(this).data('sdca-intervention-description')
-				}
+				_currentInterventionIndex = $(this).data('sdca-intervention-index');
 
 				// Update the draw panel with this description
-				$('.intervention-name').text(_currentIntervention.mode + ' - ' + _currentIntervention.intervention);
-				$('.intervention-description').text(_currentIntervention.description);
+				$('.intervention-name').text(_interventions[_currentInterventionIndex].mode + ' - ' + _interventions[_currentInterventionIndex].intervention);
+				$('.intervention-description').text(_interventions[_currentInterventionIndex].intervention_description);
+			});
+
+			// Update the intervention list at startup
+			sdca.updateUserInterventionList();
+		},
+
+
+		// Add intervention to registry/main page
+		registerIntervention: function () {
+			$('#register-intervention').on('click', function () {
+
+				var currentIntervention = _interventions[_currentInterventionIndex];
+
+				// Get the full name of the GeometryType
+				var geometryType = '';
+				switch (currentIntervention.geometry) {
+					case 'line':
+						geometryType = 'LineString'
+						break;
+					case 'point':
+						geometryType = 'Point'
+						break;
+					case 'polygon':
+						geometryType = 'Polygon'
+						break;
+					default:
+						geometryType = 'LineString'
+				}
+
+				// Build the GeoJSON object
+				var newGeoJson =
+				{
+					type: 'Feature',
+					properties: {
+						infrastructure_type: currentIntervention.infrastructure_type,
+						mode_class: currentIntervention.mode_class,
+						mode: currentIntervention.mode,
+						intervention_class: currentIntervention.intervention_class,
+						intervention: currentIntervention.intervention
+					},
+					geometry: {
+						type: geometryType,
+						coordinates: JSON.parse($('#geometry').val())
+					}
+				}
+
+				// Add this as a GeoJson object to the registry
+				_interventionRegistry.features.push(newGeoJson);
+
+				// Update the front page list 
+				sdca.updateUserInterventionList();
+
+				// Remove the current intervention
+				_currentInterventionIndex = null;
+
 			});
 		},
 
 
+		// Update the list of user interventions
+		updateUserInterventionList: function () {
+			var html = '';
+			$.each(_interventionRegistry.features, function (indexInArray, feature) {
+				// Calculate distance 
+				// !TODO This only calculates LineStrings for now
+				var distance = null;
+				if (feature.geometry.type == 'LineString') {
+					var line = turf.lineString(feature.geometry.coordinates);
+					distance = turf.length(line, { units: 'kilometers' }).toFixed(2);
+				} else {
+					distance = '1 mile'
+				}
+
+				// Generate the HTML
+				html += getSummaryListRow(feature.properties.intervention, feature.properties.mode, distance)
+			});
+
+			function getSummaryListRow(intervention, mode, distance) {
+				return (`
+				<div class="govuk-summary-list__row">
+					<dt class="govuk-summary-list__key">
+					${intervention}
+					</dt>
+					<dd class="govuk-summary-list__value">
+					${distance} kilometers
+					</dd>
+					<dd class="govuk-summary-list__actions">
+					<a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
+						Change<span class="govuk-visually-hidden"> ${intervention} intervention</span>
+					</a>
+					</dd>
+				</div>
+				`)
+			}
+
+			$('.user-interventions-list').html(html);
+		},
+
+
 		// Generate intervention accordion header HTML
-		generateInterventionHeaderHtml: function (intervention) {
+		generateInterventionHeaderHtml: function (intervention, interventionIndex) {
 			var mode = sdca.convertLabelToPython(intervention.mode);
 			return (`
 				<div class="govuk-accordion__section" id="intervention-${mode}">
@@ -341,7 +443,7 @@ var sdca = (function ($) {
 					aria-labelledby="interventions-accordion-content-${mode}">
 	
 					<dl class="govuk-summary-list">
-						${sdca.generateInterventionRowHtml(intervention)}
+						${sdca.generateInterventionRowHtml(intervention, interventionIndex)}
 					</dl>
 	
 					</div>
@@ -351,7 +453,7 @@ var sdca = (function ($) {
 
 
 		// Generate intervention row HTML
-		generateInterventionRowHtml: function (intervention) {
+		generateInterventionRowHtml: function (intervention, interventionIndex) {
 			return (
 				`
 			<div class="govuk-summary-list__row">
@@ -362,7 +464,7 @@ var sdca = (function ($) {
 				${intervention.intervention_description}
 				</dd>
 				<dd class="govuk-summary-list__actions">
-					<a class="govuk-link" data-sdca-mode="${intervention.mode}" data-sdca-intervention="${intervention.intervention}" data-sdca-intervention-description="${intervention.intervention_description}" data-sdca-target-panel="draw-intervention" href="#">
+					<a class="govuk-link" data-sdca-intervention-index="${interventionIndex}" data-sdca-target-panel="draw-intervention" href="#">
 					Add to map<span class="govuk-visually-hidden"> a new ${intervention.intervention}</span>
 					</a>
 				</dd>
@@ -528,8 +630,8 @@ var sdca = (function ($) {
 				// Update the length
 				var geojson = JSON.parse($('#geometry').val());
 				var line = turf.lineString(geojson);
-				var length = turf.length(line, {units: 'miles'}).toFixed(2);
-				$('.distance').text(length + 'miles');
+				var length = turf.length(line, {units: 'kilometers'}).toFixed(2);
+				$('.distance').text(length + ' km');
 
 			});
 

@@ -88,7 +88,7 @@
           alpha
         </strong>
         <span class="govuk-phase-banner__text">
-          This is a new service – your <a class="govuk-link" href="/contacts/">feedback</a> will help us to improve it.
+          This is a new service – your <a class="govuk-link" href="/contacts/">feedback</a> will help us to improve it. <b>⚠️ API currently limited to a single 'Viaduct' intervention</b>
         </span>
       </p>
     </div>
@@ -270,33 +270,8 @@
             <h2 class="govuk-heading-m">Current interventions</h2>
             <p class="govuk-body">Interventions you have drawn on the map will appear here.</p>
 
-            <dl class="govuk-summary-list">
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Bridge
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  0.5km
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
-                    Change<span class="govuk-visually-hidden"> bridge intervention</span>
-                  </a>
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Underpass
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  20km
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" data-sdca-target-panel="draw-intervention" href="#">
-                    Change<span class="govuk-visually-hidden"> underpass intervention</span>
-                  </a>
-                </dd>
-              </div>
+            <dl class="govuk-summary-list user-interventions-list">
+            <!-- User interventions will be populated here-->
             </dl>
 
             <button class="govuk-button" data-module="govuk-button" data-sdca-target-panel="search-for-intervention">
@@ -376,7 +351,7 @@
                   Total distance
                 </dt>
                 <dd class="govuk-summary-list__value distance">
-                  0km
+                  0 km
                 </dd>
               </div>
             </dl>
@@ -392,8 +367,11 @@
               <button class="govuk-button govuk-button--secondary edit-clear" data-module="govuk-button">
                 Clear line
               </button>
+              <button class="govuk-button govuk-button--warning" data-module="govuk-button">
+                Delete this intervention
+              </button>
             </div>
-            <button class="govuk-button drawing-complete" data-module="govuk-button"
+            <button class="govuk-button drawing-complete" id="register-intervention" data-module="govuk-button"
               data-sdca-target-panel="design-scheme">
               I have finished designing this intervention
             </button>
