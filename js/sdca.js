@@ -512,6 +512,13 @@ var sdca = (function ($) {
 				} else {
 					$('#calculate, .edit-clear').css ('visibility', 'hidden');
 				}
+
+				// Update the length
+				var geojson = JSON.parse($('#geometry').val());
+				var line = turf.lineString(geojson);
+				var length = turf.length(line, {units: 'miles'});
+				$('.distance').text(length + 'miles');
+
 			});
 
 			// Help user by changing buttons once drawing mode is on
