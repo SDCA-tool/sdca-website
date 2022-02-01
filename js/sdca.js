@@ -342,20 +342,13 @@ var sdca = (function ($) {
 				var currentIntervention = _interventions[_currentInterventionIndex];
 
 				// Get the full name of the GeometryType
-				var geometryType = '';
-				switch (currentIntervention.geometry) {
-					case 'line':
-						geometryType = 'LineString'
-						break;
-					case 'point':
-						geometryType = 'Point'
-						break;
-					case 'polygon':
-						geometryType = 'Polygon'
-						break;
-					default:
-						geometryType = 'LineString'
-				}
+				var openGisTypes = {
+					line: 'LineString',
+					point: 'Point',
+					polygon: 'Polygon'
+				};
+
+				var geometryType = openGisTypes[_interventions[_currentInterventionIndex]] || 'LineString';
 
 				// Build the GeoJSON object
 				var newGeoJson =
