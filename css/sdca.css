@@ -37,3 +37,6 @@ body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
 body #application nav #drawing a {border-bottom: 0;}
 #calculate, .edit-clear {visibility: hidden;}
 
+/* Autocomplete */
+.ui-autocomplete li a {color: #0B0D0D; font-family: Helvetica, Arial, sans-serif;}
+#geocoder input {color: #0B0D0D; font-size: 1.4em;}
