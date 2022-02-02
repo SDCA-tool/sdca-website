@@ -698,7 +698,6 @@ var sdca = (function ($) {
 				$.ajax ({
 					type: 'GET',
 					url: '/api/v1/locations.json',
-					url: 'https://dev.carbon.place/api/v1/locations.json',
 					dataType: 'json',
 					data: {
 						geojson: payload,
