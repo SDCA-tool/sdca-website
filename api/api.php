@@ -50,17 +50,9 @@ class api
 			return $this->error ($error);
 		}
 		
-		# Obtain the BBOX and pass to the model
-		$bbox = ($this->getBbox ($error));
-		if ($error) {
-			return $this->error ($error);
-		}
-		
-		# Get the zoom
-		$zoom = ($this->getZoom ($error));
-		if ($error) {
-			return $this->error ($error);
-		}
+		# Obtain any BBOX and zoom, and make it available to the model to use optionally
+		$bbox = ($this->getBbox ());
+		$zoom = ($this->getZoom ());
 		
 		# Load the model, passing in API parameters
 		$this->sdcaModel = new sdcaModel ($this->databaseConnection, $this->settings, $bbox, $zoom, $_GET);
