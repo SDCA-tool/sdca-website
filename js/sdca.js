@@ -200,10 +200,13 @@ var sdca = (function ($) {
 		]
 	};
 
+	// Track current frontend interventions
 	var _interventionRegistry = {
+		_timestamp: null,
 		type: 'FeatureCollection',
 		features: []
 	};
+	var _lastApiCallRegistryTimestamp = null;
 	var _currentlyEditingRegistryIndex = -1; // Store the intervention we are editing for deletion purposes
 
 	var _map = false; // Store the map object from layerviewer
@@ -347,6 +350,10 @@ var sdca = (function ($) {
 			$('body').on('click', '.edit-intervention', function () {
 				// Set the registry index to the intervention we want to edit
 				_currentlyEditingRegistryIndex = $(this).data('sdca-registry-index');
+
+				// Update timestamp, as we are editing the intervention
+				// Actually, we haven't edited it yet, this could be connected to the draw action instead
+				_interventionRegistry._timestamp = Date.now();
 			});
 		},
 
@@ -379,6 +386,9 @@ var sdca = (function ($) {
 					// This sets the result of the [index] as undefined, but there's no need to delete it
 					delete _interventionRegistry.features[_currentlyEditingRegistryIndex];
 				}
+
+				// Update timestamp
+				_interventionRegistry._timestamp = Date.now();
 
 				// Done editing, set currently editing registry as false
 				_currentlyEditingRegistryIndex = -1;
@@ -426,6 +436,9 @@ var sdca = (function ($) {
 
 				// Add this as a GeoJson object to the registry
 				_interventionRegistry.features.push(newGeoJson);
+
+				// Update timestamp
+				_interventionRegistry._timestamp = Date.now();
 
 				// Update the front page list 
 				sdca.updateUserInterventionList();
@@ -706,6 +719,12 @@ var sdca = (function ($) {
 			// Run when the captured geometry value changes; this is due to the .trigger ('change') in layerviewer.drawing () as a result of the draw.create/draw.update events
 			$('button#calculate').click (function (e) {
 				
+				// Do not resend data If we have not made any changes to the intervention registry
+				if (_lastApiCallRegistryTimestamp == _interventionRegistry._timestamp) {
+					sdca.switchPanel ('view-results');
+					return;
+				}
+				
 				// Show the loading spinner
 				$('.loading-spinner').css ('display', 'inline-block');
 				
@@ -737,6 +756,9 @@ var sdca = (function ($) {
 						
 						// Reset the loading spinner
 						$('.loading-spinner').css ('display', 'none');
+
+						// Register the last API call
+						_lastApiCallRegistryTimestamp = _interventionRegistry._timestamp;
 					},
 					error: function (jqXHR, textStatus, errorThrown) {
 						var responseBody = JSON.parse (jqXHR.responseText);
