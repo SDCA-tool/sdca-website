@@ -297,6 +297,15 @@ var sdca = (function ($) {
 				$('.govuk-grid-column-two-thirds, .govuk-grid-column-one-third').removeClass('normal', resizeMap());
 			}
 
+			// Special panel behaviours
+			if (panelToShow == 'view-results') {
+				$('.govuk-grid-column-two-thirds, .govuk-grid-column-one-third').addClass('data', resizeMap());
+				$('#geocoder').hide()
+			} else {
+				$('.govuk-grid-column-two-thirds, .govuk-grid-column-one-third').removeClass('data', resizeMap());
+				$('#geocoder').show()
+			}
+
 			// Reset the map after a 500ms timeout
 			// CSS rule defines transition: .5 for these divs
 			function resizeMap() {
