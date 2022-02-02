@@ -187,8 +187,10 @@ var sdca = (function ($) {
 		type: 'FeatureCollection',
 		features: []
 	};
-
-
+	
+	/* Labels */
+	var _pas2080Labels = {};
+	
 	/* API state */
 	var _lastApiCallRegistryTimestamp = null; // Store the last time we called the API, for comparison to the registry timestamp
 	var _currentlyEditingRegistryIndex = -1; // Store the intervention we are editing for deletion purposes
@@ -228,6 +230,8 @@ var sdca = (function ($) {
 			sdca.handleChartRadios ();
 
 			sdca.exportData ();
+			
+			sdca.pas2080Labels ();
 
 			// Initialisation is wrapped within loadDatasets
 			// layerviewer.initialise (_settings, _layerConfig);
@@ -804,6 +808,18 @@ var sdca = (function ($) {
 		},
 
 
+		// Function to load the PAS 2080 labels
+		pas2080Labels: function ()
+		{
+			// Get the interventions JSON file
+			$.getJSON ('/lexicon/web_text/pas2080.json', function (pas2080) {
+				$.each (pas2080, function (index, row) {
+					_pas2080Labels[row.pas2080_code] = row.pas2080_name;
+				});
+			});
+		},
+		
+		
 		// Function to show the results
 		showResults: function (data)
 		{
@@ -900,9 +916,17 @@ var sdca = (function ($) {
 
 
 		// Generate emissions by type pie chart
-		generateEmissionsByTypeChart: function (data) {
+		generateEmissionsByTypeChart: function (data)
+		{
+			// Substitute in labels from the web_text definitions
+			if (!$.isEmptyObject (_pas2080Labels)) {
+				$.each (data, function (index, row) {
+					data[index].pas2080_name = _pas2080Labels[row.pas2080_code] + ' (' + row.pas2080_code + ')';
+				});
+			}
+
 			// Chart labels
-			var labels = data.map((row) => row.pas2080_code);
+			var labels = data.map((row) => row.pas2080_name);
 
 			// Define charts
 			var charts = [
