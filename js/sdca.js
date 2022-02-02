@@ -809,8 +809,8 @@ var sdca = (function ($) {
 			$('.payback_time').text (data.payback_time[0] + ' years');
 			$('.emissions_whole_life').text (layerviewer.number_format (data.emissions_whole_life[0]));
 			$('.comments').text (data.comments[0]);
-			$('.pas2080').html (pas2080);
-			$('.timeseries').html (timeseries);
+			$('.pas2080').append (pas2080);
+			$('.timeseries').append (timeseries);
 			
 			// Define icons based on data value
 			var layerConfig = {
@@ -825,6 +825,70 @@ var sdca = (function ($) {
 			// Add the geometries to the map
 			var featureCollection = JSON.parse (data.geometry);
 			layerviewer.addDirectGeojson (featureCollection, 'results', layerConfig);
+
+			// Generate charts
+			sdca.generateEmissionsByYearChart(data.timeseries);
+			sdca.generateEmissionsByTypeChart(data.pas2080);
+		},
+
+
+		// Generate time series chart (y/y emissions)
+		generateEmissionsByYearChart: function (data) {
+			const ctx = document.getElementById('emissions-by-year-chart').getContext('2d');
+			
+			var labels = data.map(row => row.year);
+			var dataRows = data.map(row => row.emissions_cumulative);
+
+			new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: labels,
+					datasets: [
+						{
+							label: 'Cumulative emissions',
+							data: dataRows,
+							fill: true,
+							borderColor: 'rgb(0, 0, 0)',
+							tension: 0.1
+						}
+					]
+				}
+			});
+		},
+
+
+		// Generate emissions by type pie chart
+		generateEmissionsByTypeChart: function (data) {
+			const ctx = document.getElementById('emissions-by-type-chart').getContext('2d');
+
+			var labels = data.map(row => row.pas2080_code);
+			var dataRows = data.map(row => row.emissions);
+
+			new Chart(ctx, {
+				type: 'doughnut',
+				data: {
+					labels: labels,
+					datasets: [
+						{
+							label: 'PAS2080 type',
+							data: dataRows,
+							fill: true,
+							backgroundColor: [
+								'rgb(0, 122, 124)',
+								'rgb(170, 143, 0)',
+								'rgb(167, 204, 204)',
+								'rgb(210, 88, 82)',
+								'rgb(42, 0, 42)',
+								'rgb(128, 0, 128)',
+								'rgb(133, 150, 167)',
+								'rgb(238, 238, 219)',
+								'rgb(128, 0, 0)'
+							],
+							tension: 0.1
+						}
+					]
+				}
+			});
 		},
 		
 		

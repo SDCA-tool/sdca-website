@@ -128,6 +128,9 @@
       <!-- Turf for measuring-->
       <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
 
+      <!-- Chart.js -->
+	    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+
       <!-- Map application and its config, implementing the LayerViewer library -->
       <script src="/.config.js"></script>
       <script src="/js/sdca.js?220117"></script>
@@ -439,62 +442,18 @@
 
               </div>
               <div class="govuk-tabs__panel govuk-tabs__panel--hidden pas2080" id="emissions-by-type">
-                <table class="govuk-table">
-                  <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                      <th scope="col" class="govuk-table__header">Case manager</th>
-                      <th scope="col" class="govuk-table__header">Cases opened</th>
-                      <th scope="col" class="govuk-table__header">Cases closed</th>
-                    </tr>
-                  </thead>
-                  <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                      <td class="govuk-table__cell">David Francis</td>
-                      <td class="govuk-table__cell">24</td>
-                      <td class="govuk-table__cell">18</td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                      <td class="govuk-table__cell">Paul Farmer</td>
-                      <td class="govuk-table__cell">16</td>
-                      <td class="govuk-table__cell">20</td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                      <td class="govuk-table__cell">Rita Patel</td>
-                      <td class="govuk-table__cell">24</td>
-                      <td class="govuk-table__cell">27</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div class="graph-container" style="height: 420px; width: 50%; min-width: 400px; max-width: 700px;">
+                  <canvas id="emissions-by-type-chart"></canvas>
+                </div>
+                
+                <!-- GOVUK table will be placed here showing emissions by ype-->
 
               </div>
               <div class="govuk-tabs__panel govuk-tabs__panel--hidden timeseries" id="emissions-by-year">
-                <table class="govuk-table">
-                  <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                      <th scope="col" class="govuk-table__header">Case manager</th>
-                      <th scope="col" class="govuk-table__header">Cases opened</th>
-                      <th scope="col" class="govuk-table__header">Cases closed</th>
-                    </tr>
-                  </thead>
-                  <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                      <td class="govuk-table__cell">David Francis</td>
-                      <td class="govuk-table__cell">98</td>
-                      <td class="govuk-table__cell">95</td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                      <td class="govuk-table__cell">Paul Farmer</td>
-                      <td class="govuk-table__cell">122</td>
-                      <td class="govuk-table__cell">131</td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                      <td class="govuk-table__cell">Rita Patel</td>
-                      <td class="govuk-table__cell">126</td>
-                      <td class="govuk-table__cell">142</td>
-                    </tr>
-                  </tbody>
-                </table>
-
+                <div class="graph-container" style="height: 330px; width: 100%; min-width: 400px; max-width: 700px;">
+                 <canvas id="emissions-by-year-chart"></canvas>
+               </div>
+               <!-- GOVUK table will be placed here showing emissions by year-->
               </div>
             </div>
 
@@ -512,7 +471,7 @@
 
   <footer class="govuk-footer " role="contentinfo">
     <div class="govuk-width-container ">
-      <div class="govuk-footer__meta">
+      <div class="govuk-footer__meta govuk-!-padding-right-4 govuk-!-padding-left-4">
         <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
 
           <svg aria-hidden="true" focusable="false" class="govuk-footer__licence-logo"
