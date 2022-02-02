@@ -290,33 +290,6 @@ var sdca = (function ($) {
 
 			// Save the panel as current
 			_currentPanelId = panelToShow;
-
-			// Special panel behaviours
-			if (panelToShow == 'draw-intervention') {
-				$('.govuk-grid-column-two-thirds, .govuk-grid-column-one-third').addClass('normal', resizeMap());
-			} else {
-				$('.govuk-grid-column-two-thirds, .govuk-grid-column-one-third').removeClass('normal', resizeMap());
-			}
-
-			// Special panel behaviours
-			if (panelToShow == 'view-results') {
-				$('.govuk-grid-column-two-thirds, .govuk-grid-column-one-third').addClass('data', resizeMap());
-				$('#geocoder').hide()
-			} else {
-				$('.govuk-grid-column-two-thirds, .govuk-grid-column-one-third').removeClass('data', resizeMap());
-				$('#geocoder').show()
-			}
-
-			// Reset the map after a 500ms timeout
-			// CSS rule defines transition: .5 for these divs
-			function resizeMap() {
-				setTimeout(function () {
-					if (_map) {
-						_map.resize();
-						window.dispatchEvent(new Event('resize'));
-					}
-				}, 500)
-			}
 		},
 
 
@@ -721,17 +694,6 @@ var sdca = (function ($) {
 				var length = turf.length(line, {units: 'kilometers'}).toFixed(2);
 				$('.distance').text(length + ' km');
 
-			});
-
-			// Help user by changing buttons once drawing mode is on
-			$('.draw.line').on('click', function () {
-				
-				// Update state
-				_drawingHappening = true;
-				
-				// Update UI
-				$('.draw.line').hide()
-				$('.stop-drawing').show();
 			});
 
 			// Run when the captured geometry value changes; this is due to the .trigger ('change') in layerviewer.drawing () as a result of the draw.create/draw.update events

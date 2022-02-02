@@ -361,10 +361,7 @@
 
             <div class="govuk-button-group">
               <button class="govuk-button draw line" data-module="govuk-button">
-                Start drawing on the map
-              </button>
-              <button class="govuk-button stop-drawing" data-module="govuk-button">
-                Stop drawing
+                Start new drawing on the map
               </button>
 
               <button class="govuk-button govuk-button--secondary edit-clear" data-module="govuk-button">
@@ -461,8 +458,13 @@
               </div>
 
               <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="emissions-by-type">
-                
-                
+
+                <div class="graph-container" style="height: 436px; width: 50%; min-width: 400px; max-width: 700px;">
+                  <canvas class="emissions-chart" id="emissions-by-type-chart-high"></canvas>
+                  <canvas class="emissions-chart" id="emissions-by-type-chart-average"></canvas>
+                  <canvas class="emissions-chart" id="emissions-by-type-chart-low"></canvas>
+                </div>
+
                 <div class="govuk-form-group">
                   <label class="govuk-label" for="sort">
                     Graph type
@@ -473,13 +475,6 @@
                     <option value="low">Low</option>
                   </select>
                 </div>
-
-                <div class="graph-container" style="height: 436px; width: 50%; min-width: 400px; max-width: 700px;">
-                  <canvas class="emissions-chart" id="emissions-by-type-chart-high"></canvas>
-                  <canvas class="emissions-chart" id="emissions-by-type-chart-average"></canvas>
-                  <canvas class="emissions-chart" id="emissions-by-type-chart-low"></canvas>
-                </div>
-
                 <button class="govuk-button export-data" data-module="govuk-button" data-sdca-export="pas2080">
                   Export this data
                 </button>
