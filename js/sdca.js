@@ -907,8 +907,11 @@ var sdca = (function ($) {
 						{
 							label: 'Cumulative emissions',
 							data: dataRows,
-							fill: true,
-							borderColor: 'rgb(0, 0, 0)',
+							fill: {
+								target: 'origin',
+								//above: '#1d70b8'
+							},
+							borderColor: '#1d70b8',
 							tension: 0.1
 						}
 					]
