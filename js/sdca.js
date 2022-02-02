@@ -770,7 +770,7 @@ var sdca = (function ($) {
 				};
 
 				let dataStr = JSON.stringify(dataExports[dataToExport]);
-				let exportFileDefaultName = 'data.json';
+				let exportFileDefaultName = 'carbon-calculator-scheme-results.json';
 
 				// Create downloadable element and click it
 				var element = document.createElement('a');
