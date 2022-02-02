@@ -85,19 +85,25 @@ class sdcaModel
 	# Processing function for locations model
 	public function locationsModelProcessing ($data)
 	{
+		# Ensure data supplied
+		if (!isSet ($_GET['geojson']) || !strlen ($_GET['geojson'])) {
+			return array ('error' => 'No scheme data supplied.');
+		}
+		
 		# Obtain the user input
-		#!# Validation pending
-		$input = json_decode ($_GET['geojson'], true);
+		if (!($geojson = json_decode ($_GET['geojson'], true)) || !$this->validGeojson ($geojson)) {
+			return array ('error' => 'Invalid geographical data supplied.');
+		}
 		
 		# Construct the JSON to be sent to the API; see example_r_input.json
 		$json = array ();
 		
 		# Value for user_input
-		$json['user_input'] = array (json_encode ($input));
+		$json['user_input'] = json_encode ($geojson);
 		
 		# Values for intervention_assets
 		$interventions = array ();
-		foreach ($input['features'] as $intervention) {
+		foreach ($geojson['features'] as $intervention) {
 			$interventions[] = $intervention['properties']['intervention'];
 		}
 		$intervention_assets = $this->databaseConnection->select ($this->settings['database'], 'intervention_assets', array ('intervention' => $interventions));
@@ -136,7 +142,7 @@ class sdcaModel
 			FROM desire_lines
 			WHERE ST_Within( geometrySrid0, ST_Buffer( ST_GeomFromGeoJSON(:geometry, 1, 0), 0.02) );
 		;";
-		$preparedStatementValues = array ('geometry' => json_encode ($input));
+		$preparedStatementValues = array ('geometry' => json_encode ($geojson));
 		$desire_linesRaw = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
 		$desire_lines = array ('type' => 'FeatureCollection', 'features' => array ());
 		foreach ($desire_linesRaw as $row) {
@@ -175,7 +181,7 @@ class sdcaModel
 			GROUP BY material_types
 			ORDER BY material_types
 		;";
-		$preparedStatementValues = array ('geometry' => json_encode ($input));
+		$preparedStatementValues = array ('geometry' => json_encode ($geojson));
 		$json['material_sites'] = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
 		
 		# Construct as string
@@ -192,6 +198,39 @@ class sdcaModel
 		
 		# Return the result
 		return $result;
+	}
+	
+	
+	# Function to check GeoJSON validity
+	private function validGeojson ($geojson)
+	{
+		# Perform basic checks on GeoJSON structure
+		if (
+			   !isSet ($geojson['type'])
+			|| !isSet ($geojson['features'])
+			|| !is_array ($geojson['features'])
+		) {
+			return false;
+		}
+		
+		# Perform basic checks on features
+		foreach ($geojson['features'] as $feature) {
+			if (
+				   !isSet ($feature['type'])
+				|| !isSet ($feature['properties'])
+				|| !is_array ($feature['properties'])
+				|| !isSet ($feature['geometry'])
+				|| !is_array ($feature['geometry'])
+				|| !isSet ($feature['geometry']['type'])
+				|| !isSet ($feature['geometry']['coordinates'])
+				|| !is_array ($feature['geometry']['coordinates'])
+			) {
+				return false;
+			}
+		}
+		
+		# No problems
+		return true;
 	}
 	
 	
