@@ -713,7 +713,6 @@ var sdca = (function ($) {
 					dataType: 'json',
 					data: {
 						geojson: payload,
-						line: 'this is not being used by the API',
 						bbox: '0,0,0,0',	// Random value to avoid rejection from sample API
 						zoom: 14			// Random value to avoid rejection from sample API
 					},
