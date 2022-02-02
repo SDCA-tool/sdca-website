@@ -204,8 +204,9 @@ var sdca = (function ($) {
 		type: 'FeatureCollection',
 		features: []
 	};
-
 	var _currentlyEditingRegistryIndex = -1; // Store the intervention we are editing for deletion purposes
+
+	var _map = false; // Store the map object from layerviewer
 	
 	return {
 		
@@ -277,6 +278,23 @@ var sdca = (function ($) {
 
 			// Save the panel as current
 			_currentPanelId = panelToShow;
+
+			// Special panel behaviours
+			if (panelToShow == 'draw-intervention') {
+				$('.govuk-grid-column-two-thirds, .govuk-grid-column-one-third').addClass('normal', resizeMap());
+			} else {
+				$('.govuk-grid-column-two-thirds, .govuk-grid-column-one-third').removeClass('normal', resizeMap());
+			}
+
+			function resizeMap() {
+				setTimeout(function () {
+					if (_map) {
+						_map.resize();
+						window.dispatchEvent(new Event('resize'));
+					}
+				}, 500)
+
+			}
 		},
 
 
@@ -646,6 +664,7 @@ var sdca = (function ($) {
 						
 						// Run the layerviewer for these settings and layers
 						layerviewer.initialise (_settings, _layerConfig);
+						_map = layerviewer.getMap ();
 					});
 				});
 			});
