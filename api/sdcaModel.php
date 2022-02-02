@@ -48,36 +48,11 @@ class sdcaModel
 	*/
 
 
-	# Data for locations test
+	# Processing function for locations model
 	public function locationsModel (&$error = false)
 	{
-		# Get the line
-		if (!isSet ($_GET['line']) || !strlen ($_GET['line'])) {
-			$error = 'No line supplied';
-			return false;
-		}
+		#!# Switch to POST
 		
-		# Base values
-		$fields = array ('id');
-		$constraints = array ();
-		$parameters = array ();
-		$limit = 1;
-		
-		# Return the model
-		return array (
-			'table' => $this->tablePrefix . 'carbon',
-			'fields' => $fields,
-			'constraints' => $constraints,
-			'parameters' => $parameters,
-			'limit' => $limit,
-			'format' => 'flatjson',
-		);
-	}
-	
-	
-	# Processing function for locations model
-	public function locationsModelProcessing ($data)
-	{
 		# Ensure data supplied
 		if (!isSet ($_GET['geojson']) || !strlen ($_GET['geojson'])) {
 			return array ('error' => 'No scheme data supplied.');

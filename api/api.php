@@ -76,34 +76,12 @@ class api
 			$this->sdcaModel->enableBetaMode ();
 		}
 		
-		# Get the model
-		$model = $this->sdcaModel->{$method} ($error);		// e.g. $this->sdcaModel->example ($error)
+		# Get the result from the model
+		$data = $this->sdcaModel->{$method} ($error);		// e.g. $this->sdcaModel->example ($error)
 		if ($error) {
 			return $this->error ($error);
 		}
 		// var_dump ($model);
-		
-		# Get the data
-		if (isSet ($model['query'])) {
-			$data = $this->getData ($model['query'], array ());
-		} else {
-			$data = $this->select ($model['table'], $model['fields'], $model['constraints'], $model['limit'], $model['parameters'], $error);
-		}
-		if ($error) {
-			return $this->error ($error);
-		}
-		
-		# Determine if a singular result should be returned; currently only supported for getData()
-		$singular = (isSet ($model['singular']) && $model['singular']);
-		if ($singular) {
-			$data = $data[0];
-		}
-		
-		# Post-process the data if required
-		$postProcessingMethod = $method . 'Processing';
-		if (method_exists ($this->sdcaModel, $postProcessingMethod)) {
-			$data = $this->sdcaModel->{$postProcessingMethod} ($data);
-		}
 		
 		# Detect error
 		if (isSet ($data['error'])) {
@@ -341,38 +319,6 @@ class api
 		
 		# Return the zoom
 		return $zoom;
-	}
-	
-	
-	# Database select wrapper
-	private function select ($table, $fields, $where, $limit, $parameters, &$error = false)
-	{
-		# Assemble the query
-		$query = '
-			SELECT ' . implode (', ', $fields) . '
-			FROM ' . $table . '
-			' . ($where ? 'WHERE ' . implode (' AND ', $where) : '') . '
-			' . ($limit ? "LIMIT {$limit}" : '') . '
-		;';
-		
-		# Get the data
-		#!# Error handling needed
-		$data = $this->databaseConnection->getData ($query, false, true, $parameters);
-		
-		# Return the data
-		return $data;
-	}
-	
-	
-	# Database function to get data
-	private function getData ($query, $parameters = array ())
-	{
-		# Get the data
-		#!# Error handling needed
-		$data = $this->databaseConnection->getData ($query, false, true, $parameters);
-		
-		# Return the data
-		return $data;
 	}
 	
 	
