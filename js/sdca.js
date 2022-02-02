@@ -286,6 +286,8 @@ var sdca = (function ($) {
 				$('.govuk-grid-column-two-thirds, .govuk-grid-column-one-third').removeClass('normal', resizeMap());
 			}
 
+			// Reset the map after a 500ms timeout
+			// CSS rule defines transition: .5 for these divs
 			function resizeMap() {
 				setTimeout(function () {
 					if (_map) {
@@ -293,7 +295,6 @@ var sdca = (function ($) {
 						window.dispatchEvent(new Event('resize'));
 					}
 				}, 500)
-
 			}
 		},
 
