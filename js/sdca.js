@@ -463,7 +463,17 @@ var sdca = (function ($) {
 				`);
 			}
 
+			// Update the table
 			$('.user-interventions-list').html(html);
+			
+			// Change button state to secondary when the registry has a feature in it
+			if ($.isEmptyObject (_interventionRegistry.features)) {
+				$('button#add-intervention').html ('Add an intervention');
+				$('button#add-intervention').removeClass ('govuk-button--secondary');
+			} else {
+				$('button#add-intervention').html ('Add another intervention');
+				$('button#add-intervention').addClass ('govuk-button--secondary');
+			}
 		},
 
 
