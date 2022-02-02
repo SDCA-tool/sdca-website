@@ -277,6 +277,15 @@ var sdca = (function ($) {
 
 			// Save the panel as current
 			_currentPanelId = panelToShow;
+
+			// Special panel behaviours
+			if (panelToShow == 'draw-intervention') {
+				$('.govuk-grid-column-two-thirds').addClass('normal');
+				$('.govuk-grid-column-one-third').addClass('normal');
+			} else {
+				$('.govuk-grid-column-two-thirds').removeClass('normal');
+				$('.govuk-grid-column-one-third').removeClass('normal');
+			}
 		},
 
 
