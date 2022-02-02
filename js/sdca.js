@@ -170,16 +170,18 @@ var sdca = (function ($) {
 		}
 	};
 	
+
+	/* UI state */
 	var _startupPanelId = 'design-scheme'; // Panel to show at startup
 	var _isTempPanel = false; // If we have a temp (i.e. data layers) panel in view
 	var _currentPanelId = null; // Store the current panel in view
 	var _previousPanelId = null; // The previous panel. Used when exiting the _tempPanel
-	
+
+
+	/* Interventions state control */
 	var _interventions = null; // Store the parsed array of interventions JSON
 	var _currentInterventionIndex = null; // Store the intervention index relative to the parsed interventions JSON
-
 	var _drawingHappening = false;
-
 	var _dummyApiPayload = {
 		type: 'FeatureCollection',
 		features: [
@@ -199,18 +201,22 @@ var sdca = (function ($) {
 			}
 		]
 	};
-
-	// Track current frontend interventions
 	var _interventionRegistry = {
 		_timestamp: null,
 		type: 'FeatureCollection',
 		features: []
 	};
-	var _lastApiCallRegistryTimestamp = null;
-	var _currentlyEditingRegistryIndex = -1; // Store the intervention we are editing for deletion purposes
 
+
+	/* API state */
+	var _lastApiCallRegistryTimestamp = null; // Store the last time we called the API, for comparison to the registry timestamp
+	var _currentlyEditingRegistryIndex = -1; // Store the intervention we are editing for deletion purposes
+	var _returnedApiData = null; // Store API returned data for user export purposes
+
+	/* Other */
 	var _map = false; // Store the map object from layerviewer
-	
+
+
 	return {
 		
 	// Public functions
@@ -238,6 +244,8 @@ var sdca = (function ($) {
 			sdca.registerIntervention ();
 			sdca.editIntervention ();
 			sdca.deleteIntervention ();
+
+			sdca.exportData ();
 
 			// Initialisation is wrapped within loadDatasets
 			// layerviewer.initialise (_settings, _layerConfig);
@@ -751,6 +759,7 @@ var sdca = (function ($) {
 						zoom: 14			// Random value to avoid rejection from sample API
 					},
 					success: function (data, textStatus, jqXHR) {
+						_returnedApiData = data;
 						sdca.showResults (data);
 						sdca.switchPanel ('view-results');
 						
@@ -777,8 +786,33 @@ var sdca = (function ($) {
 				layerviewer.eraseDirectGeojson ('results');
 			});
 		},
-		
-		
+
+
+		// Export the data returned from the API
+		exportData: function () {
+			$('#export-data').on('click', function () {
+				// Return if no data
+				if (!_returnedApiData) {
+					console.log('There is no data to export yet. Have you pressed calculate?')
+				}
+
+				// Create payload
+				let dataStr = JSON.stringify(_returnedApiData);
+				let exportFileDefaultName = 'data.json';
+
+				// Create downloadable element and click it
+				var element = document.createElement('a');
+				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(dataStr));
+				element.setAttribute('download', exportFileDefaultName);
+				element.setAttribute('target', '_blank');
+				element.style.display = 'none';
+				document.body.appendChild(element);
+				element.click();
+				document.body.removeChild(element);
+			});
+		},
+
+
 		// Function to show the results
 		showResults: function (data)
 		{
