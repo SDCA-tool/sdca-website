@@ -907,16 +907,18 @@ var sdca = (function ($) {
 							label: 'PAS2080 type',
 							data: dataRows,
 							fill: true,
+							// from GOVUK colours https://design-system.service.gov.uk/styles/colour/
 							backgroundColor: [
-								'rgb(0, 122, 124)',
-								'rgb(170, 143, 0)',
-								'rgb(167, 204, 204)',
-								'rgb(210, 88, 82)',
-								'rgb(42, 0, 42)',
-								'rgb(128, 0, 128)',
-								'rgb(133, 150, 167)',
-								'rgb(238, 238, 219)',
-								'rgb(128, 0, 0)'
+								'#1d70b8', // blue
+								'#28a197', // tuorquoise
+								'#85994b', // light-green
+								'#b58840', // brown
+								'#f47738', // orange
+								'#f499be', // light-pink
+								'#d53880', // pink
+								'#912b88', // bright-purple
+								'#6f72af', // light-purple
+								'##5694ca' // light-blie
 							],
 							tension: 0.1
 						}
