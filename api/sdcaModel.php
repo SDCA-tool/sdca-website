@@ -58,17 +58,10 @@ class sdcaModel
 		}
 		
 		# Base values
-		$fields = array (
-			'lsoa11',
-			//'ST_AsGeoJSON(geometry, 5) AS geometry',
-		);
-		$constraints = array (
-			'ST_Intersects(ST_GeomFromGeoJSON(:line), geometry)'
-		);
-		$parameters = array (
-			'line' => '{"type": "LineString", "coordinates": ' . $_GET['line'] . '}',
-		);
-		$limit = false;
+		$fields = array ('id');
+		$constraints = array ();
+		$parameters = array ();
+		$limit = 1;
 		
 		# Return the model
 		return array (
