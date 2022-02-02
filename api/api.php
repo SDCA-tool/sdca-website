@@ -81,25 +81,18 @@ class api
 		if ($error) {
 			return $this->error ($error);
 		}
-		// var_dump ($model);
 		
 		# Detect error
 		if (isSet ($data['error'])) {
 			return $this->error ($data['error']);
 		}
 		
-		# If the model specifies an output format, use that
-		if (isSet ($model['format'])) {
-			$format = $model['format'];
-		}
-		
 		# Output the data
 		switch ($format) {
 			
-			# GeoJSON (API)
+			# JSON (API)
 			case 'json':
-				$geojson = $this->asGeojson ($data);
-				return $this->responseJson ($geojson);
+				return $this->responseJson ($data);
 				break;
 				
 			# GeoJSON (export)
