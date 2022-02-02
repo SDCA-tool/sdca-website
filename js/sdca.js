@@ -182,25 +182,6 @@ var sdca = (function ($) {
 	var _interventions = null; // Store the parsed array of interventions JSON
 	var _currentInterventionIndex = null; // Store the intervention index relative to the parsed interventions JSON
 	var _drawingHappening = false;
-	var _dummyApiPayload = {
-		type: 'FeatureCollection',
-		features: [
-			{
-				type: 'Feature',
-				properties: {
-					infrastructure_type: 'transport',
-					mode_class: 'Rail',
-					mode: 'High speed rail',
-					intervention_class: 'New construction',
-					intervention: 'Viaduct'
-				},
-				geometry: {
-					type: 'LineString',
-					coordinates: []
-				}
-			}
-		]
-	};
 	var _interventionRegistry = {
 		_timestamp: null,
 		type: 'FeatureCollection',
@@ -710,25 +691,18 @@ var sdca = (function ($) {
 				// Show the loading spinner
 				$('.loading-spinner').css ('display', 'inline-block');
 				
-				// Capture the data, which will be GeoJSON
-				var geojson = $('#geometry').val ();
-				
-				// End if the line has been cleared
-				if (geojson === '') {return;}
-				
-				// Build dummy payload
-				var dummyPayload = _dummyApiPayload;
-				dummyPayload.features[0].geometry.coordinates = JSON.parse(geojson);
-				dummyPayload = JSON.stringify(dummyPayload);
+				// Build payload payload
+				var payload = JSON.stringify(_interventionRegistry);
 				
 				// Send the data to the API
 				$.ajax ({
 					type: 'GET',
 					url: '/api/v1/locations.json',
+					url: 'https://dev.carbon.place/api/v1/locations.json',
 					dataType: 'json',
 					data: {
-						geojson: dummyPayload,
-						line: geojson,
+						geojson: payload,
+						line: 'this is not being used by the API',
 						bbox: '0,0,0,0',	// Random value to avoid rejection from sample API
 						zoom: 14			// Random value to avoid rejection from sample API
 					},
