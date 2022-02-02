@@ -17,14 +17,18 @@ body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
 .govuk-grid-column-two-thirds.normal {width: 66.6%;}
 .govuk-grid-column-one-third.normal {width: 33.3%;}
 
-#map {width: 100%; min-height: 700px; height: calc(100vh - 260px); position: relative;}
-#map button.filter-button {position: absolute; top: 0; right: 0; margin: 25px; z-index: 1;}
-#geocoder input {width: 280px; border: 2px solid #0b0c0c; box-shadow: none;}
-.ui-autocomplete-loading {background: white url("/images/ui-anim_basic_16x16.gif") right center no-repeat;}
-
 .govuk-panel {padding: 20px}
 .govuk-panel__title {font-size: 1.5rem}
 .govuk-panel__body {font-size: 1rem;}
+
+/* Map and map controls*/
+#map {width: 100%; min-height: 700px; height: calc(100vh - 260px); position: relative;}
+#map button.filter-button {position: absolute; top: 0; right: 0; margin: 10px 20px; z-index: 1;}
+#geocoder input {width: 280px; border: 2px solid #0b0c0c; box-shadow: none;}
+.ui-autocomplete-loading {background: white url("/images/ui-anim_basic_16x16.gif") right center no-repeat;}
+
+#styleswitcher {font-size: 20px; font-family: Helvetica, Arial, sans-serif; padding: 0 15px 0 0; border:  2px solid #0b0c0c;}
+#styleswitcher ul li input {transform: scale(2); margin: 0 15px 5px 10px;}
 
 #sdca-panel-container {min-height: 700px; height: calc(100vh - 260px); overflow-y: scroll;}
 
