@@ -788,7 +788,7 @@ var sdca = (function ($) {
 		},
 
 
-		// Export the data returned from the API
+		// Export or share the data returned from the API
 		exportData: function () {
 			$('#export-data').on('click', function () {
 				// Return if no data
@@ -805,6 +805,26 @@ var sdca = (function ($) {
 				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(dataStr));
 				element.setAttribute('download', exportFileDefaultName);
 				element.setAttribute('target', '_blank');
+				element.style.display = 'none';
+				document.body.appendChild(element);
+				element.click();
+				document.body.removeChild(element);
+			});
+
+
+			$('#share-to-email').on('click', function () {
+				// Return if no data
+				if (!_returnedApiData) {
+					console.log('There is no data to export yet. Have you pressed calculate?')
+				}
+
+				// Create payload
+				// !TODO This will need to export any URL components
+				var href = "mailto:?subject=Shared Digital Carbon Architecture http://dev.carbon.place"
+
+				// Create downloadable element and click it
+				var element = document.createElement('a');
+				element.setAttribute('href', href);
 				element.style.display = 'none';
 				document.body.appendChild(element);
 				element.click();
