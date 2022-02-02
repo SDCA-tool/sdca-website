@@ -977,7 +977,12 @@ var sdca = (function ($) {
 					hover: {
 						animationDuration: 0 // duration of animations when hovering an item
 					},
-					responsiveAnimationDuration: 0 // animation duration after a resize
+					responsiveAnimationDuration: 0, // animation duration after a resize
+					plugins: {
+						legend: {
+							position: 'left'
+						}
+					}
 				}
 			});
 		},
