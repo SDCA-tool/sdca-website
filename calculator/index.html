@@ -88,7 +88,8 @@
           alpha
         </strong>
         <span class="govuk-phase-banner__text">
-          This is a new service – your <a class="govuk-link" href="/contacts/">feedback</a> will help us to improve it. &nbsp; Calculations currently limited to a single 'Viaduct' intervention.
+          This is a new service – your <a class="govuk-link" href="/contacts/">feedback</a> will help us to improve it.
+          &nbsp; Calculations currently limited to a single 'Viaduct' intervention.
         </span>
       </p>
     </div>
@@ -129,7 +130,7 @@
       <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
 
       <!-- Chart.js -->
-	    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
 
       <!-- Map application and its config, implementing the LayerViewer library -->
       <script src="/.config.js"></script>
@@ -274,7 +275,7 @@
             <p class="govuk-body">Interventions you have drawn on the map will appear here.</p>
 
             <dl class="govuk-summary-list user-interventions-list">
-            <!-- User interventions will be populated here-->
+              <!-- User interventions will be populated here-->
             </dl>
 
             <button class="govuk-button" data-module="govuk-button" data-sdca-target-panel="search-for-intervention">
@@ -286,8 +287,7 @@
             <h2 class="govuk-heading-m">When you're done</h2>
             <p class="govuk-body">When you have added your interventions to the map, you can calculate the results.</p>
 
-            <button class="govuk-button" data-module="govuk-button"
-              id="calculate">
+            <button class="govuk-button" data-module="govuk-button" id="calculate">
               Calculate <div class="govuk-!-margin-left-1 loading-spinner"></div>
             </button>
           </div>
@@ -316,8 +316,8 @@
             </div>
 
             <div class="govuk-accordion" data-module="govuk-accordion" id="interventions-accordion">
-            
-            <!-- Interventions will be populated here-->
+
+              <!-- Interventions will be populated here-->
 
             </div>
           </div>
@@ -388,10 +388,11 @@
             <h2 class="govuk-heading-l">Scheme results</h2>
 
             <div class="govuk-tabs nested-tabs" data-module="govuk-tabs">
-              
+
               <h2 class="govuk-tabs__title">
                 Contents
               </h2>
+
               <ul class="govuk-tabs__list">
                 <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
                   <a class="govuk-tabs__tab" href="#summary">
@@ -409,7 +410,9 @@
                   </a>
                 </li>
               </ul>
+
               <div class="govuk-tabs__panel" id="summary">
+                
                 <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-2">
                   <h1 class="govuk-panel__title netzero_compatible">
                     Net zero compatible?
@@ -418,6 +421,7 @@
                     Payback time:<br><strong><span class="payback_time">?</span></strong>
                   </div>
                 </div>
+
                 <table class="govuk-table">
                   <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -440,11 +444,13 @@
                     </tr>
                   </tbody>
                 </table>
-                
+
                 <h2 class="govuk-heading-m">Use this data somewhere else</h2>
-                <p class="govuk-body">The data you can see in this tool can be exported into a universal format called JSON, which can be used in other places.</p>
+                <p class="govuk-body">The data you can see in this tool can be exported into a universal format called
+                  JSON, which can be used in other places.</p>
+
                 <div class="govuk-button-group">
-                  <button class="govuk-button" data-module="govuk-button" id="export-data">
+                  <button class="govuk-button" data-module="govuk-button" id="export-data" data-sdca-export="all">
                     Export this data
                   </button>
                   <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="share-to-email">
@@ -454,28 +460,32 @@
 
               </div>
 
-              <div class="govuk-tabs__panel govuk-tabs__panel--hidden pas2080" id="emissions-by-type">
+              <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="emissions-by-type">
                 <div class="graph-container" style="height: 420px; width: 50%; min-width: 400px; max-width: 700px;">
                   <canvas id="emissions-by-type-chart"></canvas>
                 </div>
-                
-                <!-- GOVUK table will be placed here showing emissions by ype-->
-
+                <button class="govuk-button export-data" data-module="govuk-button" data-sdca-export="pas2080">
+                  Export this data
+                </button>
+                <div class="pas2080">
+                  <!-- GOVUK table will be placed here showing emissions by ype-->
+                </div>
               </div>
-              <div class="govuk-tabs__panel govuk-tabs__panel--hidden timeseries" id="emissions-by-year">
+
+              <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="emissions-by-year">
                 <div class="graph-container" style="height: 330px; width: 100%; min-width: 400px; max-width: 700px;">
-                 <canvas id="emissions-by-year-chart"></canvas>
-               </div>
-               <!-- GOVUK table will be placed here showing emissions by year-->
+                  <canvas id="emissions-by-year-chart"></canvas>
+                </div>
+                <button class="govuk-button export-data" data-module="govuk-button" data-sdca-export="timeseries">
+                  Export this data
+                </button>
+                <div class="timeseries">
+                  <!-- GOVUK table will be placed here showing emissions by year-->
+                </div>
               </div>
+
             </div>
-
-
           </div>
-
-
-
-
         </div>
       </div>
 
@@ -500,9 +510,7 @@
           </span>
         </div>
         <div class="govuk-footer__meta-item">
-          <!--
-          <a class="govuk-footer__link govuk-footer__copyright-logo" href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">© Crown copyright</a>
--->
+          
         </div>
         <img src="/images/leeds.png" width="200" alt="University of Leeds" />
       </div>

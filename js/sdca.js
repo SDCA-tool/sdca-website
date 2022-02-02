@@ -796,14 +796,22 @@ var sdca = (function ($) {
 
 		// Export or share the data returned from the API
 		exportData: function () {
-			$('#export-data').on('click', function () {
+			$('.export-data').on('click', function () {
 				// Return if no data
 				if (!_returnedApiData) {
 					console.log('There is no data to export yet. Have you pressed calculate?')
 				}
 
 				// Create payload
-				let dataStr = JSON.stringify(_returnedApiData);
+				var dataToExport = $(this).data('sdca-export');
+				
+				var dataExports = {
+					all: _returnedApiData,
+					pas2080: _returnedApiData.pas2080,
+					timeseries: _returnedApiData.timeseries
+				};
+
+				let dataStr = JSON.stringify(dataExports[dataToExport]);
 				let exportFileDefaultName = 'data.json';
 
 				// Create downloadable element and click it
