@@ -244,6 +244,7 @@ var sdca = (function ($) {
 			sdca.registerIntervention ();
 			sdca.editIntervention ();
 			sdca.deleteIntervention ();
+			sdca.handleChartRadios ();
 
 			sdca.exportData ();
 
@@ -937,53 +938,87 @@ var sdca = (function ($) {
 		},
 
 
+		// Handle the radio to show the right chart
+		handleChartRadios: function () {			
+			// Listen for change and choose the appropriate chart
+			$('#emissions-by-type-select').on('change', function () {
+				var selectedChartType = $('#emissions-by-type-select').val()
+				$('.emissions-chart').hide();
+				$('#emissions-by-type-chart-' + selectedChartType).show();
+			});
+
+			// At startup, select default
+			$('#emissions-by-type-select').trigger('change');
+		},
+
+
 		// Generate emissions by type pie chart
 		generateEmissionsByTypeChart: function (data) {
-			const ctx = document.getElementById('emissions-by-type-chart').getContext('2d');
-
+			// Chart labels
 			var labels = data.map(row => row.pas2080_code);
-			var dataRows = data.map(row => row.emissions);
 
-			new Chart(ctx, {
-				type: 'doughnut',
-				data: {
-					labels: labels,
-					datasets: [
-						{
-							label: 'PAS2080 type',
-							data: dataRows,
-							fill: true,
-							// from GOVUK colours https://design-system.service.gov.uk/styles/colour/
-							backgroundColor: [
-								'#1d70b8', // blue
-								'#28a197', // tuorquoise
-								'#85994b', // light-green
-								'#b58840', // brown
-								'#f47738', // orange
-								'#f499be', // light-pink
-								'#d53880', // pink
-								'#912b88', // bright-purple
-								'#6f72af', // light-purple
-								'##5694ca' // light-blie
-							],
-							tension: 0.1
-						}
-					]
+			// Define charts
+			var charts = [
+				{
+					type: 'high',
+					element: document.getElementById('emissions-by-type-chart-high').getContext('2d'),
+					dataRows: data.map(row => row.emissions_high)
 				},
-				options: {
-					animation: {
-						duration: 0 // general animation time
+				{
+					type: 'average',
+					element: document.getElementById('emissions-by-type-chart-average').getContext('2d'),
+					dataRows: data.map(row => row.emissions)
+				},
+				{
+					type: 'low',
+					element: document.getElementById('emissions-by-type-chart-low').getContext('2d'),
+					dataRows: data.map(row => row.emissions_low)
+				}
+			]
+
+			// Programatically generate 3 charts
+			charts.forEach(chart => {
+				new Chart(chart.element, {
+					type: 'doughnut',
+					data: {
+						labels: labels,
+						datasets: [
+							{
+								label: 'PAS2080 type',
+								data: chart.dataRows,
+								fill: true,
+								// from GOVUK colours https://design-system.service.gov.uk/styles/colour/
+								backgroundColor: [
+									'#1d70b8', // blue
+									'#28a197', // tuorquoise
+									'#85994b', // light-green
+									'#b58840', // brown
+									'#f47738', // orange
+									'#f499be', // light-pink
+									'#d53880', // pink
+									'#912b88', // bright-purple
+									'#6f72af', // light-purple
+									'##5694ca' // light-blie
+								],
+								tension: 0.1
+							}
+						]
 					},
-					hover: {
-						animationDuration: 0 // duration of animations when hovering an item
-					},
-					responsiveAnimationDuration: 0, // animation duration after a resize
-					plugins: {
-						legend: {
-							position: 'left'
+					options: {
+						animation: {
+							duration: 0 // general animation time
+						},
+						hover: {
+							animationDuration: 0 // duration of animations when hovering an item
+						},
+						responsiveAnimationDuration: 0, // animation duration after a resize
+						plugins: {
+							legend: {
+								position: 'right'
+							}
 						}
 					}
-				}
+				});
 			});
 		},
 		

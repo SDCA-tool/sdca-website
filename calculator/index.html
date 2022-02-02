@@ -461,12 +461,29 @@
               </div>
 
               <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="emissions-by-type">
-                <div class="graph-container" style="height: 436px; width: 50%; min-width: 400px; max-width: 700px;">
-                  <canvas id="emissions-by-type-chart"></canvas>
+                
+                
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="sort">
+                    Graph type
+                  </label>
+                  <select class="govuk-select" id="emissions-by-type-select" name="sort">
+                    <option value="high">High</option>
+                    <option value="average" selected>Average</option>
+                    <option value="low">Low</option>
+                  </select>
                 </div>
+
+                <div class="graph-container" style="height: 436px; width: 50%; min-width: 400px; max-width: 700px;">
+                  <canvas class="emissions-chart" id="emissions-by-type-chart-high"></canvas>
+                  <canvas class="emissions-chart" id="emissions-by-type-chart-average"></canvas>
+                  <canvas class="emissions-chart" id="emissions-by-type-chart-low"></canvas>
+                </div>
+
                 <button class="govuk-button export-data" data-module="govuk-button" data-sdca-export="pas2080">
                   Export this data
                 </button>
+
                 <div class="pas2080">
                   <!-- GOVUK table will be placed here showing emissions by ype-->
                 </div>
