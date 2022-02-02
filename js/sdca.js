@@ -268,7 +268,10 @@ var sdca = (function ($) {
 
 			// Is this panel a temporary one? Set status
 			_isTempPanel = ($('#' + panelToShow).data('sdca-is-temp-panel') ? true : false);
-
+			
+			// Add autofocus if required
+			$('.autofocus').focus ();
+			
 			// Save the panel as current
 			_currentPanelId = panelToShow;
 		},
