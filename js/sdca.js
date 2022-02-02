@@ -712,9 +712,7 @@ var sdca = (function ($) {
 					url: '/api/v1/locations.json',
 					dataType: 'json',
 					data: {
-						geojson: payload,
-						bbox: '0,0,0,0',	// Random value to avoid rejection from sample API
-						zoom: 14			// Random value to avoid rejection from sample API
+						geojson: payload
 					},
 					success: function (data, textStatus, jqXHR) {
 						_returnedApiData = data;
