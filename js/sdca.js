@@ -726,6 +726,8 @@ var sdca = (function ($) {
 
 			// Run when the captured geometry value changes; this is due to the .trigger ('change') in layerviewer.drawing () as a result of the draw.create/draw.update events
 			$('button#calculate').click (function (e) {
+				// Disable button to prevent multiple clicks
+				$('button#calculate').attr('disabled', 'disabled');
 				
 				// Do not resend data If we have not made any changes to the intervention registry
 				if (_lastApiCallRegistryTimestamp == _interventionRegistry._timestamp) {
@@ -762,9 +764,6 @@ var sdca = (function ($) {
 						_returnedApiData = data;
 						sdca.showResults (data);
 						sdca.switchPanel ('view-results');
-						
-						// Reset the loading spinner
-						$('.loading-spinner').css ('display', 'none');
 
 						// Register the last API call
 						_lastApiCallRegistryTimestamp = _interventionRegistry._timestamp;
@@ -773,6 +772,13 @@ var sdca = (function ($) {
 						var responseBody = JSON.parse (jqXHR.responseText);
 						alert ('[Prototype development:]\n\nError:\n\n' + responseBody.error);
 					},
+					complete: function () {
+						// Reset the loading spinner
+						$('.loading-spinner').css ('display', 'none');
+
+						// Enable button to prevent multiple clicks
+						$('button#calculate').removeAttr('disabled');
+					}
 				});
 			});
 			
