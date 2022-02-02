@@ -1,7 +1,7 @@
 // SDCA implementation code
 
 /*jslint browser: true, white: true, single: true, for: true, unordered: true, long: true */
-/*global $, alert, console, window, osm2geo, layerviewer, jQuery */
+/*global $, alert, console, window, osm2geo, layerviewer, jQuery, turf, Chart */
 
 var sdca = (function ($) {
 	
@@ -245,9 +245,9 @@ var sdca = (function ($) {
 				if (panel !== undefined) {
 					// Are we currently exiting a temporary panel (i.e. layer viewer)
 					if (_isTempPanel) {
-						sdca.switchPanel(_previousPanelId)
+						sdca.switchPanel(_previousPanelId);
 					} else {
-						sdca.switchPanel(panel)
+						sdca.switchPanel(panel);
 					}
 				}
 			});
@@ -267,7 +267,7 @@ var sdca = (function ($) {
 			$('#' + panelToShow).show();
 
 			// Is this panel a temporary one? Set status
-			_isTempPanel = ($('#' + panelToShow).data('sdca-is-temp-panel') ? true : false)
+			_isTempPanel = ($('#' + panelToShow).data('sdca-is-temp-panel') ? true : false);
 
 			// Save the panel as current
 			_currentPanelId = panelToShow;
@@ -294,26 +294,26 @@ var sdca = (function ($) {
 			$.each(_interventions, function (interventionIndex, intervention) {
 
 				// Save the python-case intervention mode (i.e. high-speed-rail)
-				mode = sdca.convertLabelToPython(intervention.mode)
+				mode = sdca.convertLabelToPython(intervention.mode);
 
-				// If we already have an accordion header for this, 
+				// If we already have an accordion header for this,
 				if ($('#intervention-' + mode).length > 0) {
 
 					// Append a new list row
 					$('#interventions-accordion-content-' + mode + ' .govuk-summary-list').append(
 						sdca.generateInterventionRowHtml(intervention, interventionIndex)
-					)
+					);
 				} else {
 
-					// Otherwise, append a new sectiona
+					// Otherwise, append a new section
 					$('#interventions-accordion').append(
 						sdca.generateInterventionHeaderHtml(intervention, interventionIndex)
-					)
+					);
 				}
 			});
 
 			// Initialise the accordion with the new HTML
-			window.GOVUKFrontend.initAll()
+			window.GOVUKFrontend.initAll();
 		},
 
 
@@ -390,8 +390,7 @@ var sdca = (function ($) {
 				var geometryType = openGisTypes[_interventions[_currentInterventionIndex]] || 'LineString';
 
 				// Build the GeoJSON object
-				var newGeoJson =
-				{
+				var newGeoJson = {
 					type: 'Feature',
 					properties: {
 						infrastructure_type: currentIntervention.infrastructure_type,
@@ -404,7 +403,7 @@ var sdca = (function ($) {
 						type: geometryType,
 						coordinates: JSON.parse($('#geometry').val())
 					}
-				}
+				};
 
 				// Add this as a GeoJson object to the registry
 				_interventionRegistry.features.push(newGeoJson);
@@ -439,11 +438,11 @@ var sdca = (function ($) {
 					var line = turf.lineString(feature.geometry.coordinates);
 					distance = turf.length(line, { units: 'kilometers' }).toFixed(2);
 				} else {
-					distance = '1 mile'
+					distance = '1 mile';
 				}
 
 				// Generate the HTML
-				html += getSummaryListRow(indexInRegistry, feature.properties.intervention, feature.properties.mode, distance)
+				html += getSummaryListRow(indexInRegistry, feature.properties.intervention, feature.properties.mode, distance);
 			});
 
 			function getSummaryListRow(indexInRegistry, intervention, mode, distance) {
@@ -461,7 +460,7 @@ var sdca = (function ($) {
 					</a>
 					</dd>
 				</div>
-				`)
+				`);
 			}
 
 			$('.user-interventions-list').html(html);
@@ -489,7 +488,7 @@ var sdca = (function ($) {
 	
 					</div>
 					</div>
-				`)
+				`);
 		},
 
 
@@ -510,7 +509,7 @@ var sdca = (function ($) {
 					</a>
 				</dd>
 			</div>
-			`)
+			`);
 		},
 
 
@@ -534,12 +533,12 @@ var sdca = (function ($) {
 
 				// Filter rows
 				$('.govuk-summary-list__row').filter(function () {
-					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
 				});
 
 				// Hide any empty sections
 				$('.govuk-accordion__section').filter(function () {
-					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
 				});
 			});
 		},
@@ -744,7 +743,7 @@ var sdca = (function ($) {
 			$('.export-data').on('click', function () {
 				// Return if no data
 				if (!_returnedApiData) {
-					console.log('There is no data to export yet. Have you pressed calculate?')
+					console.log('There is no data to export yet. Have you pressed calculate?');
 				}
 
 				// Create payload
@@ -774,12 +773,12 @@ var sdca = (function ($) {
 			$('#share-to-email').on('click', function () {
 				// Return if no data
 				if (!_returnedApiData) {
-					console.log('There is no data to export yet. Have you pressed calculate?')
+					console.log('There is no data to export yet. Have you pressed calculate?');
 				}
 
 				// Create payload
 				// !TODO This will need to export any URL components
-				var href = "mailto:?subject=Shared Digital Carbon Architecture http://dev.carbon.place"
+				var href = "mailto:?subject=Shared Digital Carbon Architecture http://dev.carbon.place";
 
 				// Create downloadable element and click it
 				var element = document.createElement('a');
@@ -849,8 +848,8 @@ var sdca = (function ($) {
 		generateEmissionsByYearChart: function (data) {
 			const ctx = document.getElementById('emissions-by-year-chart').getContext('2d');
 			
-			var labels = data.map(row => row.year);
-			var dataRows = data.map(row => row.emissions_cumulative);
+			var labels = data.map((row) => row.year);
+			var dataRows = data.map((row) => row.emissions_cumulative);
 
 			new Chart(ctx, {
 				type: 'line',
@@ -868,16 +867,16 @@ var sdca = (function ($) {
 							tension: 0.1
 						}
 					]
-				},
+				}
 			});
 		},
 
 
 		// Handle the radio to show the right chart
-		handleChartRadios: function () {			
+		handleChartRadios: function () {
 			// Listen for change and choose the appropriate chart
 			$('#emissions-by-type-select').on('change', function () {
-				var selectedChartType = $('#emissions-by-type-select').val()
+				var selectedChartType = $('#emissions-by-type-select').val();
 				$('.emissions-chart').hide();
 				$('#emissions-by-type-chart-' + selectedChartType).show();
 			});
@@ -890,29 +889,29 @@ var sdca = (function ($) {
 		// Generate emissions by type pie chart
 		generateEmissionsByTypeChart: function (data) {
 			// Chart labels
-			var labels = data.map(row => row.pas2080_code);
+			var labels = data.map((row) => row.pas2080_code);
 
 			// Define charts
 			var charts = [
 				{
 					type: 'high',
 					element: document.getElementById('emissions-by-type-chart-high').getContext('2d'),
-					dataRows: data.map(row => row.emissions_high)
+					dataRows: data.map((row) => row.emissions_high)
 				},
 				{
 					type: 'average',
 					element: document.getElementById('emissions-by-type-chart-average').getContext('2d'),
-					dataRows: data.map(row => row.emissions)
+					dataRows: data.map((row) => row.emissions)
 				},
 				{
 					type: 'low',
 					element: document.getElementById('emissions-by-type-chart-low').getContext('2d'),
-					dataRows: data.map(row => row.emissions_low)
+					dataRows: data.map((row) => row.emissions_low)
 				}
-			]
+			];
 
 			// Programatically generate 3 charts
-			charts.forEach(chart => {
+			charts.forEach((chart) => {
 				new Chart(chart.element, {
 					type: 'doughnut',
 					data: {
