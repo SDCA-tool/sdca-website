@@ -747,11 +747,12 @@ var sdca = (function ($) {
 			_draw = layerviewer.getDrawObject();
 
 			// Listener for LayerViewer _drawingHappening
-			// Handle UI changes based on drawing state
+			// Drawing panel UI controller based on drawing state in LayerViewer
 			_draw.registerListener(function (drawingHappening) {
 				if (drawingHappening) {
 					$('.draw.line').hide();
 					$('.stop-drawing').show()
+					$('.drawing-complete').hide();
 				} else {
 					$('.draw.line').show().text('Redo drawing').addClass('govuk-button--secondary');
 					$('.stop-drawing').hide()
