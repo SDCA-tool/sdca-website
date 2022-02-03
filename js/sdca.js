@@ -765,7 +765,8 @@ var sdca = (function ($) {
 			// Only show the submit button once a geometry is present
 			$('#geometry').on('change', function (e) {
 				if ($('#geometry').val()) {
-					$('#calculate, .edit-clear').hide();
+					$('.edit-clear').hide();
+					$('#calculate').show();
 					$('.drawing-complete').show();
 				} else {
 					$('#calculate, .edit-clear').hide();
