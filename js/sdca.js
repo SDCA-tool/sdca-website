@@ -256,6 +256,17 @@ var sdca = (function ($) {
 				}
 			});
 
+			// Data layers panel: show active state
+			$('#explore-data-layers').on('click', function () {
+				$(this).toggleClass('selected');
+				
+				if ($(this).hasClass('selected')) {
+					$(this).text('Hide data layers panel')
+				} else {
+					$(this).text('Explore data layers')
+				}
+			});
+
 			// At startup, show the desired panel
 			sdca.switchPanel(_startupPanelId);
 		},
