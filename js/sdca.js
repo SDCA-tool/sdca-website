@@ -196,7 +196,6 @@ var sdca = (function ($) {
 	var _returnedApiData = null; // Store API returned data for user export purposes
 
 	/* Other */
-	var _map = false; // Store the map object from layerviewer
 	var _draw = null; // Store the LayerViewer _drawingHappening Object, which is observable in order to trigger SDCA UI changes when LayerViewer internal drawing state changes
 
 
@@ -736,7 +735,6 @@ var sdca = (function ($) {
 						
 						// Run the layerviewer for these settings and layers
 						layerviewer.initialise (_settings, _layerConfig);
-						_map = layerviewer.getMap ();
 					});
 				});
 			});
