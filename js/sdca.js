@@ -759,23 +759,6 @@ var sdca = (function ($) {
 				}
 			});
 
-			// Only show the submit button once a geometry is present
-			$('#geometry').on('change', function (e) {
-				if ($('#geometry').val()) {
-					$('#calculate, .edit-clear').css('visibility', 'visible');
-					$('.drawing-complete').show();
-				} else {
-					$('#calculate, .edit-clear').css('visibility', 'hidden');
-				}
-
-				// Update the length
-				var geojson = JSON.parse($('#geometry').val());
-				var line = turf.lineString(geojson);
-				var length = turf.length(line, { units: 'kilometers' }).toFixed(2);
-				$('.distance').text(length + ' km');
-
-			});
-
 			// Stop drawing handler
 			$('.stop-drawing').on('click', function () {
 				// Stop the drawing
