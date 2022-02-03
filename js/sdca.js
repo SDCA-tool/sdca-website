@@ -181,7 +181,6 @@ var sdca = (function ($) {
 	/* Interventions state control */
 	var _interventions = null; // Store the parsed array of interventions JSON
 	var _currentInterventionIndex = null; // Store the intervention index relative to the parsed interventions JSON
-	var _drawingHappening = false;
 	var _interventionRegistry = {
 		_timestamp: null,
 		type: 'FeatureCollection',
@@ -776,11 +775,6 @@ var sdca = (function ($) {
 				var length = turf.length(line, { units: 'kilometers' }).toFixed(2);
 				$('.distance').text(length + ' km');
 
-			});
-
-			// When drawing, update UI state
-			$('.draw.line').on('click', function () {
-				_drawingHappening = !_drawingHappening;
 			});
 
 			// Stop drawing handler
