@@ -539,7 +539,10 @@ var sdca = (function ($) {
 
 		// Enable filtering of interventions
 		filterInterventions: function () {
-			$('#filter-interventions').on('keyup', function () {
+
+			var currentSelectedRowIndex = -1;
+
+			$('#filter-interventions').on('keyup', function (e) {
 				// Once we type, expand all the accordion sections to facilitate discovery
 				// GOV.UK design system has no programmatic access like jQuery or Bootstrap, so manually simulate click
 				if ($('#interventions-accordion .govuk-accordion__show-all-text').first().text() == 'Show all sections') {
@@ -556,6 +559,56 @@ var sdca = (function ($) {
 				// Hide any empty sections
 				$('.govuk-accordion__section').filter(function () {
 					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+				});
+
+				// As we are searching for a new item, reset keyboard-selected row indes
+				if (e.which !== 40 && e.which !== 38) {
+					currentSelectedRowIndex = -1;
+				}
+			});
+
+
+			// On key up/dey down, scroll up/down the filtered interventions list
+			$(window).on('keydown', function (e) {
+
+				// This applies to the search-for-interventions screen
+				if (_currentPanelId !== 'search-for-intervention') {
+					return;
+				}
+
+				// Get the available (filtered list) of govuk-summary-list__row(s)
+				var rows = $('#interventions-accordion .govuk-summary-list__row:visible');
+
+				// If we pressed enter, select this row
+				if (e.which === 13) {
+					$(rows[currentSelectedRowIndex]).find('.govuk-link').click();
+				}
+
+				// Actions for key up/down
+				if (e.which === 40) { //key down
+					currentSelectedRowIndex += 1;
+				} else if (e.which === 38) { // key up
+					currentSelectedRowIndex -= 1;
+				}
+
+				// Can't go below -1 or above max row
+				if (currentSelectedRowIndex <= -1) {
+					currentSelectedRowIndex = -1
+					$('#sdca-panel-container').scrollTo(0);
+					return;
+				}
+				if (currentSelectedRowIndex >= $(rows).length) {
+					currentSelectedRowIndex = $(rows).length - 1;
+				}
+
+				// Select the correct active row
+				$(rows).removeClass('active');
+				$(rows[currentSelectedRowIndex]).addClass('active');
+				
+				// Scroll selected row into view if it is off screen
+				$('#sdca-panel-container').scrollTo($(rows[currentSelectedRowIndex]).first(), {
+					offset: 200,
+					duration: 500
 				});
 			});
 		},
