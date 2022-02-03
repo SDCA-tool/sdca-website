@@ -51,6 +51,8 @@ var sdca = (function ($) {
 		// Drawing
 		enableDrawing: true,
 		drawingGeometryType: 'LineString',
+		stopDrawingWhenClearingLine: false
+
 	};
 	
 	// Layer definitions
@@ -751,12 +753,30 @@ var sdca = (function ($) {
 			_draw.registerListener(function (drawingHappening) {
 				if (drawingHappening) {
 					$('.draw.line').hide();
-					$('.stop-drawing').show()
+					$('.edit-clear').show();
+					$('.stop-drawing').show();
 					$('.drawing-complete').hide();
 				} else {
 					$('.draw.line').show().text('Redo drawing').addClass('govuk-button--secondary');
 					$('.stop-drawing').hide()
 				}
+			});
+
+			// Only show the submit button once a geometry is present
+			$('#geometry').on('change', function (e) {
+				if ($('#geometry').val()) {
+					$('#calculate, .edit-clear').hide();
+					$('.drawing-complete').show();
+				} else {
+					$('#calculate, .edit-clear').hide();
+				}
+
+				// Update the length
+				var geojson = JSON.parse($('#geometry').val());
+				var line = turf.lineString(geojson);
+				var length = turf.length(line, { units: 'kilometers' }).toFixed(2);
+				$('.distance').text(length + ' km');
+
 			});
 
 			// Stop drawing handler
