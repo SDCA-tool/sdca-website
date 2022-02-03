@@ -358,12 +358,15 @@ var sdca = (function ($) {
 		trackInterventions: function () {
 			// If we click on the link to add a new intervention, save the type for global access
 			$('body').on('click', '#interventions-accordion .govuk-summary-list__actions a.govuk-link', function () {
+				
+				// Save the current intervention
 				_currentInterventionIndex = $(this).data('sdca-intervention-index');
 
 				// Update the draw panel with this description
 				$('.intervention-mode').text(_interventions[_currentInterventionIndex].mode);
 				$('.intervention-name').text(_interventions[_currentInterventionIndex].intervention);
 				$('.intervention-description').text(_interventions[_currentInterventionIndex].intervention_description);
+				$('.distance').text('0');
 			});
 
 			// Update the intervention list at startup
