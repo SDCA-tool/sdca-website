@@ -198,6 +198,7 @@ var sdca = (function ($) {
 
 	/* Other */
 	var _map = false; // Store the map object from layerviewer
+	var _draw = null; // Store the LayerViewer _drawingHappening Object, which is observable in order to trigger SDCA UI changes when LayerViewer internal drawing state changes
 
 
 	return {
@@ -744,24 +745,50 @@ var sdca = (function ($) {
 		
 		
 		// Handler for drawn line
-		handleDrawLine: function ()
-		{
+		handleDrawLine: function () {
+			// At startup, get and store the drawing object
+			_draw = layerviewer.getDrawObject();
+
+			// Listener for LayerViewer _drawingHappening
+			// Handle UI changes based on drawing state
+			_draw.registerListener(function (drawingHappening) {
+				if (drawingHappening) {
+					$('.draw.line').hide();
+					$('.stop-drawing').show()
+				} else {
+					$('.draw.line').show().text('Redo drawing').addClass('govuk-button--secondary');
+					$('.stop-drawing').hide()
+				}
+			});
+
 			// Only show the submit button once a geometry is present
-			$('#geometry').on ('change', function (e) {
-				if ($('#geometry').val ()) {
-					$('#calculate, .edit-clear').css ('visibility', 'visible');
+			$('#geometry').on('change', function (e) {
+				if ($('#geometry').val()) {
+					$('#calculate, .edit-clear').css('visibility', 'visible');
 					$('.drawing-complete').show();
 				} else {
-					$('#calculate, .edit-clear').css ('visibility', 'hidden');
+					$('#calculate, .edit-clear').css('visibility', 'hidden');
 				}
 
 				// Update the length
 				var geojson = JSON.parse($('#geometry').val());
 				var line = turf.lineString(geojson);
-				var length = turf.length(line, {units: 'kilometers'}).toFixed(2);
+				var length = turf.length(line, { units: 'kilometers' }).toFixed(2);
 				$('.distance').text(length + ' km');
 
 			});
+
+			// When drawing, update UI state
+			$('.draw.line').on('click', function () {
+				_drawingHappening = !_drawingHappening;
+			});
+
+			// Stop drawing handler
+			$('.stop-drawing').on('click', function () {
+				// Stop the drawing
+				layerviewer.finishDrawing();
+			});
+
 
 			// Run when the captured geometry value changes; this is due to the .trigger ('change') in layerviewer.drawing () as a result of the draw.create/draw.update events
 			$('button#calculate').click (function (e) {
