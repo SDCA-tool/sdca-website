@@ -193,7 +193,7 @@ var sdca = (function ($) {
 	
 	/* API state */
 	var _lastApiCallRegistryTimestamp = null; // Store the last time we called the API, for comparison to the registry timestamp
-	var _currentlyEditingRegistryIndex = -1; // Store the intervention we are editing for deletion purposes
+	var _currentlyEditingRegistryIndex = -1; // Store the intervention we are editing for deletion purposes.
 	var _returnedApiData = null; // Store API returned data for user export purposes
 
 	/* Other */
@@ -289,6 +289,11 @@ var sdca = (function ($) {
 			
 			// Save the panel as current
 			_currentPanelId = panelToShow;
+
+			/* Special behaviours */
+			// Only show 'Delete intervention' button if we are in intervention editing mode
+			_currentlyEditingRegistryIndex > -1 ? $('#delete-intervention').show() : $('#delete-intervention').hide();
+			
 		},
 
 
