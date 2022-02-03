@@ -360,7 +360,8 @@ var sdca = (function ($) {
 				_currentInterventionIndex = $(this).data('sdca-intervention-index');
 
 				// Update the draw panel with this description
-				$('.intervention-name').text(_interventions[_currentInterventionIndex].mode + ' - ' + _interventions[_currentInterventionIndex].intervention);
+				$('.intervention-mode').text(_interventions[_currentInterventionIndex].mode);
+				$('.intervention-name').text(_interventions[_currentInterventionIndex].intervention);
 				$('.intervention-description').text(_interventions[_currentInterventionIndex].intervention_description);
 			});
 
