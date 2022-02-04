@@ -190,6 +190,20 @@ var sdca = (function ($) {
 			this.indexListener(val);
 		},
 		get index() {
+			return Number(this.indexInternal); // Return Number to ensure index of 0 (currently high speed rail) doesn't return as False
+		},
+		registerListener: function (listener) {
+			this.indexListener = listener;
+		}
+	}
+	var _currentlyEditingRegistry = { // Store the intervention we are editing for deletion purposes.
+		indexInternal: -1,
+		indexListener: function (val) { },
+		set index(val) {
+			this.indexInternal = val;
+			this.indexListener(val);
+		},
+		get index() {
 			return this.indexInternal;
 		},
 		registerListener: function (listener) {
@@ -201,18 +215,34 @@ var sdca = (function ($) {
 		type: 'FeatureCollection',
 		features: []
 	};
+
+	/* Map state */
+	var _mapState = { // Object to control the current intervention index
+		stateInternal: false, // 'view-all', 'edit', 'new'
+		stateListener: function (val) { },
+		set state(val) {
+			this.stateInternal = val;
+			this.stateListener(val);
+		},
+		get state() {
+			return this.stateInternal;
+		},
+		registerListener: function (listener) {
+			this.stateListener = listener;
+		}
+	}
 	
 	/* Labels */
 	var _pas2080Labels = {};
 	
 	/* API state */
 	var _lastApiCallRegistryTimestamp = null; // Store the last time we called the API, for comparison to the registry timestamp
-	var _currentlyEditingRegistryIndex = -1; // Store the intervention we are editing for deletion purposes.
 	var _returnedApiData = null; // Store API returned data for user export purposes
 
-	/* Other */
-	var _draw = null; // Store the LayerViewer _drawingHappening Object, which is observable in order to trigger SDCA UI changes when LayerViewer internal drawing state changes
-
+	/* Drawing and map */
+	var _drawingHappening = null; // Store the LayerViewer _drawingHappening Object, which is observable in order to trigger SDCA UI changes when LayerViewer internal drawing state changes
+	var _draw = false; // Store the LayerViewer _draw Object
+	var _map = false; // Store the Layerviewer _map Object
 
 	return {
 		
@@ -230,6 +260,9 @@ var sdca = (function ($) {
 
 			// Load layers from datasets file, and then initialise layers
 			sdca.loadDatasets ();
+
+			// Handler for drawn line
+			sdca.handleDrawLine ();
 			
 			// Manage panels
 			sdca.managePanels ();
@@ -243,15 +276,74 @@ var sdca = (function ($) {
 			sdca.deleteIntervention ();
 			sdca.handleChartRadios ();
 
+			// Map state controller
+			sdca.mapState ();
+
 			sdca.exportData ();
 			
 			sdca.pas2080Labels ();
 
-			// Initialisation is wrapped within loadDatasets
+			// LayerViewer initialisation is wrapped within loadDatasets
 			// layerviewer.initialise (_settings, _layerConfig);
+		},
 
-			// Handler for drawn line
-			sdca.handleDrawLine ();
+
+		// Controller to manage map state
+		mapState: function () {
+			_mapState.registerListener(function (state) {
+				switch (state) {
+					case 'view-all':
+						// Send our user added interventions to LayerViewer for display
+						sdca.addFeaturesToMap(_interventionRegistry);
+
+						// Clear any drawings as we are not in edit or new mode
+						sdca.clearDrawings();
+
+						// Make sure we are not editing anything
+						_currentlyEditingRegistry.index = -1;
+
+						break;
+
+					case 'edit':
+
+						// Adjust the UI drawing buttons
+						$('.draw.line').text('Redo drawing');
+						$('.drawing-complete').show();
+
+						// Reset geometry val
+						$('#geometry').val('');
+
+						// Clear the map
+						break;
+
+					case 'new':
+
+						// Make sure we are not editing anything
+						_currentlyEditingRegistry.index = -1;
+
+						// Clear all drawing from the map
+						sdca.clearDrawings();
+
+						// Clear the #geometry field, used for storing temp draw coordinates
+						$('#geometry').val('');
+
+						// Adjust the UI drawing buttons
+						$('.draw.line').text('Start new drawing on the map');
+						$('.drawing-complete').hide();
+
+						break;
+
+					default:
+						// Set as 'view-all', which will trigger a new change to this state
+						_mapState.state = 'view-all'
+				}
+
+				// Show the delete intervention button
+				_mapState.state == 'edit' ? $('#delete-intervention').show() : $('#delete-intervention').hide();
+			});
+
+			// At startup, set map state as view-all
+			_mapState.state = 'view-all';
 		},
 
 
@@ -304,10 +396,10 @@ var sdca = (function ($) {
 			// Save the panel as current
 			_currentPanelId = panelToShow;
 
-			/* Special behaviours */
-			// Only show 'Delete intervention' button if we are in intervention editing mode
-			_currentlyEditingRegistryIndex > -1 ? $('#delete-intervention').show() : $('#delete-intervention').hide();
-			
+			// Update the map state
+			if (panelToShow !== 'draw-intervention') {
+				_mapState.state = 'show-all';
+			}
 		},
 
 
@@ -358,11 +450,11 @@ var sdca = (function ($) {
 		editIntervention: function () {
 			$('body').on('click', '.edit-intervention', function () {
 				// Set the registry index to the intervention we want to edit
-				_currentlyEditingRegistryIndex = $(this).data('sdca-registry-index');
+				_currentlyEditingRegistry.index = $(this).data('sdca-registry-index');
 
-				// Update timestamp, as we are editing the intervention
-				// Actually, we haven't edited it yet, this could be connected to the draw action instead
-				_interventionRegistry._timestamp = Date.now();
+				// Pull the intervention type and set that so we know what we are editing
+				var interventionObject = _interventionRegistry.features[_currentlyEditingRegistry.index];
+				_currentInterventionType.index = interventionObject._interventionTypeIndex;
 			});
 		},
 
@@ -371,15 +463,21 @@ var sdca = (function ($) {
 		trackInterventions: function () {
 			// If we click on the link to add a new intervention, save the type for global access
 			$('body').on('click', '#interventions-accordion .govuk-summary-list__actions a.govuk-link', function () {
-				
-				// Save the current intervention
-				_currentInterventionIndex = $(this).data('sdca-intervention-index');
+				// Set the current intervention index
+				_currentInterventionType.index = Number($(this).data('sdca-intervention-index')); // Use Number to ensure the "0" index is not represented as false
 
-				// Update the draw panel with this description
-				$('.intervention-mode').text(_interventions[_currentInterventionIndex].mode);
-				$('.intervention-name').text(_interventions[_currentInterventionIndex].intervention);
-				$('.intervention-description').text(_interventions[_currentInterventionIndex].intervention_description);
-				$('.distance').text('0');
+				// Set the map state
+				_mapState.state = 'new'
+			});
+
+			// UI listener to handle changes to the current intervention
+			_currentInterventionType.registerListener(function (index) {
+				index = Number(index); // Ensure 0 isn't interpreted as False
+				if (index > -1) {
+					$('.intervention-mode').text(_interventions[index].mode);
+					$('.intervention-name').text(_interventions[index].intervention);
+					$('.intervention-description').text(_interventions[index].intervention_description);
+				}
 			});
 
 			// Update the intervention list at startup
@@ -390,21 +488,31 @@ var sdca = (function ($) {
 		// Handler for the delete intervention button
 		// !TODO needs to clear any drawings from map
 		deleteIntervention: function () {
+			// Listener for change in editing state, to show button
+			_currentlyEditingRegistry.registerListener(function (index) {
+				if (Number(index) > -1) {
+					$('#delete-intervention').show();
+				} else {
+					$('#delete-intervention').hide();
+				}
+			});
+			
+			// Delete intervention button handler
 			$('#delete-intervention').on('click', function () {
-				// If we are creating a new intervention, the delete button just cancels whatever we are doing
-				// It doesn't actually delete anything, because nothing has been added to the registry yet
-				if (_currentlyEditingRegistryIndex < 0) {
-					// !TODO needs to clear map
+				// If we are creating a new intervention, the delete button is hidden
+				if (_currentlyEditingRegistry.index < 0) {
+					// Shouldn't happen
 				} else {
 					// This sets the result of the [index] as undefined, but there's no need to delete it
-					delete _interventionRegistry.features[_currentlyEditingRegistryIndex];
+					// !#! Should this delete?
+					delete _interventionRegistry.features[_currentlyEditingRegistry.index];
 				}
 
 				// Update timestamp
 				_interventionRegistry._timestamp = Date.now();
 
 				// Done editing, set currently editing registry as false
-				_currentlyEditingRegistryIndex = -1;
+				_currentlyEditingRegistry.index = -1;
 
 				// Regenerate user intervention list
 				sdca.updateUserInterventionList();
@@ -419,7 +527,8 @@ var sdca = (function ($) {
 		registerIntervention: function () {
 			$('#register-intervention').on('click', function () {
 
-				var currentIntervention = _interventions[_currentInterventionIndex];
+				// Get the intervention type
+				var currentIntervention = _interventions[_currentInterventionType.index];
 
 				// Get the full name of the GeometryType
 				var openGisTypes = {
@@ -428,10 +537,11 @@ var sdca = (function ($) {
 					polygon: 'Polygon'
 				};
 
-				var geometryType = openGisTypes[_interventions[_currentInterventionIndex]] || 'LineString';
+				var geometryType = openGisTypes[_interventions[_currentInterventionType.index].geometry] || 'LineString';
 
 				// Build the GeoJSON object
 				var newGeoJson = {
+					_interventionTypeIndex: _currentInterventionType.index,
 					type: 'Feature',
 					properties: {
 						infrastructure_type: currentIntervention.infrastructure_type,
@@ -442,21 +552,29 @@ var sdca = (function ($) {
 					},
 					geometry: {
 						type: geometryType,
-						coordinates: JSON.parse($('#geometry').val())
+						coordinates: JSON.parse($('#geometry').val()),
 					}
 				};
 
-				// Add this as a GeoJson object to the registry
-				_interventionRegistry.features.push(newGeoJson);
+				// Are we editing an existing intervention, or creating a new one?
+				if (Number(_currentlyEditingRegistry.index) > -1) {
+					_interventionRegistry.features[Number(_currentlyEditingRegistry.index)].geometry.coordinates = JSON.parse($('#geometry').val());
+				} else {
+					// Add this as a GeoJSON object to the registry
+					_interventionRegistry.features.push(newGeoJson);
+				}
 
 				// Update timestamp
 				_interventionRegistry._timestamp = Date.now();
 
+				// Reset the geometry field
+				$('#geometry').val('');
+
 				// Update the front page list 
 				sdca.updateUserInterventionList();
 
-				// Remove the current intervention
-				_currentInterventionIndex = null;
+				// Remove the current intervention index, if we were editing
+				_currentInterventionType.index = -1;
 
 			});
 		},
@@ -477,9 +595,10 @@ var sdca = (function ($) {
 				var distance = null;
 				if (feature.geometry.type == 'LineString') {
 					var line = turf.lineString(feature.geometry.coordinates);
-					distance = turf.length(line, { units: 'kilometers' }).toFixed(2);
+					distance = turf.length(line, { units: 'kilometers' }).toFixed(2) + ' kilometres';
 				} else {
-					distance = '1 mile';
+					// !TODO Add area calculation (and what to do for point?)
+					distance = 'N/A';
 				}
 
 				// Generate the HTML
@@ -493,7 +612,7 @@ var sdca = (function ($) {
 					${intervention}
 					</dt>
 					<dd class="govuk-summary-list__value">
-					${distance} kilometers
+					${distance}
 					</dd>
 					<dd class="govuk-summary-list__actions">
 					<a class="govuk-link edit-intervention" data-sdca-registry-index="${indexInRegistry}" data-sdca-target-panel="draw-intervention" href="#">
@@ -753,6 +872,12 @@ var sdca = (function ($) {
 						
 						// Run the layerviewer for these settings and layers
 						layerviewer.initialise (_settings, _layerConfig);
+
+						// Also get the _draw Object
+						_draw = layerviewer.getDrawObject();
+
+						// Also get the _map Object
+						_map = layerviewer.getMap();
 					});
 				});
 			});
@@ -761,12 +886,12 @@ var sdca = (function ($) {
 		
 		// Handler for drawn line
 		handleDrawLine: function () {
-			// At startup, get and store the drawing object
-			_draw = layerviewer.getDrawObject();
+			// At startup, get and store the drawing status proxy 
+			_drawingHappening = layerviewer.getDrawingStatusObject();
 
 			// Listener for LayerViewer _drawingHappening
 			// Drawing panel UI controller based on drawing state in LayerViewer
-			_draw.registerListener(function (drawingHappening) {
+			_drawingHappening.registerListener(function (drawingHappening) {
 				if (drawingHappening) {
 					$('.draw.line').hide();
 					$('.edit-clear').show();
@@ -774,7 +899,7 @@ var sdca = (function ($) {
 					$('.drawing-complete').hide();
 				} else {
 					$('.draw.line').show().text('Redo drawing').addClass('govuk-button--secondary');
-					$('.stop-drawing').hide()
+					$('.stop-drawing').hide();
 				}
 			});
 
@@ -786,6 +911,7 @@ var sdca = (function ($) {
 					$('.drawing-complete').show();
 				} else {
 					$('#calculate, .edit-clear').hide();
+					$('.drawing-complete').hide();
 				}
 
 				// Update the length
@@ -804,61 +930,123 @@ var sdca = (function ($) {
 
 
 			// Run when the captured geometry value changes; this is due to the .trigger ('change') in layerviewer.drawing () as a result of the draw.create/draw.update events
-			$('button#calculate').click (function (e) {
+			$('button#calculate').click(function (e) {
 				// Disable button to prevent multiple clicks
 				$('button#calculate').attr('disabled', 'disabled');
-				
+
 				// Do not resend data If we have not made any changes to the intervention registry
 				if (_lastApiCallRegistryTimestamp == _interventionRegistry._timestamp) {
-					sdca.switchPanel ('view-results');
+					sdca.switchPanel('view-results');
 					return;
 				}
-				
+
 				// Show the loading spinner
-				$('.loading-spinner').css ('display', 'inline-block');
-				
+				$('.loading-spinner').css('display', 'inline-block');
+
 				// Build payload payload
 				var payload = JSON.stringify(_interventionRegistry);
-				
+
 				// Send the data to the API
-				$.ajax ({
+				$.ajax({
 					type: 'GET',
 					url: '/api/v1/locations.json',
+					url: 'https://dev.carbon.place/api/v1/locations.json',
 					dataType: 'json',
 					data: {
 						geojson: payload
 					},
 					success: function (data, textStatus, jqXHR) {
 						_returnedApiData = data;
-						sdca.showResults (data);
-						sdca.switchPanel ('view-results');
+						sdca.showResults(data);
+						sdca.switchPanel('view-results');
 
 						// Register the last API call
 						_lastApiCallRegistryTimestamp = _interventionRegistry._timestamp;
 					},
 					error: function (jqXHR, textStatus, errorThrown) {
-						var responseBody = JSON.parse (jqXHR.responseText);
-						alert ('[Prototype development:]\n\nError:\n\n' + responseBody.error);
+						var responseBody = JSON.parse(jqXHR.responseText);
+						alert('[Prototype development:]\n\nError:\n\n' + responseBody.error);
 					},
 					complete: function () {
 						// Reset the loading spinner
-						$('.loading-spinner').css ('display', 'none');
+						$('.loading-spinner').css('display', 'none');
 
 						// Enable button to prevent multiple clicks
 						$('button#calculate').removeAttr('disabled');
 					}
 				});
 			});
-			
+
 			// Clear results when any drawing button clicked
-			$('#drawing a').click (function () {
-				
+			$('#drawing a').click(function () {
+
 				// Fade out panel
 				// #!# Needs to be reimplemented for new UI - should reset panel
-				
+
 				// Remove the geometries added to the map, if present
-				layerviewer.eraseDirectGeojson ('results');
+				layerviewer.eraseDirectGeojson('results');
 			});
+		},
+
+
+		// Clear all drawings and drawing-associated layers
+		clearDrawings: function () {
+			// Clear all drawings
+			if (_draw) {
+				_draw.deleteAll();
+			}
+		},
+
+		
+		// Clear any Sdca layers from the map
+		clearSdcaLayers: function () {
+			// Delete any layers created from drawings
+			var layers = _map.getStyle().layers;
+			layers.forEach(function (layer) {
+				if (layer.id.includes('sdca-')) {
+					_map.removeLayer(layer.id);
+					_map.removeSource(layer.id);
+				}
+			});
+		},
+
+
+		// Function to draw features on the map
+		addFeaturesToMap: function (featureCollection) {
+
+			if (!_map) { return }
+
+			// If there are no features, delete all sources, layers, then return
+			if (!featureCollection || !featureCollection.features.length) {
+				sdca.clearDrawings();
+				sdca.clearSdcaLayers();
+				return;
+			}
+
+			sdca.clearSdcaLayers();
+
+			featureCollection.features.forEach((feature, index) => {
+				var id = 'sdca-route-' + Number(index);
+
+				_map.addSource(id, {
+					'type': 'geojson',
+					'data': feature
+				});
+
+				_map.addLayer({
+					'id': id,
+					'type': 'line',
+					'source': id,
+					'layout': {
+						'line-join': 'round',
+						'line-cap': 'round'
+					},
+					'paint': {
+						'line-color': '#888',
+						'line-width': 8
+					}
+				});
+			})
 		},
 
 
