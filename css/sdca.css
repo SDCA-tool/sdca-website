@@ -12,8 +12,10 @@ body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
     .govuk-footer {padding-top: 25px;}
 }
 
-.govuk-grid-column-two-thirds {width: 50%;}
-.govuk-grid-column-one-third {width: 50%;}
+@media (min-width: 50.0625em) {
+    .govuk-grid-column-two-thirds {width: 50%;}
+    .govuk-grid-column-one-third {width: 50%;}
+}
 
 .govuk-panel {padding: 20px}
 .govuk-panel__title {font-size: 1.5rem}
