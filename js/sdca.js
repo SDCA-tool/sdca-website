@@ -182,7 +182,20 @@ var sdca = (function ($) {
 
 	/* Interventions state control */
 	var _interventions = null; // Store the parsed array of interventions JSON
-	var _currentInterventionIndex = null; // Store the intervention index relative to the parsed interventions JSON
+	var _currentInterventionType = { // Object to control the current intervention index
+		indexInternal: false,
+		indexListener: function (val) { },
+		set index(val) {
+			this.indexInternal = val;
+			this.indexListener(val);
+		},
+		get index() {
+			return this.indexInternal;
+		},
+		registerListener: function (listener) {
+			this.indexListener = listener;
+		}
+	}
 	var _interventionRegistry = {
 		_timestamp: null,
 		type: 'FeatureCollection',
