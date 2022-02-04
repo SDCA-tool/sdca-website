@@ -336,6 +336,7 @@ var sdca = (function ($) {
 						// Adjust the labels on the drawing page 
 						$('#draw-intervention h2').text('Draw an intervention on the map');
 						$('#draw-intervention button.drawing-complete').text('I have finished designing this intervention');
+						$('#draw-intervention .distance').text('0 km');
 
 						break;
 
