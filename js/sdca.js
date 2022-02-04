@@ -503,9 +503,18 @@ var sdca = (function ($) {
 				if (_currentlyEditingRegistry.index < 0) {
 					// Shouldn't happen
 				} else {
-					// This sets the result of the [index] as undefined, but there's no need to delete it
-					// !#! Should this delete?
+					// The following two steps are a way around JavaScript now having a proper ArrayItem.remove() method
+					// Empty the array at the correct index
 					delete _interventionRegistry.features[_currentlyEditingRegistry.index];
+
+					// Create a new clean array without the undefined index and push it
+					var cleanedInterventionArray = []
+					$.each(_interventionRegistry.features, function (indexInArray, feature) { 
+						if (feature !== undefined) {
+							cleanedInterventionArray.push(feature)
+						}
+					});
+					_interventionRegistry.features = cleanedInterventionArray;
 				}
 
 				// Update timestamp
