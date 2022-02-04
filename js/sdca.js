@@ -601,14 +601,7 @@ var sdca = (function ($) {
 				
 				// Calculate distance 
 				// !TODO This only calculates LineStrings for now
-				var distance = null;
-				if (feature.geometry.type == 'LineString') {
-					var line = turf.lineString(feature.geometry.coordinates);
-					distance = turf.length(line, { units: 'kilometers' }).toFixed(2) + ' kilometres';
-				} else {
-					// !TODO Add area calculation (and what to do for point?)
-					distance = 'N/A';
-				}
+				var distance = sdca.calculateInterventionLength(feature)
 
 				// Generate the HTML
 				html += getSummaryListRow(indexInRegistry, feature.properties.intervention, feature.properties.mode, distance);
@@ -643,6 +636,20 @@ var sdca = (function ($) {
 				$('button#add-intervention').html ('Add another intervention');
 				$('button#add-intervention').addClass ('govuk-button--secondary');
 			}
+		},
+
+
+		calculateInterventionLength: function (feature) {
+			var distance = '';
+			if (feature.geometry.type == 'LineString') {
+				var line = turf.lineString(feature.geometry.coordinates);
+				distance = turf.length(line, { units: 'kilometers' }).toFixed(2) + ' kilometres';
+			} else {
+				// !TODO Add area calculation (and what to do for point?)
+				distance = 'N/A';
+			}
+
+			return distance
 		},
 
 
