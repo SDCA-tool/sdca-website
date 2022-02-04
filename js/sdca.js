@@ -1041,7 +1041,45 @@ var sdca = (function ($) {
 			sdca.clearSdcaLayers();
 
 			featureCollection.features.forEach((feature, index) => {
+
 				var id = 'sdca-route-' + Number(index);
+
+				// Get the information about the feature in order to add to popup HTML
+				var interventionLexiconEntry = _interventions[feature._interventionTypeIndex];
+
+				var popupHtml = `
+				
+				<dl class="govuk-summary-list">
+					<div class="govuk-summary-list__row">
+					<dt class="govuk-summary-list__key">
+						Mode
+					</dt>
+					<dd class="govuk-summary-list__value">
+						${interventionLexiconEntry.mode}
+					</dd>
+					</div>
+					<div class="govuk-summary-list__row">
+					<dt class="govuk-summary-list__key">
+						Intervention
+					</dt>
+					<dd class="govuk-summary-list__value intervention-name">
+						${interventionLexiconEntry.intervention}
+					</dd>
+					</div>
+					<div class="govuk-summary-list__row">
+					<dt class="govuk-summary-list__key">
+						Total distance
+					</dt>
+					<dd class="govuk-summary-list__value distance">
+						${sdca.calculateInterventionLength(feature)}
+					</dd>
+					</div>
+				</dl>
+
+				<button class="govuk-button edit-intervention" data-module="govuk-button" data-sdca-registry-index="${index}">
+					Edit this intervention
+				</button>
+				`
 
 				_map.addSource(id, {
 					'type': 'geojson',
@@ -1060,6 +1098,13 @@ var sdca = (function ($) {
 						'line-color': '#888',
 						'line-width': 8
 					}
+				});
+				_map.on('click', id, function (e) {
+					var popup = new mapboxgl.Popup()
+						.setLngLat(e.lngLat)
+						.setHTML(popupHtml)
+						.addTo(_map);
+
 				});
 			})
 		},
