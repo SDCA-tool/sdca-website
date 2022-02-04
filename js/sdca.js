@@ -313,11 +313,13 @@ var sdca = (function ($) {
 						// Reset geometry val
 						$('#geometry').val('');
 
-						// Clear the map
+						// Change the labels on the draw page 
+						$('#draw-intervention h2').text('Edit this intervention');
+						$('#draw-intervention button.drawing-complete').text('I have finished editing this intervention');
+
 						break;
 
 					case 'new':
-
 						// Make sure we are not editing anything
 						_currentlyEditingRegistry.index = -1;
 
@@ -330,6 +332,10 @@ var sdca = (function ($) {
 						// Adjust the UI drawing buttons
 						$('.draw.line').text('Start new drawing on the map');
 						$('.drawing-complete').hide();
+
+						// Adjust the labels on the drawing page 
+						$('#draw-intervention h2').text('Draw an intervention on the map');
+						$('#draw-intervention button.drawing-complete').text('I have finished designing this intervention');
 
 						break;
 
@@ -449,6 +455,10 @@ var sdca = (function ($) {
 		// Code to enter editing mode for an intervention
 		editIntervention: function () {
 			$('body').on('click', '.edit-intervention', function () {
+				
+				// Set the map state to trigger UI changes
+				_mapState.state = 'edit';
+				
 				// Set the registry index to the intervention we want to edit
 				_currentlyEditingRegistry.index = $(this).data('sdca-registry-index');
 
@@ -1076,7 +1086,7 @@ var sdca = (function ($) {
 					</div>
 				</dl>
 
-				<button class="govuk-button edit-intervention" data-module="govuk-button" data-sdca-registry-index="${index}">
+				<button class="govuk-button edit-intervention" data-sdca-target-panel="draw-intervention" data-module="govuk-button" data-sdca-registry-index="${index}">
 					Edit this intervention
 				</button>
 				`
