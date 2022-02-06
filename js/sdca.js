@@ -1208,6 +1208,36 @@ var sdca = (function ($) {
 			};
 			var timeseries = sdca.htmlTable (data.timeseries, timeseriesLabels);
 			
+			// Create the demand change table
+			var demandChangeLabels = {
+				mode: 'Mode',
+				before: 'Before',
+				after: 'After',
+				change: 'Change',
+				changekm: 'Change in km',
+				changeemissions: 'Change in emissions',
+			};
+			var demand_change = sdca.htmlTable (data.demand_change, demandChangeLabels);
+			
+			// Create the itemised emissions table
+			var itemisedEmissionsLabels = {
+				intervention_id: '#',
+				intervention: 'Intervention',
+				asset: 'Asset',
+				item: 'Item',
+				quantity: 'Quantity',
+				A1_3: 'A1_3',
+				A4: 'A4',
+				A5: 'A5',
+				B4: 'B4',
+			};
+			$.each (data.itemised_emissions, function (key, value) {
+				data.itemised_emissions[key].quantity += ' ';
+				data.itemised_emissions[key].quantity += value.quantity_units;
+				delete data.itemised_emissions[key].quantity_units;
+			});
+			var itemised_emissions = sdca.htmlTable (data.itemised_emissions, itemisedEmissionsLabels);
+			
 			// Populate the results in the interface
 			$('.netzero_compatible').text ((data.netzero_compatible[0] == 'yes' ? 'Net zero compatible' : 'Not net zero compatible'));
 			if (data.netzero_compatible[0] == 'no') {
@@ -1218,6 +1248,8 @@ var sdca = (function ($) {
 			$('.comments').text (data.comments[0]);
 			$('.pas2080').append (pas2080);
 			$('.timeseries').append (timeseries);
+			$('.demand_change').append (demand_change);
+			$('.itemised_emissions').append (itemised_emissions);
 			
 			// Define icons based on data value
 			var layerConfig = {
