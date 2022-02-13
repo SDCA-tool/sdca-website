@@ -124,11 +124,11 @@ class sdcaModel
 		}
 		$json['desire_lines'] = array (json_encode ($desire_lines));
 		
-		# Value for path_dem file
+		# Values for raster files
 		$json['path_dem'] = '/var/www/sdca/data/dem/UKdem.tif';
-		
-		# Value for path_landcover file
 		$json['path_landcover'] = '/var/www/sdca/data/landcover/landcover.tif';
+		$json['path_bedrock'] = '/var/www/sdca/data/bedrock_raster/bedrock.tif';
+		$json['path_superficial'] = '/var/www/sdca/data/superficial_raster/superficial.tif';
 		
 		# Values for material_sites
 		# "The logic is st_centroid(user_input) then find the nearest location for each material_sites. Material_Types (there are 11 types of site). Then measure the straight line distance between the centroid and the 11 sites in km."
