@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Coding copyright Martin Lucas-Smith, University of Cambridge, 2003-21
- * Version 3.0.18+sdca-decimal-patch
+ * Coding copyright Martin Lucas-Smith, University of Cambridge, 2003-22
+ * Version 3.1.1
  * Uses prepared statements (see https://stackoverflow.com/questions/60174/how-can-i-prevent-sql-injection-in-php ) where possible
  * Distributed under the terms of the GNU Public Licence - https://www.gnu.org/copyleft/gpl.html
  * Requires PHP 4.1+ with register_globals set to 'off'
@@ -29,7 +29,7 @@ class database
 	
 	
 	# Function to connect to the database
-	public function __construct ($hostname, $username, $password, $database = NULL, $vendor = 'mysql', $logFile = false, $userForLogging = false, $nativeTypes = false /* NB: a future release will change this to true */, $setNamesUtf8 = true, $driverOptions = array (), $nativeTypesDecimalHandling = false)
+	public function __construct ($hostname, $username, $password, $database = NULL, $vendor = 'mysql', $logFile = false, $userForLogging = false, $nativeTypes = false /* NB: a future release will change this to true */, $mysqlUtf8mb4 = true, $driverOptions = array (), $nativeTypesDecimalHandling = false)
 	{
 		# Assign the user for logging
 		$this->logFile = $logFile;
@@ -57,32 +57,23 @@ class database
 			}
 		}
 		
-		# Set a flag to handle conversion of DECIMAL(x,y)
-		$this->nativeTypesDecimalHandling = $nativeTypesDecimalHandling;
-		
 		# Enable exception throwing; see: https://php.net/pdo.error-handling
 		$driverOptions[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 		
+		# Set a flag to handle conversion of DECIMAL(x,y)
+		$this->nativeTypesDecimalHandling = $nativeTypesDecimalHandling;
+
 		# Connect to the database and return the status
 		if ($vendor == 'sqlite') {
 			$dsn = 'sqlite:' . $database;	// Database should be a filename with absolute path
-			$setNamesUtf8 = false;
 		} else {
-			$dsn = "{$vendor}:host={$hostname}" . ($database ? ";dbname={$database}" : '');
+			$dsn = "{$vendor}:host={$hostname}" . ($database ? ";dbname={$database}" : '') . ($vendor == 'mysql' && $mysqlUtf8mb4 ? ';charset=utf8mb4' : '');
 		}
 		try {
 			$this->connection = new PDO ($dsn, $username, $password, $driverOptions);
 		} catch (PDOException $e) {		// "PDO::__construct() will always throw a PDOException if the connection fails regardless of which PDO::ATTR_ERRMODE is currently set." noted at http://php.net/pdo.error-handling
 			// error_log ("{$e} {$dsn}, {$username}, {$password}");		// Not enabled by default as $e can contain passwords which get dumped to the webserver's error log
 			return false;
-		}
-		
-		# Set transfers to UTF-8
-		if ($setNamesUtf8) {
-			$this->_execute ("SET NAMES 'utf8'");
-			// # The following is a more portable version that could be used instead
-			//$charset = $this->getVariable ('character_set_database');
-			//$this->_execute ("SET NAMES '{$charset}';");
 		}
 	}
 	
