@@ -69,34 +69,39 @@ class sdcaModel
 		# Value for user_input
 		$json['user_input'] = json_encode ($geojson);
 		
-		# Values for intervention_assets
+		# Values for assets
 		$interventions = array ();
 		foreach ($geojson['features'] as $intervention) {
 			$interventions[] = $intervention['properties']['intervention'];
 		}
-		$intervention_assets = $this->databaseConnection->select ($this->settings['database'], 'intervention_assets', array ('intervention' => $interventions));
-		$json['intervention_assets'] = $intervention_assets;
+		$interventions = array_unique ($interventions);
+		$assets = $this->databaseConnection->select ($this->settings['database'], 'assets', array ('intervention' => $interventions));
+		$json['assets'] = $assets;
 		
-		# Values for intervention_assets_parameters
-		$assets = array ();
-		foreach ($intervention_assets as $intervention_asset) {
-			$assets[] = $intervention_asset['asset'];
+		# Extract the asset IDs ('asset' key) in the assets data to a simple list
+		$assetIds = array ();
+		foreach ($assets as $asset) {
+			$assetIds[] = $asset['asset'];
 		}
-		$assets = array_unique ($assets);
-		$intervention_assets_parameters = $this->databaseConnection->select ($this->settings['database'], 'intervention_assets_parameters', array ('asset' => $assets), array (), true, 'asset,parameter');
-		$intervention_assets_parameters = array_unique ($intervention_assets_parameters, SORT_REGULAR);		// #!# Pending data cleanup to remove duplicate rows in intervention_assets_parameters
-		$json['intervention_assets_parameters'] = $intervention_assets_parameters;
+		$assetIds = array_unique ($assetIds);
 		
-		# Values for asset_components
-		$asset_components = $this->databaseConnection->select ($this->settings['database'], 'asset_components', array ('intervention_asset' => $assets));
-		$json['asset_components'] = $asset_components;
+		# Values for assets_parameters
+		$assets_parameters = $this->databaseConnection->select ($this->settings['database'], 'assets_parameters', array ('asset' => $assetIds), array (), true, 'asset,parameter');
+		$assets_parameters = array_unique ($assets_parameters, SORT_REGULAR);		// #!# Pending data cleanup to remove duplicate rows in assets_parameters
+		$json['assets_parameters'] = $assets_parameters;
 		
-		# Values for carbon_factors
+		# Values for components
+		$components = $this->databaseConnection->select ($this->settings['database'], 'components', array ('asset' => $assetIds));
+		$json['components'] = $components;
+		
+		# Extract the cf_names in the components data to a simple list
 		$cf_names = array ();
-		foreach ($asset_components as $asset_component) {
-			$cf_names[] = $asset_component['cf_name'];
+		foreach ($components as $component) {
+			$cf_names[] = $component['cf_name'];
 		}
 		$cf_names = array_unique ($cf_names);
+		
+		# Values for carbon_factors
 		$carbon_factors = $this->databaseConnection->select ($this->settings['database'], 'carbon_factors', array ('cf_name' => $cf_names));
 		$json['carbon_factors'] = $carbon_factors;
 		
