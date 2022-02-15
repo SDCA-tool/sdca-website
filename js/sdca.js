@@ -486,7 +486,7 @@ var sdca = (function ($) {
 				index = Number(index); // Ensure 0 isn't interpreted as False
 				if (index > -1) {
 					$('.intervention-mode').text(_interventions[index].mode);
-					$('.intervention-name').text(_interventions[index].intervention);
+					$('.intervention-name').text(_interventions[index].intervention_name);
 					$('.intervention-description').text(_interventions[index].intervention_description);
 				}
 			});
@@ -568,6 +568,7 @@ var sdca = (function ($) {
 						mode_class: currentIntervention.mode_class,
 						mode: currentIntervention.mode,
 						intervention_class: currentIntervention.intervention_class,
+						intervention_name: currentIntervention.intervention_name,
 						intervention: currentIntervention.intervention
 					},
 					geometry: {
@@ -615,21 +616,21 @@ var sdca = (function ($) {
 				var distance = sdca.calculateInterventionLength(feature)
 
 				// Generate the HTML
-				html += getSummaryListRow(indexInRegistry, feature.properties.intervention, feature.properties.mode, distance);
+				html += getSummaryListRow(indexInRegistry, feature.properties.intervention_name, feature.properties.mode, distance);
 			});
 
-			function getSummaryListRow(indexInRegistry, intervention, mode, distance) {
+			function getSummaryListRow(indexInRegistry, intervention_name, mode, distance) {
 				return (`
 				<div class="govuk-summary-list__row">
 					<dt class="govuk-summary-list__key">
-					${intervention}
+					${intervention_name}
 					</dt>
 					<dd class="govuk-summary-list__value">
 					${distance}
 					</dd>
 					<dd class="govuk-summary-list__actions">
 					<a class="govuk-link edit-intervention" data-sdca-registry-index="${indexInRegistry}" data-sdca-target-panel="draw-intervention" href="#">
-						Change<span class="govuk-visually-hidden"> ${intervention} intervention</span>
+						Change<span class="govuk-visually-hidden"> ${intervention_name} intervention</span>
 					</a>
 					</dd>
 				</div>
@@ -695,14 +696,14 @@ var sdca = (function ($) {
 				`
 			<div class="govuk-summary-list__row">
 				<dt class="govuk-summary-list__key">
-				${intervention.intervention}
+				${intervention.intervention_name}
 				</dt>
 				<dd class="govuk-summary-list__value">
 				${intervention.intervention_description}
 				</dd>
 				<dd class="govuk-summary-list__actions">
 					<a class="govuk-link" data-sdca-intervention-index="${interventionIndex}" data-sdca-target-panel="draw-intervention" href="#">
-					Add to map<span class="govuk-visually-hidden"> a new ${intervention.intervention}</span>
+					Add to map<span class="govuk-visually-hidden"> a new ${intervention.intervention_name}</span>
 					</a>
 				</dd>
 			</div>
@@ -1074,7 +1075,7 @@ var sdca = (function ($) {
 						Intervention
 					</dt>
 					<dd class="govuk-summary-list__value intervention-name">
-						${interventionLexiconEntry.intervention}
+						${interventionLexiconEntry.intervention_name}
 					</dd>
 					</div>
 					<div class="govuk-summary-list__row">
