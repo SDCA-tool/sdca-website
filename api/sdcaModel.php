@@ -87,7 +87,6 @@ class sdcaModel
 		
 		# Values for assets_parameters
 		$assets_parameters = $this->databaseConnection->select ($this->settings['database'], 'assets_parameters', array ('asset' => $assetIds), array (), true, 'asset,parameter');
-		$assets_parameters = array_unique ($assets_parameters, SORT_REGULAR);		// #!# Pending data cleanup to remove duplicate rows in assets_parameters
 		$json['assets_parameters'] = $assets_parameters;
 		
 		# Values for components
