@@ -342,11 +342,15 @@ var sdca = (function ($) {
 
 					default:
 						// Set as 'view-all', which will trigger a new change to this state
-						_mapState.state = 'view-all'
+						_mapState.state = 'view-all';
 				}
 
 				// Show the delete intervention button
-				_mapState.state == 'edit' ? $('#delete-intervention').show() : $('#delete-intervention').hide();
+				if (_mapState.state == 'edit') {
+					$('#delete-intervention').show ();
+				} else {
+					$('#delete-intervention').hide ();
+				}
 			});
 
 			// At startup, set map state as view-all
@@ -374,9 +378,9 @@ var sdca = (function ($) {
 				$(this).toggleClass('selected');
 				
 				if ($(this).hasClass('selected')) {
-					$(this).text('Hide data layers panel')
+					$(this).text('Hide data layers panel');
 				} else {
-					$(this).text('Explore data layers')
+					$(this).text('Explore data layers');
 				}
 			});
 
@@ -478,7 +482,7 @@ var sdca = (function ($) {
 				_currentInterventionType.index = Number($(this).data('sdca-intervention-index')); // Use Number to ensure the "0" index is not represented as false
 
 				// Set the map state
-				_mapState.state = 'new'
+				_mapState.state = 'new';
 			});
 
 			// UI listener to handle changes to the current intervention
@@ -519,8 +523,8 @@ var sdca = (function ($) {
 					delete _interventionRegistry.features[_currentlyEditingRegistry.index];
 
 					// Create a new clean array without the undefined index and push it
-					var cleanedInterventionArray = []
-					$.each(_interventionRegistry.features, function (indexInArray, feature) { 
+					var cleanedInterventionArray = [];
+					$.each(_interventionRegistry.features, function (indexInArray, feature) {
 						if (feature !== undefined) {
 							cleanedInterventionArray.push(feature)
 						}
@@ -573,7 +577,7 @@ var sdca = (function ($) {
 					},
 					geometry: {
 						type: geometryType,
-						coordinates: JSON.parse($('#geometry').val()),
+						coordinates: JSON.parse($('#geometry').val())
 					}
 				};
 
@@ -611,9 +615,9 @@ var sdca = (function ($) {
 					return;
 				}
 				
-				// Calculate distance 
+				// Calculate distance
 				// !TODO This only calculates LineStrings for now
-				var distance = sdca.calculateInterventionLength(feature)
+				var distance = sdca.calculateInterventionLength(feature);
 
 				// Generate the HTML
 				html += getSummaryListRow(indexInRegistry, feature.properties.intervention_name, feature.properties.mode, distance);
@@ -661,7 +665,7 @@ var sdca = (function ($) {
 				distance = 'N/A';
 			}
 
-			return distance
+			return distance;
 		},
 
 
@@ -774,7 +778,7 @@ var sdca = (function ($) {
 
 				// Can't go below -1 or above max row
 				if (currentSelectedRowIndex <= -1) {
-					currentSelectedRowIndex = -1
+					currentSelectedRowIndex = -1;
 					$('#sdca-panel-container').scrollTo(0);
 					return;
 				}
@@ -870,7 +874,7 @@ var sdca = (function ($) {
 								},
 								popupHtml: (dataset.has_attributes == 'TRUE' ? false : '<p>' + sdca.htmlspecialchars (dataset.title) + '</p>'),
 								popupLabels: popupLabels,
-								popupDescriptions: popupDescriptions,
+								popupDescriptions: popupDescriptions
 							};
 							
 							// Define style if present
@@ -1041,7 +1045,7 @@ var sdca = (function ($) {
 		// Function to draw features on the map
 		addFeaturesToMap: function (featureCollection) {
 
-			if (!_map) { return }
+			if (!_map) {return;}
 
 			// If there are no features, delete all sources, layers, then return
 			if (!featureCollection || !featureCollection.features.length) {
@@ -1091,7 +1095,7 @@ var sdca = (function ($) {
 				<button class="govuk-button edit-intervention" data-sdca-target-panel="draw-intervention" data-module="govuk-button" data-sdca-registry-index="${index}">
 					Edit this intervention
 				</button>
-				`
+				`;
 
 				_map.addSource(id, {
 					'type': 'geojson',
@@ -1118,7 +1122,7 @@ var sdca = (function ($) {
 						.addTo(_map);
 
 				});
-			})
+			});
 		},
 
 
@@ -1205,7 +1209,7 @@ var sdca = (function ($) {
 			var timeseriesLabels = {
 				year: 'Year',
 				emissions: 'Emissions',
-				emissions_cumulative: 'Emissions (cumulative)',
+				emissions_cumulative: 'Emissions (cumulative)'
 			};
 			var timeseries = sdca.htmlTable (data.timeseries, timeseriesLabels);
 			
@@ -1216,7 +1220,7 @@ var sdca = (function ($) {
 				after: 'After',
 				change: 'Change',
 				changekm: 'Change in km',
-				changeemissions: 'Change in emissions',
+				changeemissions: 'Change in emissions'
 			};
 			var demand_change = sdca.htmlTable (data.demand_change, demandChangeLabels);
 			
@@ -1230,7 +1234,7 @@ var sdca = (function ($) {
 				A1_3: 'A1_3',
 				A4: 'A4',
 				A5: 'A5',
-				B4: 'B4',
+				B4: 'B4'
 			};
 			$.each (data.itemised_emissions, function (key, value) {
 				data.itemised_emissions[key].quantity += ' ';
@@ -1258,7 +1262,7 @@ var sdca = (function ($) {
 				icons: {
 					error: '/images/markers/red.svg',
 					warning: '/images/markers/orange.svg',
-					info: '/images/markers/blue.svg',
+					info: '/images/markers/blue.svg'
 				}
 			};
 			
