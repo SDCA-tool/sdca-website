@@ -1015,6 +1015,10 @@ var sdca = (function ($) {
 				// Do not resend data If we have not made any changes to the intervention registry
 				if (_lastApiCallRegistryTimestamp == _interventionRegistry._timestamp) {
 					sdca.switchPanel('view-results');
+
+					// Reenable calculate button (it was disabled to prevent multiple clicks)
+					$('button#calculate').removeAttr('disabled');
+
 					return;
 				}
 
