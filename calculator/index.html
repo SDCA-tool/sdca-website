@@ -270,18 +270,23 @@
             <a href="#" class="govuk-back-link" data-sdca-target-panel="false">Back</a>
             <h2 class="govuk-heading-l">Upload GIS file</h2>
             <p class="govuk-body">Use this panel to upload a GIS file containing an intervention.</p>
-            <p class="govuk-body">The GIS team for your scheme should be able to provide you with the scheme data as GeoJSON</p>
+            <p class="govuk-body">The GIS team for your scheme should be able to provide you with the scheme data in GeoJSON format.</p>
+            <p class="govuk-body">Once you have uploaded a GIS file, you can make further changes on the map.</p>
+
+            <h2 class="govuk-heading-m">Adding the data to this tool</h2>
 
             <div class="govuk-form-group" id="gis-upload-form">
               <label class="govuk-label" for="gis-file">
-                Select a GeoJSON file
+                Please select a GeoJSON file
               </label>
               <p id="gis-file-error" class="govuk-error-message">
-                <span class="govuk-visually-hidden">Error:</span> The GeoJSON file uploaded did not contain a valid SDCA intervention.
+                <span class="govuk-visually-hidden">Error:</span> The GeoJSON file uploaded did not contain a valid SDCA
+                intervention.
               </p>
+              <br />
               <input class="govuk-file-upload" id="gis-file" name="gis-file" type="file">
 
-              <p class="govuk-body">Once you have uploaded a GIS file, you can make further changes on the map.</p>
+              <br />
 
               <button id="submit-gis-file" class="govuk-button" data-module="govuk-button">
                 Upload and continue
