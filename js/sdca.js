@@ -562,7 +562,7 @@ var sdca = (function ($) {
 			$.each(_interventions, function (interventionIndex, intervention) {
 
 				// Save the python-case intervention mode (i.e. high-speed-rail)
-				mode = sdca.convertLabelToPython(intervention.mode);
+				mode = sdca.convertLabelToKebab(intervention.mode);
 
 				// If we already have an accordion header for this,
 				if ($('#intervention-' + mode).length > 0) {
@@ -812,7 +812,7 @@ var sdca = (function ($) {
 
 		// Generate intervention accordion header HTML
 		generateInterventionHeaderHtml: function (intervention, interventionIndex) {
-			var mode = sdca.convertLabelToPython(intervention.mode);
+			var mode = sdca.convertLabelToKebab(intervention.mode);
 			return (`
 				<div class="govuk-accordion__section" id="intervention-${mode}">
 					<div class="govuk-accordion__section-header">
@@ -856,8 +856,8 @@ var sdca = (function ($) {
 		},
 
 
-		// Convert normal case into python case. 
-		convertLabelToPython: function (label) {
+		// Convert normal case into kebab case
+		convertLabelToKebab: function (label) {
 			// "High speed rail" => "high-speed-rail"
 			return label.replace(/\s+/g, '-').toLowerCase();
 		},
