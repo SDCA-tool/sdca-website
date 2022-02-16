@@ -388,41 +388,41 @@
                     intervention on map</a>
                 </li>
               </ol>
+            </div>
+            <h2 class="govuk-heading-l">Draw an intervention on the map</h2>
+
+            <p class="govuk-body">Click on the map to draw the route. When you are finished, click the green button.
+            </p>
+
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Mode
+                </dt>
+                <dd class="govuk-summary-list__value intervention-mode">
+
+                </dd>
               </div>
-              <h2 class="govuk-heading-l">Draw an intervention on the map</h2>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Intervention
+                </dt>
+                <dd class="govuk-summary-list__value intervention-name">
 
-              <p class="govuk-body">Click on the map to draw the route. When you are finished, click the green button.
-              </p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Total distance
+                </dt>
+                <dd class="govuk-summary-list__value distance">
+                  0 km
+                </dd>
+              </div>
+            </dl>
 
-              <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Mode
-                  </dt>
-                  <dd class="govuk-summary-list__value intervention-mode">
-
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Intervention
-                  </dt>
-                  <dd class="govuk-summary-list__value intervention-name">
-
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Total distance
-                  </dt>
-                  <dd class="govuk-summary-list__value distance">
-                    0 km
-                  </dd>
-                </div>
-              </dl>
-
-              <div class="govuk-button-group">
-                <button class="govuk-button draw line" data-module="govuk-button">
+            <div class="govuk-button-group">
+              <button class="govuk-button draw line" data-module="govuk-button">
                 Start new drawing on the map
               </button>
               <button class="govuk-button stop-drawing" data-module="govuk-button">
@@ -481,7 +481,7 @@
               </ul>
 
               <div class="govuk-tabs__panel" id="summary">
-                
+
                 <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-2">
                   <h1 class="govuk-panel__title netzero_compatible">
                     Net zero compatible?
@@ -532,7 +532,7 @@
               <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="emissions-by-type">
 
                 <p class="govuk-body">Showing emissions by PAS 2080 category:</p>
-                
+
                 <div class="graph-container" style="height: 436px; width: 50%; min-width: 400px; max-width: 700px;">
                   <canvas class="emissions-chart" id="emissions-by-type-chart-high"></canvas>
                   <canvas class="emissions-chart" id="emissions-by-type-chart-average"></canvas>
@@ -571,11 +571,11 @@
               </div>
 
               <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="details">
-				<h2 class="govuk-heading-m">Demand change</h2>
+                <h2 class="govuk-heading-m">Demand change</h2>
                 <div class="demand_change">
                   <!-- GOVUK table will be placed here showing demand change -->
                 </div>
-				<h2 class="govuk-heading-m">Itemised emissions</h2>
+                <h2 class="govuk-heading-m">Itemised emissions</h2>
                 <div class="itemised_emissions">
                   <!-- GOVUK table will be placed here showing itemised emissions -->
                 </div>
@@ -607,7 +607,7 @@
           </span>
         </div>
         <div class="govuk-footer__meta-item">
-          
+
         </div>
         <img src="/images/leeds.png" width="200" alt="University of Leeds" />
       </div>
