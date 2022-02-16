@@ -423,7 +423,14 @@ var sdca = (function ($) {
 			// Once we have uploaded a file, enable the button
 			$('input#gis-file').on('change', function () {
 				$('#submit-gis-file').removeAttr('disabled').removeClass('govuk-button--disabled');
+
+				// Hide the error messages
+				$('#gis-upload-form').removeClass('govuk-form-group--error');
+				$('#gis-file-error').hide();
 			});
+
+			// By default, the error message should be hidden 
+			$('#gis-file-error').hide();
 
 			// Handle GeoJSON "upload", i.e. replace the internal intervention registry with the contents of the uploaded file
 			$('#submit-gis-file').on('click', function () {
@@ -452,8 +459,34 @@ var sdca = (function ($) {
 					// Update the list of interventions with the new data
 					sdca.updateUserInterventionList();
 
-					// Show the results of the upload
-					sdca.switchPanel('design-scheme');
+					// Did we manage to parse any interventions?
+					// For now, loop through the FeatureCollection.features and remove any without any properties
+					// Having no properties means we can't associate the GeoJSON coordinates with any kind of intervention
+					var corruptFileTrigger = false;
+					$.each(_interventionRegistry.features, function (indexInArray, feature) {
+						if (Object.keys(feature.properties).length === 0) {
+							// We have at least one feature without any discernable properties
+							corruptFileTrigger = true;
+
+							// Delete it, if further on in development we decide to ignore this
+							sdca.deleteInterventionFromRegistry(indexInArray);
+						}
+					});
+
+					// If there was a problem with at least one of the features, display error message
+					if (corruptFileTrigger) {
+						// Update UI to display error message
+						$('#gis-upload-form').addClass('govuk-form-group--error');
+						$('#gis-file-error').show();
+					} else {
+						// Reset error UI
+						$('#gis-upload-form').removeClass('govuk-form-group--error');
+						$('#gis-file-error').hide();
+
+						// Show the results of the upload
+						sdca.switchPanel('design-scheme');
+					}
+
 				};
 				reader.readAsText(importedFile);
 			});
