@@ -1277,6 +1277,28 @@ var sdca = (function ($) {
 		},
 
 
+		// Helper function to build a Mapbox GL match expression; see last example at: https://www.lostcreekdesigns.co/writing/how-to-style-map-layers-in-mapbox-gl-js/
+		buildMatchExpression: function (datasourceField, styleField, fallbackValue)
+		{
+				// Build the line colour expression, specifying a match against a particular datasource field
+				var expression = [];
+				expression.push ('match');
+				expression.push (['get', datasourceField]);
+				
+				// Add each pair
+				$.each (_drawingStyles, function (index, style) {
+					expression.push (style.mode);
+					expression.push (style[styleField]);
+				});
+				
+				// Add the fallback value
+				expression.push (fallbackValue);
+				
+				// Return the expression
+				return expression;
+		},
+
+
 		// Export or share the data returned from the API
 		exportData: function () {
 			$('.export-data').on('click', function () {
