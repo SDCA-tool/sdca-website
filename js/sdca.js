@@ -446,6 +446,9 @@ var sdca = (function ($) {
 					// Reset the geometry field
 					$('#geometry').val('');
 
+					// Ensure the calculate button is visible
+					$('#calculate').show();
+
 					// Update the list of interventions with the new data
 					sdca.updateUserInterventionList();
 
