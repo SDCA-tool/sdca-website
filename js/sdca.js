@@ -1226,17 +1226,14 @@ var sdca = (function ($) {
 				return;
 			}
 
-			// Add colours to features in FeatureCollection
-			var colouredFeatureCollection = sdca.addColourPropertiesToFeatures(featureCollection)
-
 			// If we are running for the first time, add a source
 			if (_map.getSource('sdca')) {
-				_map.getSource('sdca').setData(colouredFeatureCollection);
+				_map.getSource('sdca').setData (featureCollection);
 				// Otherwise, update the existing source
 			} else {
 				_map.addSource('sdca', {
 					'type': 'geojson',
-					'data': colouredFeatureCollection
+					'data': featureCollection
 				});
 			}
 
@@ -1251,32 +1248,14 @@ var sdca = (function ($) {
 						'line-cap': 'round'
 					},
 					'paint': {
-						'line-color': ['get', 'color'],
-						'line-width': ['get', 'lineWidth'],
+						'line-color': sdca.buildMatchExpression ('mode', 'line-color', 'black'),
+						'line-width': sdca.buildMatchExpression ('mode', 'line-width', 5)
 					}
 				});
 			}
 		},
-
-
-		// Loops through the features, and adds colours
-		addColourPropertiesToFeatures: function (featureCollection)
-		{
-			// Get a working copy of the registry
-			var collection = jQuery.extend(true, {}, featureCollection);
-
-			// Iterate through the features, and add the styling information
-			var colourObject = {};
-			$.each(collection.features, function (indexInArray, feature) {
-				colourObject = _drawingStyles.find(object => object.mode === feature.properties.mode);
-				feature.properties.color = colourObject.color;
-				feature.properties.lineWidth = colourObject.lineWidth;
-			});
-
-			return collection;
-		},
-
-
+		
+		
 		// Helper function to build a Mapbox GL match expression; see last example at: https://www.lostcreekdesigns.co/writing/how-to-style-map-layers-in-mapbox-gl-js/
 		buildMatchExpression: function (datasourceField, styleField, fallbackValue)
 		{
