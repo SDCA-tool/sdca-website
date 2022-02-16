@@ -277,6 +277,7 @@ var sdca = (function ($) {
 			sdca.deleteIntervention ();
 			sdca.handleChartRadios ();
 			sdca.handleResetInterface ();
+			sdca.exportIntervention ();
 
 			// Map state controller
 			sdca.mapState ();
@@ -438,6 +439,25 @@ var sdca = (function ($) {
 				// Remove all user interventions to reflect empty registry
 				sdca.updateUserInterventionList();
 			})
+		},
+
+
+		// User can click on button to save intervention design as JSON file
+		exportIntervention: function () {
+			$('#save-interventions').on('click', function () {
+				let dataStr = JSON.stringify(_interventionRegistry);
+				let exportFileName = 'carbon-calculator-scheme-intervention.json';
+
+				// Create downloadable element and click it
+				var element = document.createElement('a');
+				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(dataStr));
+				element.setAttribute('download', exportFileName);
+				element.setAttribute('target', '_blank');
+				element.style.display = 'none';
+				document.body.appendChild(element);
+				element.click();
+				document.body.removeChild(element);
+			});
 		},
 
 

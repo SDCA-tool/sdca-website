@@ -270,7 +270,8 @@
             <a href="#" class="govuk-back-link" data-sdca-target-panel="false">Back</a>
             <h2 class="govuk-heading-l">Upload GIS file</h2>
             <p class="govuk-body">Use this panel to upload a GIS file containing an intervention.</p>
-            <p class="govuk-body">The GIS team for your scheme should be able to provide you with the scheme data in GeoJSON format.</p>
+            <p class="govuk-body">The GIS team for your scheme should be able to provide you with the scheme data in
+              GeoJSON format.</p>
             <p class="govuk-body">Once you have uploaded a GIS file, you can make further changes on the map.</p>
 
             <h2 class="govuk-heading-m">Adding the data to this tool</h2>
@@ -309,11 +310,13 @@
               <!-- User interventions will be populated here-->
             </dl>
 
-            <button class="govuk-button" data-module="govuk-button" data-sdca-target-panel="search-for-intervention" id="add-intervention">
+            <button class="govuk-button" data-module="govuk-button" data-sdca-target-panel="search-for-intervention"
+              id="add-intervention">
               Add an intervention
             </button>
 
-            <p class="govuk-body">Or <a class="govuk-link" data-sdca-target-panel="upload-geojson" href="#">upload a GIS file</a>.</p>
+            <p class="govuk-body">Or <a class="govuk-link" data-sdca-target-panel="upload-geojson" href="#">upload a GIS
+                file</a>.</p>
 
             <input id="geometry" name="loc_json" type="hidden" value="" />
 
@@ -325,11 +328,16 @@
             </button>
 
             <h2 class="govuk-heading-m">Start again</h2>
-            <p class="govuk-body">You can click the button below to start again, and reset this tool to its initial state.</p>
+            <p class="govuk-body">You can click the button below to start again, and reset this tool to its initial
+              state.</p>
 
-            <button class="govuk-button govuk-button--secondary" id="reset-tool" data-module="govuk-button">
-              Start again
-            </button>
+            <div class="govuk-button-group">
+              <button class="govuk-button govuk-button--secondary" id="reset-tool" data-module="govuk-button">
+                Start again
+              </button>
+
+              <a class="govuk-link" id="save-interventions" href="#">Save your current interventions</a>
+            </div>
           </div>
 
 
@@ -352,7 +360,8 @@
                   What type of intervention is this?
                 </label>
               </h1>
-              <input class="govuk-input autofocus" id="filter-interventions" name="filter-interventions" type="search" autocomplete="off">
+              <input class="govuk-input autofocus" id="filter-interventions" name="filter-interventions" type="search"
+                autocomplete="off">
             </div>
 
             <div class="govuk-accordion" data-module="govuk-accordion" id="interventions-accordion">
