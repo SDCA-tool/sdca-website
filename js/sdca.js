@@ -1178,6 +1178,16 @@ var sdca = (function ($) {
 			// Get the interventions JSON file
 			$.getJSON ('/lexicon/styles/modes.json', function (modes) {
 				_drawingStyles = modes;
+				
+				// Ensure integer strings are proper ints
+				// #!# This is required because csvToJson's conversion from CSV to JSON ends up quoting
+				$.each (_drawingStyles, function (index, style) {
+					$.each (style, function (field, value) {
+						if (value.match (/^\d+$/)) {
+							_drawingStyles[index][field] = parseInt (value);
+						}
+					});
+				});
 			});
 		},
 		
