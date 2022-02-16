@@ -333,7 +333,7 @@ var sdca = (function ($) {
 						$('#geometry').val('');
 
 						// Adjust the UI drawing buttons
-						$('.draw.line').text('Start new drawing on the map');
+						$('.draw.line').text('Start new drawing on the map').removeClass('govuk-button--secondary');
 						$('.drawing-complete').hide();
 
 						// Adjust the labels on the drawing page 
