@@ -263,9 +263,9 @@ var sdca = (function ($) {
 
 			// Load layers from datasets file, and then initialise layers
 			sdca.loadDatasets ();
-
-			// Handler for drawn line
-			sdca.handleDrawLine ();
+			
+			// Drawing handlers
+			sdca.handleDrawing ();
 			
 			// Manage panels
 			sdca.managePanels ();
@@ -1061,7 +1061,7 @@ var sdca = (function ($) {
 		
 		
 		// Handler for drawn line
-		handleDrawLine: function ()
+		handleDrawing: function ()
 		{
 			// Load drawing styles
 			sdca.loadDrawingStyles ();
