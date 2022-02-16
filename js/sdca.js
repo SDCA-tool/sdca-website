@@ -232,9 +232,6 @@ var sdca = (function ($) {
 		}
 	}
 	
-	/* Styles */
-	var _drawingStyles = {};
-	
 	/* Labels */
 	var _pas2080Labels = {};
 	
@@ -1054,6 +1051,9 @@ var sdca = (function ($) {
 
 						// Also get the _map Object
 						_map = layerviewer.getMap();
+						
+						// Initialise the drawing layer
+						sdca.drawingLayerInit ();
 					});
 				});
 			});
@@ -1063,9 +1063,6 @@ var sdca = (function ($) {
 		// Handler for drawn line
 		handleDrawing: function ()
 		{
-			// Load drawing styles
-			sdca.loadDrawingStyles ();
-			
 			// At startup, get and store the drawing status proxy 
 			_drawingHappening = layerviewer.getDrawingStatusObject();
 
@@ -1172,16 +1169,38 @@ var sdca = (function ($) {
 		},
 
 
-		// Function to load the drawing styles
-		loadDrawingStyles: function ()
+		// Function to initalise the drawing layer
+		drawingLayerInit: function ()
 		{
-			// Get the interventions JSON file
-			$.getJSON ('/lexicon/styles/modes.json', function (modes) {
-				_drawingStyles = modes;
+			// When ready
+			_map.on ('load', function () {
 				
-				// Ensure integer strings are proper ints
-				// #!# This is required because csvToJson's conversion from CSV to JSON ends up quoting
-				_drawingStyles = sdca.fixIntStrings (_drawingStyles);
+				// Get the interventions JSON file
+				$.getJSON ('/lexicon/styles/modes.json', function (drawingStyles) {
+					
+					// Ensure integer strings are proper ints
+					// #!# This is required because csvToJson's conversion from CSV to JSON ends up quoting
+					drawingStyles = sdca.fixIntStrings (drawingStyles);
+					
+					// Create the source and layer
+					_map.addSource ('sdca', {
+						'type': 'geojson',
+						'data': {type: 'FeatureCollection', features: []}	// Initally empty GeoJSON
+					});
+					_map.addLayer ({
+						'id': 'sdca',
+						'type': 'line',
+						'source': 'sdca',
+						'layout': {
+							'line-join': 'round',
+							'line-cap': 'round'
+						},
+						'paint': {
+							'line-color': sdca.buildMatchExpression (drawingStyles, 'mode', 'line-color', 'black'),
+							'line-width': sdca.buildMatchExpression (drawingStyles, 'mode', 'line-width', 5)
+						}
+					});
+				});
 			});
 		},
 		
@@ -1226,44 +1245,20 @@ var sdca = (function ($) {
 
 
 		// Function to draw features on the map
-		addFeaturesToMap: function (featureCollection) {
-
-			if (!_map) { return; }
+		addFeaturesToMap: function (featureCollection)
+		{
+			if (!_map) { return;}
 
 			// If there are no features, delete all sources, layers, then return
+			// #!# Clearing the layers should not be necessary - should just be a case of using .setData
 			if (!featureCollection || !featureCollection.features.length) {
 				sdca.clearDrawings();
 				sdca.clearSdcaLayers();
 				return;
 			}
 
-			// If we are running for the first time, add a source
-			if (_map.getSource('sdca')) {
-				_map.getSource('sdca').setData (featureCollection);
-				// Otherwise, update the existing source
-			} else {
-				_map.addSource('sdca', {
-					'type': 'geojson',
-					'data': featureCollection
-				});
-			}
-
-			// Add a layer if we don't already have one
-			if (!_map.getLayer('sdca')) {
-				_map.addLayer({
-					'id': 'sdca',
-					'type': 'line',
-					'source': 'sdca',
-					'layout': {
-						'line-join': 'round',
-						'line-cap': 'round'
-					},
-					'paint': {
-						'line-color': sdca.buildMatchExpression ('mode', 'line-color', 'black'),
-						'line-width': sdca.buildMatchExpression ('mode', 'line-width', 5)
-					}
-				});
-			}
+			// Update the source
+			_map.getSource('sdca').setData (featureCollection);
 		},
 		
 		
