@@ -1164,7 +1164,7 @@ var sdca = (function ($) {
 		},
 
 		
-		// Clear any Sdca layers from the map
+		// Clear the SDCA layers and sources from the map
 		clearSdcaLayers: function () {
 			// Delete any layers created from drawings
 			var layers = _map.getStyle().layers;
@@ -1180,7 +1180,7 @@ var sdca = (function ($) {
 		// Function to draw features on the map
 		addFeaturesToMap: function (featureCollection) {
 
-			if (!_map) {return;}
+			if (!_map) { return; }
 
 			// If there are no features, delete all sources, layers, then return
 			if (!featureCollection || !featureCollection.features.length) {
@@ -1189,58 +1189,23 @@ var sdca = (function ($) {
 				return;
 			}
 
-			sdca.clearSdcaLayers();
-
-			featureCollection.features.forEach((feature, index) => {
-
-				var id = 'sdca-route-' + Number(index);
-
-				// Get the information about the feature in order to add to popup HTML
-				var interventionLexiconEntry = _interventions[feature._interventionTypeIndex];
-
-				var popupHtml = `
-				
-				<dl class="govuk-summary-list">
-					<div class="govuk-summary-list__row">
-					<dt class="govuk-summary-list__key">
-						Mode
-					</dt>
-					<dd class="govuk-summary-list__value">
-						${interventionLexiconEntry.mode}
-					</dd>
-					</div>
-					<div class="govuk-summary-list__row">
-					<dt class="govuk-summary-list__key">
-						Intervention
-					</dt>
-					<dd class="govuk-summary-list__value intervention-name">
-						${interventionLexiconEntry.intervention_name}
-					</dd>
-					</div>
-					<div class="govuk-summary-list__row">
-					<dt class="govuk-summary-list__key">
-						Total distance
-					</dt>
-					<dd class="govuk-summary-list__value distance">
-						${sdca.calculateInterventionLength(feature)}
-					</dd>
-					</div>
-				</dl>
-
-				<button class="govuk-button edit-intervention" data-sdca-target-panel="draw-intervention" data-module="govuk-button" data-sdca-registry-index="${index}">
-					Edit this intervention
-				</button>
-				`;
-
-				_map.addSource(id, {
+			// If we are running for the first time, add a source
+			if (_map.getSource('sdca')) {
+				_map.getSource('sdca').setData(featureCollection);
+				// Otherwise, update the existing source
+			} else {
+				_map.addSource('sdca', {
 					'type': 'geojson',
-					'data': feature
+					'data': featureCollection
 				});
+			}
 
+			// Add a layer if we don't already have one
+			if (!_map.getLayer('sdca')) {
 				_map.addLayer({
-					'id': id,
+					'id': 'sdca',
 					'type': 'line',
-					'source': id,
+					'source': 'sdca',
 					'layout': {
 						'line-join': 'round',
 						'line-cap': 'round'
@@ -1250,14 +1215,7 @@ var sdca = (function ($) {
 						'line-width': 8
 					}
 				});
-				_map.on('click', id, function (e) {
-					var popup = new mapboxgl.Popup()
-						.setLngLat(e.lngLat)
-						.setHTML(popupHtml)
-						.addTo(_map);
-
-				});
-			});
+			}
 		},
 
 
