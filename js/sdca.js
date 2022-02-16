@@ -276,6 +276,7 @@ var sdca = (function ($) {
 			sdca.editIntervention ();
 			sdca.deleteIntervention ();
 			sdca.handleChartRadios ();
+			sdca.handleResetInterface ();
 
 			// Map state controller
 			sdca.mapState ();
@@ -412,6 +413,31 @@ var sdca = (function ($) {
 			if (panelToShow !== 'draw-intervention') {
 				_mapState.state = 'show-all';
 			}
+		},
+
+
+		// Handle resetting the tool
+		handleResetInterface: function () {
+			$('#reset-tool').on('click', function () {
+				// Wipe the intervention registry
+				_interventionRegistry = {
+					_timestamp: null,
+					type: 'FeatureCollection',
+					features: []
+				}
+
+				// Run the map draw to empty the map
+				sdca.addFeaturesToMap();
+
+				// Reset the geometry field
+				$('#geometry').val('');
+
+				// Ensure the calculate button is not visible
+				$('#calculate').hide();
+
+				// Remove all user interventions to reflect empty registry
+				sdca.updateUserInterventionList();
+			})
 		},
 
 
