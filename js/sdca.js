@@ -431,7 +431,7 @@ var sdca = (function ($) {
 				}
 
 				// Run the map draw to empty the map
-				sdca.addFeaturesToMap();
+				sdca.addFeaturesToMap(_interventionRegistry);
 
 				// Reset the geometry field
 				$('#geometry').val('');
@@ -494,7 +494,7 @@ var sdca = (function ($) {
 					_interventionRegistry = fileContent;
 
 					// Add these features to the map
-					sdca.addFeaturesToMap();
+					sdca.addFeaturesToMap(_interventionRegistry);
 
 					// Update timestamp
 					_interventionRegistry._timestamp = Date.now();
@@ -1252,19 +1252,6 @@ var sdca = (function ($) {
 			}
 		},
 
-		
-		// Clear the SDCA layers and sources from the map
-		clearSdcaLayers: function () {
-			// Delete any layers created from drawings
-			var layers = _map.getStyle().layers;
-			layers.forEach(function (layer) {
-				if (layer.id.includes('sdca-')) {
-					_map.removeLayer(layer.id);
-					_map.removeSource(layer.id);
-				}
-			});
-		},
-
 
 		// Function to draw features on the map
 		addFeaturesToMap: function (featureCollection)
@@ -1273,9 +1260,8 @@ var sdca = (function ($) {
 
 			// If there are no features, delete all sources, layers, then return
 			// #!# Clearing the layers should not be necessary - should just be a case of using .setData
-			if (!featureCollection || !featureCollection.features.length) {
+			if (!featureCollection) {
 				sdca.clearDrawings();
-				sdca.clearSdcaLayers();
 				return;
 			}
 
