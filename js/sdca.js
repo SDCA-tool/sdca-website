@@ -1181,14 +1181,25 @@ var sdca = (function ($) {
 				
 				// Ensure integer strings are proper ints
 				// #!# This is required because csvToJson's conversion from CSV to JSON ends up quoting
-				$.each (_drawingStyles, function (index, style) {
-					$.each (style, function (field, value) {
-						if (value.match (/^\d+$/)) {
-							_drawingStyles[index][field] = parseInt (value);
-						}
-					});
+				_drawingStyles = sdca.fixIntStrings (_drawingStyles);
+			});
+		},
+		
+		
+		// Helper function to fix int strings to proper ints in a two-dimensional array
+		fixIntStrings (dataset)
+		{
+			// Loop through each row
+			$.each (dataset, function (index, row) {
+				$.each (row, function (field, value) {
+					if (value.match (/^\d+$/)) {
+						dataset[index][field] = parseInt (value);
+					}
 				});
 			});
+			
+			// Return the modified result
+			return dataset;
 		},
 		
 		
