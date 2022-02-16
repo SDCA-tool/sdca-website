@@ -419,6 +419,9 @@ var sdca = (function ($) {
 
 		// Handle resetting the tool
 		handleResetInterface: function () {
+			// Reset options shouldn't be available at startup
+			$('#start-again').hide();
+
 			$('#reset-tool').on('click', function () {
 				// Wipe the intervention registry
 				_interventionRegistry = {
@@ -776,12 +779,19 @@ var sdca = (function ($) {
 			$('.user-interventions-list').html(html);
 			
 			// Change button state to secondary when the registry has a feature in it
-			if ($.isEmptyObject (_interventionRegistry.features)) {
-				$('button#add-intervention').html ('Add an intervention');
-				$('button#add-intervention').removeClass ('govuk-button--secondary');
+			if ($.isEmptyObject(_interventionRegistry.features)) {
+				$('button#add-intervention').html('Add an intervention');
+				$('button#add-intervention').removeClass('govuk-button--secondary');
 			} else {
-				$('button#add-intervention').html ('Add another intervention');
-				$('button#add-intervention').addClass ('govuk-button--secondary');
+				$('button#add-intervention').html('Add another intervention');
+				$('button#add-intervention').addClass('govuk-button--secondary');
+			}
+
+			// If there are no interventions, hide the Start again controls
+			if (!_interventionRegistry || !_interventionRegistry.features.length) {
+				$('#start-again').hide();
+			} else {
+				$('#start-again').show();
 			}
 		},
 
