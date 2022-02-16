@@ -266,6 +266,7 @@ var sdca = (function ($) {
 			
 			// Manage panels
 			sdca.managePanels ();
+			sdca.handleFileUpload ();
 
 			// Intervention handlers
 			sdca.retrieveInterventions ();
@@ -411,6 +412,48 @@ var sdca = (function ($) {
 			if (panelToShow !== 'draw-intervention') {
 				_mapState.state = 'show-all';
 			}
+		},
+
+
+		// UI management for GIS file upload
+		handleFileUpload: function () {
+			// By default, the file upload button is disabled
+			$('#submit-gis-file').attr('disabled', 'disabled').addClass('govuk-button--disabled');
+
+			// Once we have uploaded a file, enable the button
+			$('input#gis-file').on('change', function () {
+				$('#submit-gis-file').removeAttr('disabled').removeClass('govuk-button--disabled');
+			});
+
+			// Handle GeoJSON "upload", i.e. replace the internal intervention registry with the contents of the uploaded file
+			$('#submit-gis-file').on('click', function () {
+				// Get the file
+				var importedFile = document.getElementById('gis-file').files[0];
+
+				var reader = new FileReader();
+				reader.onload = function () {
+					var fileContent = JSON.parse(reader.result);
+
+					// Replace the registry with the contents of the file
+					_interventionRegistry = fileContent;
+
+					// Add these features to the map
+					sdca.addFeaturesToMap();
+
+					// Update timestamp
+					_interventionRegistry._timestamp = Date.now();
+
+					// Reset the geometry field
+					$('#geometry').val('');
+
+					// Update the list of interventions with the new data
+					sdca.updateUserInterventionList();
+
+					// Show the results of the upload
+					sdca.switchPanel('design-scheme');
+				};
+				reader.readAsText(importedFile);
+			});
 		},
 
 

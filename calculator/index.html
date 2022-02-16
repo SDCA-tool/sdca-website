@@ -265,6 +265,28 @@
 
           </div>
 
+          <!-- Upload GeoJSON -->
+          <div class="sdca-panel" id="upload-geojson" data-sdca-is-temp-panel="true">
+            <a href="#" class="govuk-back-link" data-sdca-target-panel="false">Back</a>
+            <h2 class="govuk-heading-l">Upload GIS file</h2>
+            <p class="govuk-body">Use this panel to upload a GIS file containing an intervention.</p>
+            <p class="govuk-body">The GIS team for your scheme should be able to provide you with the scheme data as GeoJSON</p>
+
+            <div class="govuk-form-group">
+              <label class="govuk-label" for="gis-file">
+                Select a GeoJSON file
+              </label>
+              <input class="govuk-file-upload" id="gis-file" name="gis-file" type="file">
+
+              <p class="govuk-body">Once you have uploaded a GIS file, you can make further changes on the map.</p>
+
+              <button id="submit-gis-file" class="govuk-button" data-module="govuk-button">
+                Upload and continue
+              </button>
+            </div>
+
+          </div>
+
 
           <!-- Design scheme panel -->
           <div class="sdca-panel" id="design-scheme">
@@ -273,7 +295,7 @@
               search for interventions like railway tracks, bridges, or stations.</p>
 
             <h2 class="govuk-heading-m">Current interventions</h2>
-            <p class="govuk-body">Interventions you have drawn on the map will appear here. You can also <a href="#"> upload a GeoJSON file</a>, instead of drawing on the map.</p>
+            <p class="govuk-body">Interventions you have drawn on the map will appear here.</p>
 
             <dl class="govuk-summary-list user-interventions-list">
               <!-- User interventions will be populated here-->
@@ -282,6 +304,8 @@
             <button class="govuk-button" data-module="govuk-button" data-sdca-target-panel="search-for-intervention" id="add-intervention">
               Add an intervention
             </button>
+
+            <p class="govuk-body">Or <a class="govuk-link" data-sdca-target-panel="upload-geojson" href="#">upload a GIS file</a>.</p>
 
             <input id="geometry" name="loc_json" type="hidden" value="" />
 
