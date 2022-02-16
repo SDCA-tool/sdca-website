@@ -232,6 +232,9 @@ var sdca = (function ($) {
 		}
 	}
 	
+	/* Styles */
+	var _drawingStyles = {};
+	
 	/* Labels */
 	var _pas2080Labels = {};
 	
@@ -1058,7 +1061,11 @@ var sdca = (function ($) {
 		
 		
 		// Handler for drawn line
-		handleDrawLine: function () {
+		handleDrawLine: function ()
+		{
+			// Load drawing styles
+			sdca.loadDrawingStyles ();
+			
 			// At startup, get and store the drawing status proxy 
 			_drawingHappening = layerviewer.getDrawingStatusObject();
 
@@ -1165,6 +1172,16 @@ var sdca = (function ($) {
 		},
 
 
+		// Function to load the drawing styles
+		loadDrawingStyles: function ()
+		{
+			// Get the interventions JSON file
+			$.getJSON ('/lexicon/styles/modes.json', function (modes) {
+				_drawingStyles = modes;
+			});
+		},
+		
+		
 		// Clear all drawings and drawing-associated layers
 		clearDrawings: function () {
 			// Clear all drawings
@@ -1233,33 +1250,15 @@ var sdca = (function ($) {
 
 
 		// Loops through the features, and adds colours
-		addColourPropertiesToFeatures: function (featureCollection) {
-			// Define basic colours
-			const colourMap = [
-				{
-					mode: 'High speed rail',
-					color: '#6f72af',
-					lineWidth: 8
-				},
-				{
-					mode: 'Rail',
-					color: '#5694ca',
-					lineWidth: 6
-				},
-				{
-					mode: 'Bicycle',
-					color: '#28a197',
-					lineWidth: 4
-				},
-			]
-
+		addColourPropertiesToFeatures: function (featureCollection)
+		{
 			// Get a working copy of the registry
 			var collection = jQuery.extend(true, {}, featureCollection);
 
 			// Iterate through the features, and add the styling information
 			var colourObject = {};
 			$.each(collection.features, function (indexInArray, feature) {
-				colourObject = colourMap.find(object => object.mode === feature.properties.mode);
+				colourObject = _drawingStyles.find(object => object.mode === feature.properties.mode);
 				feature.properties.color = colourObject.color;
 				feature.properties.lineWidth = colourObject.lineWidth;
 			});
