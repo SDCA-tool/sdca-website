@@ -564,18 +564,7 @@ var sdca = (function ($) {
 				if (_currentlyEditingRegistry.index < 0) {
 					// Shouldn't happen
 				} else {
-					// The following two steps are a way around JavaScript now having a proper ArrayItem.remove() method
-					// Empty the array at the correct index
-					delete _interventionRegistry.features[_currentlyEditingRegistry.index];
-
-					// Create a new clean array without the undefined index and push it
-					var cleanedInterventionArray = [];
-					$.each(_interventionRegistry.features, function (indexInArray, feature) {
-						if (feature !== undefined) {
-							cleanedInterventionArray.push(feature)
-						}
-					});
-					_interventionRegistry.features = cleanedInterventionArray;
+					sdca.deleteInterventionFromRegistry(_currentlyEditingRegistry.index)
 				}
 
 				// Update timestamp
@@ -590,6 +579,23 @@ var sdca = (function ($) {
 				// ET go home
 				sdca.switchPanel('design-scheme');
 			});
+		},
+
+
+		// Delete an intervention from the registry
+		deleteInterventionFromRegistry: function (interventionIndex) {
+			// The following two steps are a way around JavaScript now having a proper ArrayItem.remove() method
+			// Empty the array at the correct index
+			delete _interventionRegistry.features[interventionIndex];
+
+			// Create a new clean array without the undefined index and push it
+			var cleanedInterventionArray = [];
+			$.each(_interventionRegistry.features, function (indexInArray, feature) {
+				if (feature !== undefined) {
+					cleanedInterventionArray.push(feature)
+				}
+			});
+			_interventionRegistry.features = cleanedInterventionArray;
 		},
 
 
