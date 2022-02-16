@@ -1199,14 +1199,17 @@ var sdca = (function ($) {
 				return;
 			}
 
+			// Add colours to features in FeatureCollection
+			var colouredFeatureCollection = sdca.addColourPropertiesToFeatures(featureCollection)
+
 			// If we are running for the first time, add a source
 			if (_map.getSource('sdca')) {
-				_map.getSource('sdca').setData(featureCollection);
+				_map.getSource('sdca').setData(colouredFeatureCollection);
 				// Otherwise, update the existing source
 			} else {
 				_map.addSource('sdca', {
 					'type': 'geojson',
-					'data': featureCollection
+					'data': colouredFeatureCollection
 				});
 			}
 
@@ -1221,11 +1224,47 @@ var sdca = (function ($) {
 						'line-cap': 'round'
 					},
 					'paint': {
-						'line-color': '#888',
-						'line-width': 8
+						'line-color': ['get', 'color'],
+						'line-width': ['get', 'lineWidth'],
 					}
 				});
 			}
+		},
+
+
+		// Loops through the features, and adds colours
+		addColourPropertiesToFeatures: function (featureCollection) {
+			// Define basic colours
+			const colourMap = [
+				{
+					mode: 'High speed rail',
+					color: '#6f72af',
+					lineWidth: 8
+				},
+				{
+					mode: 'Rail',
+					color: '#5694ca',
+					lineWidth: 6
+				},
+				{
+					mode: 'Bicycle',
+					color: '#28a197',
+					lineWidth: 4
+				},
+			]
+
+			// Get a working copy of the registry
+			var collection = jQuery.extend(true, {}, featureCollection);
+
+			// Iterate through the features, and add the styling information
+			var colourObject = {};
+			$.each(collection.features, function (indexInArray, feature) {
+				colourObject = colourMap.find(object => object.mode === feature.properties.mode);
+				feature.properties.color = colourObject.color;
+				feature.properties.lineWidth = colourObject.lineWidth;
+			});
+
+			return collection;
 		},
 
 
