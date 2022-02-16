@@ -448,7 +448,7 @@ var sdca = (function ($) {
 		// User can click on button to save intervention design as JSON file
 		exportIntervention: function () {
 			$('#save-interventions').on('click', function () {
-				let dataStr = JSON.stringify(_interventionRegistry);
+				let dataStr = JSON.stringify(_interventionRegistry, null, '\t');
 				let exportFileName = 'carbon-calculator-scheme-intervention.json';
 
 				// Create downloadable element and click it
