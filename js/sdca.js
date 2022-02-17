@@ -180,6 +180,10 @@ var sdca = (function ($) {
 	var _previousPanelId = null; // The previous panel. Used when exiting the _tempPanel
 
 
+	/* Charts */
+	var _charts = []; // Store charts for accessing/updating data/destroying
+
+
 	/* Interventions state control */
 	var _interventions = null; // Store the parsed array of interventions JSON
 	var _currentInterventionType = { // Object to control the current intervention index
@@ -1266,7 +1270,9 @@ var sdca = (function ($) {
 			}
 
 			// Update the source
-			_map.getSource('sdca').setData (featureCollection);
+			if (_map.getSource('sdca')) {
+				_map.getSource('sdca').setData (featureCollection);
+			}
 		},
 		
 		
@@ -1409,12 +1415,16 @@ var sdca = (function ($) {
 					info: '/images/markers/blue.svg'
 				}
 			};
-			
+
 			// Add the geometries to the map
-			var featureCollection = JSON.parse (data.geometry);
-			layerviewer.addDirectGeojson (featureCollection, 'results', layerConfig);
+			var featureCollection = JSON.parse(data.geometry);
+			layerviewer.addDirectGeojson(featureCollection, 'results', layerConfig);
 
 			// Generate charts
+			// Destroy any existing chart objects (i.e. if we are re-running an API call)
+			$.each(_charts, function (indexInArray, chart) {
+				chart.chart.destroy();
+			});
 			sdca.generateEmissionsByYearChart(data.timeseries);
 			sdca.generateEmissionsByTypeChart(data.pas2080);
 		},
@@ -1423,28 +1433,33 @@ var sdca = (function ($) {
 		// Generate time series chart (y/y emissions)
 		generateEmissionsByYearChart: function (data) {
 			const ctx = document.getElementById('emissions-by-year-chart').getContext('2d');
-			
+
 			var labels = data.map((row) => row.year);
 			var dataRows = data.map((row) => row.emissions_cumulative);
 
-			new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels: labels,
-					datasets: [
-						{
-							label: 'Cumulative emissions',
-							data: dataRows,
-							fill: {
-								target: 'origin',
-								//above: '#1d70b8'
-							},
-							borderColor: '#1d70b8',
-							tension: 0.1
+			var chartObject = {
+				name: 'emissions-by-year',
+				chart:
+					new Chart(ctx, {
+						type: 'line',
+						data: {
+							labels: labels,
+							datasets: [
+								{
+									label: 'Cumulative emissions',
+									data: dataRows,
+									fill: {
+										target: 'origin',
+										//above: '#1d70b8'
+									},
+									borderColor: '#1d70b8',
+									tension: 0.1
+								}
+							]
 						}
-					]
-				}
-			});
+					})
+			}
+			_charts.push(chartObject);
 		},
 
 
@@ -1495,48 +1510,53 @@ var sdca = (function ($) {
 			];
 
 			// Programatically generate 3 charts
+			var chartObject;
 			charts.forEach((chart) => {
-				new Chart(chart.element, {
-					type: 'doughnut',
-					data: {
-						labels: labels,
-						datasets: [
-							{
-								label: 'PAS2080 type',
-								data: chart.dataRows,
-								fill: true,
-								// from GOVUK colours https://design-system.service.gov.uk/styles/colour/
-								backgroundColor: [
-									'#1d70b8', // blue
-									'#28a197', // tuorquoise
-									'#85994b', // light-green
-									'#b58840', // brown
-									'#f47738', // orange
-									'#f499be', // light-pink
-									'#d53880', // pink
-									'#912b88', // bright-purple
-									'#6f72af', // light-purple
-									'##5694ca' // light-blie
-								],
-								tension: 0.1
-							}
-						]
-					},
-					options: {
-						animation: {
-							duration: 0 // general animation time
+				chartObject = {
+					name: chart.type,
+					chart: new Chart(chart.element, {
+						type: 'doughnut',
+						data: {
+							labels: labels,
+							datasets: [
+								{
+									label: 'PAS2080 type',
+									data: chart.dataRows,
+									fill: true,
+									// from GOVUK colours https://design-system.service.gov.uk/styles/colour/
+									backgroundColor: [
+										'#1d70b8', // blue
+										'#28a197', // tuorquoise
+										'#85994b', // light-green
+										'#b58840', // brown
+										'#f47738', // orange
+										'#f499be', // light-pink
+										'#d53880', // pink
+										'#912b88', // bright-purple
+										'#6f72af', // light-purple
+										'##5694ca' // light-blie
+									],
+									tension: 0.1
+								}
+							]
 						},
-						hover: {
-							animationDuration: 0 // duration of animations when hovering an item
-						},
-						responsiveAnimationDuration: 0, // animation duration after a resize
-						plugins: {
-							legend: {
-								position: 'right'
+						options: {
+							animation: {
+								duration: 0 // general animation time
+							},
+							hover: {
+								animationDuration: 0 // duration of animations when hovering an item
+							},
+							responsiveAnimationDuration: 0, // animation duration after a resize
+							plugins: {
+								legend: {
+									position: 'right'
+								}
 							}
 						}
-					}
-				});
+					})
+				}
+				_charts.push(chartObject);
 			});
 		},
 		
