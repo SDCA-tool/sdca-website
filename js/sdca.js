@@ -512,6 +512,9 @@ var sdca = (function ($) {
 					// Update the list of interventions with the new data
 					sdca.updateUserInterventionList();
 
+					// Fit bounds to uploaded GeoJSON
+					_map.fitBounds(turf.bbox(fileContent), { padding: 30 });
+
 					// Did we manage to parse any interventions?
 					// For now, loop through the FeatureCollection.features and remove any without any properties
 					// Having no properties means we can't associate the GeoJSON coordinates with any kind of intervention
