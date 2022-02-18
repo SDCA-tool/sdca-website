@@ -456,7 +456,7 @@ var sdca = (function ($) {
 		exportIntervention: function () {
 			$('#save-interventions').on('click', function () {
 				let dataStr = JSON.stringify(_interventionRegistry, null, '\t');
-				let exportFileName = 'carbon-calculator-scheme-intervention.geojson';
+				let exportFileName = 'carbon-calculator-scheme-intervention' + sdca.timestampSuffix () + '.geojson';
 
 				// Create downloadable element and click it
 				var element = document.createElement('a');
@@ -469,8 +469,21 @@ var sdca = (function ($) {
 				document.body.removeChild(element);
 			});
 		},
-
-
+		
+		
+		// Helper function to create a timestamp suffix for downloads
+		timestampSuffix: function ()
+		{
+			// Get the date
+			var d = Date.now ();
+			d = new Date (d);
+			
+			// Format string
+			var timestampSuffix = '_' + d.getFullYear () + ('0' + (d.getMonth () + 1)).slice (-2) + ('0' + d.getDate ()).slice (-2) + '_' + d.getHours () + d.getMinutes () + d.getSeconds ();
+			return timestampSuffix;
+		},
+		
+		
 		// UI management for GIS file upload
 		handleFileUpload: function () {
 			// By default, the file upload button is disabled
@@ -1296,7 +1309,7 @@ var sdca = (function ($) {
 				};
 
 				let dataStr = JSON.stringify(dataExports[dataToExport], null, '\t');
-				let exportFileDefaultName = 'carbon-calculator-scheme-results.json';
+				let exportFileDefaultName = 'carbon-calculator-scheme-results' + sdca.timestampSuffix () + '.json';
 
 				// Create downloadable element and click it
 				var element = document.createElement('a');
