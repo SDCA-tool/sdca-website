@@ -1683,8 +1683,10 @@ var sdca = (function ($) {
 										'#85994b', // light-green
 										'#b58840', // brown
 										'#f47738', // orange
+										'#0b0c0c', // black
 										'#f499be', // light-pink
 										'#d53880', // pink
+										'#b1b4b6', // mid-grey
 										'#912b88', // bright-purple
 										'#6f72af', // light-purple
 										'#5694ca' // light-blue
