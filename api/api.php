@@ -354,7 +354,7 @@ class api
 		
 		# Send the response, encoded as JSON
 		header ('Content-Type: application/json');
-		echo json_encode ($jsonArray, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+		echo json_encode ($jsonArray, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 	}
 	
 	
