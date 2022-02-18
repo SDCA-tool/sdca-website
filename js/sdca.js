@@ -1427,11 +1427,12 @@ var sdca = (function ($) {
 				if (!_returnedApiData) {
 					console.log('There is no data to export yet. Have you pressed calculate?');
 				}
-
+				
 				// Create payload
 				// !TODO This will need to export any URL components
-				var href = "mailto:?subject=Shared Digital Carbon Architecture http://dev.carbon.place";
-
+				var url = window.location.protocol + '//' + window.location.hostname + '/';
+				var href = "mailto:?subject=Shared Digital Carbon Architecture " + url;
+				
 				// Create downloadable element and click it
 				var element = document.createElement('a');
 				element.setAttribute('href', href);
