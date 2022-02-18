@@ -112,7 +112,7 @@ class sdcaModel
 				ST_AsGeoJSON(geometrySrid0) AS geometry,
 				`from`, `to`, cycle, drive, passenger, walk, rail, bus, lgv, hgv
 			FROM desire_lines
-			WHERE ST_Within( geometrySrid0, ST_Buffer( ST_GeomFromGeoJSON(:geometry, 1, 0), 0.02) );
+			WHERE ST_Intersects( geometrySrid0, ST_Buffer( ST_GeomFromGeoJSON(:geometry, 1, 0), 0.02) );
 		;";
 		$preparedStatementValues = array ('geometry' => json_encode ($geojson));
 		$desire_linesRaw = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
