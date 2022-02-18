@@ -1680,8 +1680,10 @@ var sdca = (function ($) {
 									backgroundColor: [
 										'#1d70b8', // blue
 										'#28a197', // tuorquoise
+										'#d4351c', // red 
 										'#85994b', // light-green
 										'#b58840', // brown
+										'#ffdd00', // yellow
 										'#f47738', // orange
 										'#0b0c0c', // black
 										'#f499be', // light-pink
@@ -1689,7 +1691,8 @@ var sdca = (function ($) {
 										'#b1b4b6', // mid-grey
 										'#912b88', // bright-purple
 										'#6f72af', // light-purple
-										'#5694ca' // light-blue
+										'#5694ca', // light-blue
+										'#ffffff', // white
 									],
 									tension: 0.1
 								}
