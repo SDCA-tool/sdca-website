@@ -1564,27 +1564,18 @@ var sdca = (function ($) {
 								{
 									label: 'Cumulative emissions',
 									data: data.map((row) => row.emissions_cumulative),
-									fill: {
-										target: 'origin',
-									},
 									borderColor: '#1d70b8',
 									tension: 0.1
 								},
 								{
 									label: 'Cumulative emissions (low)',
 									data: data.map((row) => row.emissions_cumulative_low),
-									fill: {
-										target: 'origin',
-									},
 									borderColor: '#f47738',
 									tension: 0.1
 								},
 								{
 									label: 'Cumulative emissions (high)',
 									data: data.map((row) => row.emissions_cumulative_high),
-									fill: {
-										target: 'origin',
-									},
 									borderColor: '#00703c',
 									tension: 0.1
 								},
