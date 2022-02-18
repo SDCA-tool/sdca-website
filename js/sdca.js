@@ -1476,11 +1476,16 @@ var sdca = (function ($) {
 			// Create the demand change table
 			var demandChangeLabels = {
 				mode: 'Mode',
-				before: 'Before',
-				after: 'After',
+				before: 'Before (daily trips)',
+				after_average: 'After - average (daily trips)',
+				after_high: 'After - high (daily trips)',
+				after_low: 'After -low (daily trips)',
 				change: 'Change',
 				changekm: 'Change in km',
-				changeemissions: 'Change in emissions'
+				changeemissions_low: 'Change in emissions - low (tonnes CO2e per year)',
+				changeemissions_high: 'Change in emissions - high (tonnes CO2e per year)',
+				changeemissions_average: 'Change in emissions - average (tonnes CO2e per year)',
+				itemised_emissions: 'Itemised emissions (kg CO2e)'
 			};
 			var demand_change = sdca.htmlTable (data.demand_change, demandChangeLabels);
 			
