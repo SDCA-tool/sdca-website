@@ -1515,10 +1515,16 @@ var sdca = (function ($) {
 			var itemised_emissions = sdca.htmlTable (data.itemised_emissions, itemisedEmissionsLabels);
 			
 			// Populate the results in the interface
-			$('.netzero_compatible').text ((data.netzero_compatible[0] == 'yes' ? 'Net zero compatible' : 'Not net zero compatible'));
-			if (data.netzero_compatible[0] == 'no') {
+			if (data.netzero_compatible[0] == 'yes') {
+				$('.govuk-panel--confirmation').removeClass ('failure');
+				$('.govuk-panel--confirmation').addClass ('success');
+				$('.netzero_compatible').text ('Net zero compatible');
+			} else {
+				$('.govuk-panel--confirmation').removeClass ('success');
 				$('.govuk-panel--confirmation').addClass ('failure');
+				$('.netzero_compatible').text ('Not net zero compatible');
 			}
+			
 			// Check if API returned string 'Never' or number
 			if (isNaN (data.payback_time[0])) {
 				$('.payback_time').text (data.payback_time[0]);
