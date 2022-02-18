@@ -1409,10 +1409,10 @@ var sdca = (function ($) {
 			}
 			$('.emissions_whole_life').html (layerviewer.number_format (data.emissions_whole_life[0]) + ' tonnes CO<sub>2</sub>e');
 			$('.comments').text (data.comments[0]);
-			$('.pas2080').append (pas2080);
-			$('.timeseries').append (timeseries);
-			$('.demand_change').append (demand_change);
-			$('.itemised_emissions').append (itemised_emissions);
+			$('.pas2080').html (pas2080);
+			$('.timeseries').html (timeseries);
+			$('.demand_change').html (demand_change);
+			$('.itemised_emissions').html (itemised_emissions);
 			
 			// Define icons based on data value
 			var layerConfig = {
