@@ -324,7 +324,7 @@ var sdca = (function ($) {
 						// Reset geometry val
 						$('#geometry').val('');
 
-						// Change the labels on the draw page 
+						// Change the labels on the draw page
 						$('#draw-intervention h2').text('Edit this intervention');
 						$('#draw-intervention button.drawing-complete').text('I have finished editing this intervention');
 
@@ -426,7 +426,8 @@ var sdca = (function ($) {
 
 
 		// Handle resetting the tool
-		handleResetInterface: function () {
+		handleResetInterface: function ()
+		{
 			// Reset options shouldn't be available at startup
 			$('#start-again').hide();
 
@@ -449,6 +450,9 @@ var sdca = (function ($) {
 
 				// Remove all user interventions to reflect empty registry
 				sdca.updateUserInterventionList();
+
+				// Remove the geometries added to the map, if present
+				layerviewer.eraseDirectGeojson('resultWarnings');
 
 				// Select the first (summary) scheme results tab
 				$('#view-results .govuk-tabs__list .govuk-tabs__list-item').removeClass('govuk-tabs__list-item--selected').removeAttr('aria-selected');
@@ -1267,7 +1271,7 @@ var sdca = (function ($) {
 				// #!# Needs to be reimplemented for new UI - should reset panel
 
 				// Remove the geometries added to the map, if present
-				layerviewer.eraseDirectGeojson('results');
+				layerviewer.eraseDirectGeojson('resultWarnings');
 			});
 		},
 
@@ -1541,7 +1545,7 @@ var sdca = (function ($) {
 
 			// Add the geometries to the map
 			var featureCollection = JSON.parse(data.geometry);
-			layerviewer.addDirectGeojson(featureCollection, 'results', layerConfig);
+			layerviewer.addDirectGeojson(featureCollection, 'resultWarnings', layerConfig);
 
 			// Generate charts
 			// Destroy any existing chart objects (i.e. if we are re-running an API call)
