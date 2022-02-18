@@ -1099,7 +1099,6 @@ var sdca = (function ($) {
 					</div>
 					<div id="data-layers-accordion-content-${layerKebab}" class="govuk-accordion__section-content"
 					aria-labelledby="data-layers-accordion-content-${layerKebab}">
-	
 					<div class="govuk-checkboxes" data-module="govuk-checkboxes">
 						${sdca.generateLayerAccordionRowHtml(layer)}
 					</div>
@@ -1111,6 +1110,7 @@ var sdca = (function ($) {
 
 		// Generate intervention row HTML
 		generateLayerAccordionRowHtml: function (layer) {
+			var uniqueDescription = layer.title !== layer.description;
 			return (
 				`
 					<div class="govuk-checkboxes__item">
@@ -1119,9 +1119,13 @@ var sdca = (function ($) {
 						<label class="govuk-label govuk-checkboxes__label" for="show_${layer.id}">
 							${layer.title}
 						</label>
-						<div class="govuk-hint govuk-checkboxes__hint">
-						${layer.description}
-						</div>
+						${uniqueDescription ?
+							`<div class="govuk-hint govuk-checkboxes__hint">
+										${layer.description}
+									</div>`
+							:
+							''
+						}
 					</div>
 			`);
 		},
