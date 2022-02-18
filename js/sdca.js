@@ -1475,7 +1475,11 @@ var sdca = (function ($) {
 			var timeseriesLabels = {
 				year: 'Year',
 				emissions: 'Emissions',
-				emissions_cumulative: 'Emissions (cumulative)'
+				emissions_low: 'Emissions (worst case)',
+				emissions_high: 'Emissions (best case)',
+				emissions_cumulative: 'Cumulative emissions',
+				emissions_cumulative_low: 'Cumulative emissions (worst case)',
+				emissions_cumulative_high: 'Cumulative emissions (best case)',
 			};
 			var timeseries = sdca.htmlTable (data.timeseries, timeseriesLabels);
 			
@@ -1583,13 +1587,13 @@ var sdca = (function ($) {
 									tension: 0.1
 								},
 								{
-									label: 'Cumulative emissions (low)',
+									label: 'Cumulative emissions (worst case)',
 									data: data.map((row) => row.emissions_cumulative_low),
 									borderColor: '#f47738',
 									tension: 0.1
 								},
 								{
-									label: 'Cumulative emissions (high)',
+									label: 'Cumulative emissions (best case)',
 									data: data.map((row) => row.emissions_cumulative_high),
 									borderColor: '#00703c',
 									tension: 0.1
