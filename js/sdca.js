@@ -1401,7 +1401,12 @@ var sdca = (function ($) {
 			if (data.netzero_compatible[0] == 'no') {
 				$('.govuk-panel--confirmation').addClass ('failure');
 			}
-			$('.payback_time').text (data.payback_time[0] + ' years');
+			// Check if API returned string 'never' or number
+			if (isNaN(data.payback_time[0])) {
+				$('.payback_time').text (data.payback_time[0]);
+			} else {
+				$('.payback_time').text (data.payback_time[0] + ' years');
+			}
 			$('.emissions_whole_life').text (layerviewer.number_format (data.emissions_whole_life[0]));
 			$('.comments').text (data.comments[0]);
 			$('.pas2080').append (pas2080);
