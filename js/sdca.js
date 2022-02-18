@@ -1587,6 +1587,26 @@ var sdca = (function ($) {
 									tension: 0.1
 								},
 							]
+						},
+						options: {
+							plugins: {
+								tooltip: {
+									callbacks: {
+										label: function (item) {
+											return item.label + ' tonnes CO2e';
+										}
+									}
+								}
+
+							},
+							scales: {
+								y: {
+									title: {
+										display: true,
+										text: 'tonnes CO2e'
+									}
+								}
+							},
 						}
 					})
 			}
@@ -1665,7 +1685,7 @@ var sdca = (function ($) {
 										'#d53880', // pink
 										'#912b88', // bright-purple
 										'#6f72af', // light-purple
-										'##5694ca' // light-blie
+										'#5694ca' // light-blue
 									],
 									tension: 0.1
 								}
@@ -1682,6 +1702,14 @@ var sdca = (function ($) {
 							plugins: {
 								legend: {
 									position: 'right'
+								},
+								tooltip: {
+									callbacks: {
+										label: function (item) {
+											console.log(item);
+											return item.label + ': ' + item.parsed + ' tonnes CO2e';
+										}
+									}
 								}
 							}
 						}
