@@ -1457,9 +1457,9 @@ var sdca = (function ($) {
 			// Create the PAS2080 table
 			var pas2080Labels = {
 				pas2080_code: 'Code',
-				emissions: 'Emissions',
-				emissions_high: 'High',
-				emissions_low: 'Low',
+				emissions: 'Emissions (tonnes CO2e)',
+				emissions_high: 'High (tonnes CO2e)',
+				emissions_low: 'Low (tonnes CO2e)',
 				confidence: 'Confidence',
 				notes: 'Notes'
 			};
