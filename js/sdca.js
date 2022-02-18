@@ -309,6 +309,9 @@ var sdca = (function ($) {
 						// Make sure we are not editing anything
 						_currentlyEditingRegistry.index = -1;
 
+						// Only show the calculate button if we have at least one intervention
+						$('#calculate').toggle(_interventionRegistry.features.length > 0);
+
 						break;
 
 					case 'edit':
@@ -505,9 +508,6 @@ var sdca = (function ($) {
 
 					// Reset the geometry field
 					$('#geometry').val('');
-
-					// Ensure the calculate button is visible
-					$('#calculate').show();
 
 					// Update the list of interventions with the new data
 					sdca.updateUserInterventionList();
@@ -1091,10 +1091,9 @@ var sdca = (function ($) {
 			$('#geometry').on('change', function (e) {
 				if ($('#geometry').val()) {
 					$('.edit-clear').hide();
-					$('#calculate').show();
 					$('.drawing-complete').show();
 				} else {
-					$('#calculate, .edit-clear').hide();
+					$('.edit-clear').hide();
 					$('.drawing-complete').hide();
 				}
 
