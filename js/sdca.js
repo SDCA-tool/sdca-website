@@ -1517,10 +1517,8 @@ var sdca = (function ($) {
 			// Populate the results in the interface
 			if (data.netzero_compatible[0] == 'yes') {
 				$('.govuk-panel--confirmation').removeClass ('failure');
-				$('.govuk-panel--confirmation').addClass ('success');
 				$('.netzero_compatible').text ('Net zero compatible');
 			} else {
-				$('.govuk-panel--confirmation').removeClass ('success');
 				$('.govuk-panel--confirmation').addClass ('failure');
 				$('.netzero_compatible').text ('Not net zero compatible');
 			}
