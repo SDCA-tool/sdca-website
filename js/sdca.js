@@ -1401,8 +1401,8 @@ var sdca = (function ($) {
 			if (data.netzero_compatible[0] == 'no') {
 				$('.govuk-panel--confirmation').addClass ('failure');
 			}
-			// Check if API returned string 'never' or number
-			if (isNaN(data.payback_time[0])) {
+			// Check if API returned string 'Never' or number
+			if (isNaN (data.payback_time[0])) {
 				$('.payback_time').text (data.payback_time[0]);
 			} else {
 				$('.payback_time').text (data.payback_time[0] + ' years');
