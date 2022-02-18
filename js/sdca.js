@@ -1296,7 +1296,7 @@ var sdca = (function ($) {
 					timeseries: _returnedApiData.timeseries
 				};
 
-				let dataStr = JSON.stringify(dataExports[dataToExport]);
+				let dataStr = JSON.stringify(dataExports[dataToExport], null, '\t');
 				let exportFileDefaultName = 'carbon-calculator-scheme-results.json';
 
 				// Create downloadable element and click it
