@@ -1480,7 +1480,7 @@ var sdca = (function ($) {
 				before: 'Before (daily trips)',
 				after_average: 'After - average (daily trips)',
 				after_high: 'After - high (daily trips)',
-				after_low: 'After -low (daily trips)',
+				after_low: 'After - low (daily trips)',
 				change: 'Change',
 				changekm: 'Change in km',
 				changeemissions_low: 'Change in emissions - low (tonnes CO2e per year)',
