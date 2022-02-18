@@ -247,6 +247,7 @@ var sdca = (function ($) {
 	var _drawingHappening = null; // Store the LayerViewer _drawingHappening Object, which is observable in order to trigger SDCA UI changes when LayerViewer internal drawing state changes
 	var _draw = false; // Store the LayerViewer _draw Object
 	var _map = false; // Store the Layerviewer _map Object
+	var _markers = []; // Access MapboxGL markers
 
 	return {
 		
@@ -317,7 +318,7 @@ var sdca = (function ($) {
 					case 'edit':
 
 						// Adjust the UI drawing buttons
-						$('.draw.line').text('Redo drawing');
+						$('.draw').text('Redo drawing');
 						$('.drawing-complete').show();
 
 						// Reset geometry val
@@ -340,7 +341,7 @@ var sdca = (function ($) {
 						$('#geometry').val('');
 
 						// Adjust the UI drawing buttons
-						$('.draw.line').text('Start new drawing on the map').removeClass('govuk-button--secondary');
+						$('.draw').text('Start new drawing on the map').removeClass('govuk-button--secondary');
 						$('.drawing-complete').hide();
 
 						// Adjust the labels on the drawing page 
@@ -448,6 +449,11 @@ var sdca = (function ($) {
 
 				// Remove all user interventions to reflect empty registry
 				sdca.updateUserInterventionList();
+
+				// Select the first (summary) scheme results tab
+				$('#view-results .govuk-tabs__list .govuk-tabs__list-item').removeClass('govuk-tabs__list-item--selected').removeAttr('aria-selected');
+				$('#view-results .govuk-tabs__list .govuk-tabs__list-item').first().addClass('govuk-tabs__list-item--selected').attr('aria-selected', true);
+				$('#view-results .govuk-tabs__list .govuk-tabs__list-item').first().click();
 			})
 		},
 
@@ -634,9 +640,17 @@ var sdca = (function ($) {
 			_currentInterventionType.registerListener(function (index) {
 				index = Number(index); // Ensure 0 isn't interpreted as False
 				if (index > -1) {
+					// Enable the correct drawing mode
+					$('.draw').toggleClass('point', _interventions[_currentInterventionType.index].geometry === 'point')
+					$('.draw').toggleClass('line', _interventions[_currentInterventionType.index].geometry === 'line')
+
+					// Update the UI
 					$('.intervention-mode').text(_interventions[index].mode);
 					$('.intervention-name').text(_interventions[index].intervention_name);
 					$('.intervention-description').text(_interventions[index].intervention_description);
+
+					// Only show distance if we are drawing a line
+					$('.distance-row').toggle(_interventions[_currentInterventionType.index].geometry === 'line')
 				}
 			});
 
@@ -751,6 +765,11 @@ var sdca = (function ($) {
 
 				// Remove the current intervention index, if we were editing
 				_currentInterventionType.index = -1;
+
+				// Remove the temporary marker, it will be replaced by a GeoJSON circle
+				$.each(_markers, function (indexInArray, marker) { 
+					 marker.remove();
+				});
 
 			});
 		},
@@ -1048,7 +1067,7 @@ var sdca = (function ($) {
 
 							// The lexicon contains a string of 'FALSE' if layer should not be shown
 							if (layer.show === 'FALSE') {
-								return
+								return;
 							}
 
 							// Save the python-case category
@@ -1146,12 +1165,13 @@ var sdca = (function ($) {
 			// Drawing panel UI controller based on drawing state in LayerViewer
 			_drawingHappening.registerListener(function (drawingHappening) {
 				if (drawingHappening) {
-					$('.draw.line').hide();
+					// Update the UI
+					$('.draw').hide();
 					$('.edit-clear').show();
 					$('.stop-drawing').show();
 					$('.drawing-complete').hide();
 				} else {
-					$('.draw.line').show().text('Redo drawing').addClass('govuk-button--secondary');
+					$('.draw').show().text('Redo drawing').addClass('govuk-button--secondary');
 					$('.stop-drawing').hide();
 				}
 			});
@@ -1167,11 +1187,19 @@ var sdca = (function ($) {
 				}
 
 				// Update the length
-				var geojson = JSON.parse($('#geometry').val());
-				var line = turf.lineString(geojson);
-				var length = turf.length(line, { units: 'kilometers' }).toFixed(2);
-				$('.distance').text(length + ' km');
+				if (_interventions[_currentInterventionType.index].geometry === 'line') {
+					var geojson = JSON.parse($('#geometry').val());
+					var line = turf.lineString(geojson);
+					var length = turf.length(line, { units: 'kilometers' }).toFixed(2);
+					$('.distance').text(length + ' km');
+				}
 
+				// Add a marker if we added a point
+				if (_interventions[_currentInterventionType.index].geometry === 'point') {
+					_markers.push (new mapboxgl.Marker()
+					.setLngLat(JSON.parse($('#geometry').val()))
+					.addTo(_map));
+				}
 			});
 
 			// Stop drawing handler
@@ -1263,7 +1291,7 @@ var sdca = (function ($) {
 						'data': {type: 'FeatureCollection', features: []}	// Initally empty GeoJSON
 					});
 					_map.addLayer ({
-						'id': 'sdca',
+						'id': 'sdca-lines',
 						'type': 'line',
 						'source': 'sdca',
 						'layout': {
@@ -1271,10 +1299,22 @@ var sdca = (function ($) {
 							'line-cap': 'round'
 						},
 						'paint': {
-							'line-color': sdca.buildMatchExpression (drawingStyles, 'mode', 'line-color', 'black'),
-							'line-width': sdca.buildMatchExpression (drawingStyles, 'mode', 'line-width', 5)
-						}
+							'line-color': sdca.buildMatchExpression(drawingStyles, 'mode', 'line-color', 'black'),
+							'line-width': sdca.buildMatchExpression(drawingStyles, 'mode', 'line-width', 5),
+						},
+						'filter': ['==', '$type', 'LineString']
 					});
+					_map.addLayer({
+						'id': 'sdca-points',
+						'type': 'circle',
+						'source': 'sdca',
+						'paint': {
+							'circle-radius': 10,
+							'circle-color': '#f499be'
+						},
+						'filter': ['==', '$type', 'Point']
+					});
+
 				});
 			});
 		},
@@ -1333,8 +1373,7 @@ var sdca = (function ($) {
 		{
 			if (!_map) { return;}
 
-			// If there are no features, delete all sources, layers, then return
-			// #!# Clearing the layers should not be necessary - should just be a case of using .setData
+			// If the feature collection is empty, clear any embryonic drawings, and return
 			if (!featureCollection) {
 				sdca.clearDrawings();
 				return;
