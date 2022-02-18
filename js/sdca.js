@@ -1515,6 +1515,8 @@ var sdca = (function ($) {
 				$('.payback_time').text (data.payback_time[0] + ' ' + (data.payback_time[0] == 1  ? 'year' : 'years'));
 			}
 			$('.emissions_whole_life').html (layerviewer.number_format (data.emissions_whole_life[0]) + ' tonnes CO<sub>2</sub>e');
+			$('.upfront_carbon').html (layerviewer.number_format(data.emissions_upfront[0]) + ' tonnes CO<sub>2</sub>e');
+			$('.emissions_whole_life_benefits').html (layerviewer.number_format(data.emissions_whole_life_benefits[0]) + ' tonnes CO<sub>2</sub>e');
 			$('.comments').text (data.comments[0]);
 			$('.pas2080').html (pas2080);
 			$('.timeseries').html (timeseries);
