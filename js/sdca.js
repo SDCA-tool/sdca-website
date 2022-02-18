@@ -479,7 +479,7 @@ var sdca = (function ($) {
 			d = new Date (d);
 			
 			// Format string
-			var timestampSuffix = '_' + d.getFullYear () + ('0' + (d.getMonth () + 1)).slice (-2) + ('0' + d.getDate ()).slice (-2) + '_' + d.getHours () + d.getMinutes () + d.getSeconds ();
+			var timestampSuffix = '_' + d.getFullYear () + ('0' + (d.getMonth () + 1)).slice (-2) + ('0' + d.getDate ()).slice (-2) + '-' + d.getHours () + d.getMinutes () + d.getSeconds ();
 			return timestampSuffix;
 		},
 		
