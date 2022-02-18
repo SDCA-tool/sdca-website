@@ -1692,6 +1692,7 @@ var sdca = (function ($) {
 										'#912b88', // bright-purple
 										'#6f72af', // light-purple
 										'#5694ca', // light-blue
+										'#00703c', // green
 										'#ffffff', // white
 									],
 									tension: 0.1
