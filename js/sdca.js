@@ -599,9 +599,6 @@ var sdca = (function ($) {
 					);
 				}
 			});
-
-			// Initialise the accordion with the new HTML
-			window.GOVUKFrontend.initAll();
 		},
 
 
@@ -975,7 +972,6 @@ var sdca = (function ($) {
 						
 						// Add each dataset
 						var type;
-						var $clone;
 						var popupLabels;
 						var popupDescriptions;
 						var fieldname;
@@ -1042,44 +1038,95 @@ var sdca = (function ($) {
 							if (styles[dataset.id]) {
 								_layerConfig[dataset.id].vector.layer.paint = styles[dataset.id];
 							}
-							
-							// Create a UI nav menu entry
-							$clone = $('.layertemplate').clone (true);
-							$clone.removeClass ('layertemplate');
-							$clone.find ('input[type="checkbox"').attr ('id', 'show_' + dataset.id);
-							$clone.find ('input[type="checkbox"').attr ('value', dataset.id);
-							$clone.find ('label').text (dataset.title);
-							$clone.find ('label').attr ('for', 'show_' + dataset.id);
-							$clone.appendTo ('#accordion-default-content-1 .govuk-checkboxes');
-							
-							/*
-							// Create the information panel
-							$clone = $('#sections div.template').clone (true);
-							$clone.removeClass ('template');
-							$clone.attr ('id', dataset.id);
-							$clone.find ('h2').html (dataset.title);
-							$clone.find ('p').html (dataset.description);
-							$clone.appendTo ('#sections');
-							*/
+						});
+
+						// Create the land use accordion
+						var categoryKebab = '';
+						
+						// Iterate through the layers
+						$.each(datasets, function (index, layer) {
+
+							// Save the python-case category
+							categoryKebab = sdca.convertLabelToKebab(layer.category);
+
+							// If we already have an accordion header for this
+							if ($('#data-layer-' + categoryKebab).length > 0) {
+
+								// Append a new list row
+								$('#data-layers-accordion-content-' + categoryKebab + ' .govuk-checkboxes').append(
+									sdca.generateLayerAccordionRowHtml(layer)
+								);
+							} else {
+			
+								// Otherwise, append a new section
+								$('#data-layers-accordion').prepend(
+									sdca.generateLayerAccordionHeaderHtml(layer)
+								);
+							}
 						});
 						
 						// Run the layerviewer for these settings and layers
 						layerviewer.initialise (_settings, _layerConfig);
 
 						// Also get the _draw Object
-						_draw = layerviewer.getDrawObject();
+						_draw = layerviewer.getDrawObject ();
 
 						// Also get the _map Object
-						_map = layerviewer.getMap();
-						
+						_map = layerviewer.getMap ();
+
 						// Initialise the drawing layer
 						sdca.drawingLayerInit ();
+
+						// Initialise the accordion with the new HTML
+						window.GOVUKFrontend.initAll ();
 					});
 				});
 			});
 		},
-		
-		
+
+
+		// Generate data layer accordion header HTML
+		generateLayerAccordionHeaderHtml: function (layer) {
+			var layerKebab = sdca.convertLabelToKebab(layer.category);
+			return (`
+				<div class="govuk-accordion__section" id="data-layer-${layerKebab}">
+					<div class="govuk-accordion__section-header">
+					<h2 class="govuk-accordion__section-heading">
+						<span class="govuk-accordion__section-button" id="data-layers-accordion-heading-${layerKebab}">
+						${layer.category}
+						</span>
+					</h2>
+					</div>
+					<div id="data-layers-accordion-content-${layerKebab}" class="govuk-accordion__section-content"
+					aria-labelledby="data-layers-accordion-content-${layerKebab}">
+	
+					<div class="govuk-checkboxes" data-module="govuk-checkboxes">
+						${sdca.generateLayerAccordionRowHtml(layer)}
+					</div>
+					</div>
+				</div>
+				`);
+		},
+
+
+		// Generate intervention row HTML
+		generateLayerAccordionRowHtml: function (layer) {
+			return (
+				`
+					<div class="govuk-checkboxes__item">
+						<input class="govuk-checkboxes__input" id="show_${layer.id}" name="show[]" type="checkbox"
+								value="${layer.id}">
+						<label class="govuk-label govuk-checkboxes__label" for="show_${layer.id}">
+							${layer.title}
+						</label>
+						<div class="govuk-hint govuk-checkboxes__hint">
+						${layer.description}
+						</div>
+					</div>
+			`);
+		},
+
+
 		// Handler for drawn line
 		handleDrawing: function ()
 		{
