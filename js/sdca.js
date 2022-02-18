@@ -1443,7 +1443,6 @@ var sdca = (function ($) {
 			const ctx = document.getElementById('emissions-by-year-chart').getContext('2d');
 
 			var labels = data.map((row) => row.year);
-			var dataRows = data.map((row) => row.emissions_cumulative);
 
 			var chartObject = {
 				name: 'emissions-by-year',
@@ -1455,14 +1454,31 @@ var sdca = (function ($) {
 							datasets: [
 								{
 									label: 'Cumulative emissions',
-									data: dataRows,
+									data: data.map((row) => row.emissions_cumulative),
 									fill: {
 										target: 'origin',
-										//above: '#1d70b8'
 									},
 									borderColor: '#1d70b8',
 									tension: 0.1
-								}
+								},
+								{
+									label: 'Cumulative emissions (low)',
+									data: data.map((row) => row.emissions_cumulative_low),
+									fill: {
+										target: 'origin',
+									},
+									borderColor: '#f47738',
+									tension: 0.1
+								},
+								{
+									label: 'Cumulative emissions (high)',
+									data: data.map((row) => row.emissions_cumulative_high),
+									fill: {
+										target: 'origin',
+									},
+									borderColor: '#00703c',
+									tension: 0.1
+								},
 							]
 						}
 					})
