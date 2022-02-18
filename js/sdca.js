@@ -1452,6 +1452,7 @@ var sdca = (function ($) {
 		
 		
 		// Function to show the results
+		// #!# Labels in this section should come from new data_dictionary tables instead of being hard-coded here
 		showResults: function (data)
 		{
 			// Create the PAS2080 table
