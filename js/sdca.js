@@ -1046,6 +1046,11 @@ var sdca = (function ($) {
 						// Iterate through the layers
 						$.each(datasets, function (index, layer) {
 
+							// The lexicon contains a string of 'FALSE' if layer should not be shown
+							if (layer.show === 'FALSE') {
+								return
+							}
+
 							// Save the python-case category
 							categoryKebab = sdca.convertLabelToKebab(layer.category);
 
@@ -1099,7 +1104,7 @@ var sdca = (function ($) {
 					</div>
 					<div id="data-layers-accordion-content-${layerKebab}" class="govuk-accordion__section-content"
 					aria-labelledby="data-layers-accordion-content-${layerKebab}">
-					<div class="govuk-checkboxes" data-module="govuk-checkboxes">
+					<div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
 						${sdca.generateLayerAccordionRowHtml(layer)}
 					</div>
 					</div>
