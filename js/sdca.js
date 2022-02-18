@@ -1473,7 +1473,7 @@ var sdca = (function ($) {
 			if (isNaN (data.payback_time[0])) {
 				$('.payback_time').text (data.payback_time[0]);
 			} else {
-				$('.payback_time').text (data.payback_time[0] + ' years');
+				$('.payback_time').text (data.payback_time[0] + ' ' + (data.payback_time[0] == 1  ? 'year' : 'years'));
 			}
 			$('.emissions_whole_life').html (layerviewer.number_format (data.emissions_whole_life[0]) + ' tonnes CO<sub>2</sub>e');
 			$('.comments').text (data.comments[0]);
