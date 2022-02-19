@@ -1529,9 +1529,9 @@ var sdca = (function ($) {
 			
 			// Check if API returned string 'Never' or number
 			if (isNaN (data.payback_time[0])) {
-				$('.payback_time').text (data.payback_time[0]);
+				$('.payback_time').text (layerviewer.number_format (data.payback_time[0]));
 			} else {
-				$('.payback_time').text (data.payback_time[0] + ' ' + (data.payback_time[0] == 1  ? 'year' : 'years'));
+				$('.payback_time').text (layerviewer.number_format (data.payback_time[0]) + ' ' + (data.payback_time[0] == 1  ? 'year' : 'years'));
 			}
 			$('.emissions_whole_life').html (layerviewer.number_format (data.emissions_whole_life[0]) + ' tonnes CO<sub>2</sub>e');
 			$('.upfront_carbon').html (layerviewer.number_format(data.emissions_upfront[0]) + ' tonnes CO<sub>2</sub>e');
