@@ -466,7 +466,7 @@ var sdca = (function ($) {
 		exportIntervention: function () {
 			$('#save-interventions').on('click', function () {
 				let dataStr = JSON.stringify(_interventionRegistry, null, '\t');
-				let exportFileName = 'carbon-calculator-scheme-intervention' + sdca.timestampSuffix () + '.geojson';
+				let exportFileName = 'carbon-calculator-scheme' + sdca.timestampSuffix () + '.geojson';
 
 				// Create downloadable element and click it
 				var element = document.createElement('a');
