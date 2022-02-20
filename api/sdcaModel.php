@@ -173,24 +173,24 @@ class sdcaModel
 		$centroidJsonString = $this->databaseConnection->getOneField ($centroidQuery, 'centroid', $preparedStatementValues);
 		
 		# Get the distance; see: https://www.alibabacloud.com/blog/597328
-		$query = "
-			SELECT Material_Types, MIN(distance_km) AS distance_km
+		$query = '
+			SELECT "Material_Types", MIN(distance_km) AS distance_km
 			FROM (
 				SELECT
 					id,
 					site,
-					material_types AS Material_Types,
-					(ST_DistanceSpheroid (ST_GeomFromGeoJSON (:centroid), geometry, 'SPHEROID[\"WGS84\",6378137,298.257223563]') / 1000) AS distance_km		-- See: https://www.alibabacloud.com/blog/597328
+					material_types AS "Material_Types",
+					(ST_DistanceSpheroid (ST_GeomFromGeoJSON (:centroid), geometry, \'SPHEROID["WGS84",6378137,298.257223563]\') / 1000) AS distance_km		-- See: https://www.alibabacloud.com/blog/597328
 				FROM materialsites
-				ORDER BY material_types, distance_km
+				ORDER BY Material_Types, distance_km
 			) AS distances
-			GROUP BY material_types
-			ORDER BY material_types
-		;";
+			GROUP BY "Material_Types"
+			ORDER BY "Material_Types"
+		;';
 		$preparedStatementValues = array ('centroid' => $centroidJsonString);
 		$json['material_sites'] = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
 	} else {
-		$query = "
+		$query = '
 			SELECT Material_Types, MIN(distance_km) AS distance_km
 			FROM (
 				SELECT
@@ -203,7 +203,7 @@ class sdcaModel
 			) AS distances
 			GROUP BY Material_types
 			ORDER BY Material_types
-		;";
+		;';
 		$preparedStatementValues = array ('geometry' => json_encode ($geojson));
 		$json['material_sites'] = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
 	}
