@@ -38,11 +38,19 @@ class api
 		
 		# Connect to the database
 		require_once ('database.php');
+	if (isSet ($_GET['postgres']) && $_GET['postgres'] == 'true') {
+	$this->settings['password'] = trim (file_get_contents ('/home/sdca/postgresqlpassword'));
+		$this->databaseConnection = new database ($this->settings['hostname'], $this->settings['username'], $this->settings['password'], $this->settings['database'], 'pgsql');
+	} else {
 		$this->databaseConnection = new database ($this->settings['hostname'], $this->settings['username'], $this->settings['password'], $this->settings['database'], 'mysql', false, false, $nativeTypes = true, true, array (), $nativeTypesDecimalHandling = true);
+	}
 		if (!$this->databaseConnection->connection) {
 			return $this->error ('Unable to connect to the database.');
 		}
+	if (isSet ($_GET['postgres']) && $_GET['postgres'] == 'true') {
+	} else {
 		$this->databaseConnection->setStrictWhere (true);
+	}
 		
 		# Ensure a valid format has been supplied
 		$format = $this->getFormat ($error);
