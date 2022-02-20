@@ -51,9 +51,9 @@ class database
 		
 		# Enable native types if required; currently implemented and tested only for MySQL; note that this requires the pdo-mysqlnd driver to be installed
 		if ($nativeTypes) {
-			if ($vendor == 'mysql') {
+			if (in_array ($vendor, array ('mysql', 'pgsql'))) {
 				$driverOptions[PDO::ATTR_EMULATE_PREPARES] = false;		// #!# This seems to cause problems with e.g. "SHOW DATABASES LIKE"; see point 3 at: http://stackoverflow.com/a/10455228/180733 and http://stackoverflow.com/a/12202218/180733
-				$driverOptions[PDO::ATTR_STRINGIFY_FETCHES] = false;	// This seems to be the default anyway
+				$driverOptions[PDO::ATTR_STRINGIFY_FETCHES] = false;	// This seems to be the default anyway		// #!# Doesn't seem to work with PostgreSQL
 			}
 		}
 		
@@ -496,7 +496,7 @@ class database
 			}
 		}
 		
-		# Fix up DECIMAL handling if required - unlike databases, PHP has no native decimal type, so the output is dynamically changed so that e.g. DECIMAL(10,0) becomes int and DECIMAL(7,5) becomes float; see: https://bugs.php.net/bug.php?id=69974
+		# Fix up DECIMAL handling if required - unlike databases, PHP has no native decimal type, so the output is dynamically changed so that e.g. DECIMAL(10,0) becomes int and DECIMAL(7,5) becomes float; see: https://bugs.php.net/69974
 		#!# Currently only implemented for select()
 		#!# Currently assumes associative
 		if ($this->nativeTypesDecimalHandling && $datasource) {
