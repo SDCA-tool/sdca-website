@@ -62,6 +62,8 @@ class database
 		
 		# Set a flag to handle conversion of DECIMAL(x,y)
 		$this->nativeTypesDecimalHandling = $nativeTypesDecimalHandling;
+		
+		#!# Need to add support for MySQL TINYINT as boolean - e.g. PostgreSQL has native BOOLEAN support, so value=true comes back in data
 
 		# Connect to the database and return the status
 		if ($vendor == 'sqlite') {
