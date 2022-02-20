@@ -209,7 +209,11 @@ class sdcaModel
 	}
 		
 		# Construct as string
+	if (isSet ($_GET['postgres']) && $_GET['postgres'] == 'true') {
+		$stdin = json_encode ($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
+	} else {
 		$stdin = json_encode ($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+	}
 		
 		# Show input to the package if required
 		#!# Temporary option - to be removed after debugging
