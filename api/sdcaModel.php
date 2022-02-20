@@ -104,6 +104,14 @@ class sdcaModel
 		$carbon_factors = $this->databaseConnection->select ($this->settings['database'], 'carbon_factors', array ('cf_name' => $cf_names));
 		$json['carbon_factors'] = $carbon_factors;
 		
+		# Get length of each feature
+		$lengthsKm = array ();
+		foreach ($geojson['features'] as $index => $feature) {
+			$query = "SELECT ST_Length(ST_GeomFromGeoJSON(:geometry), 'kilometre') AS length;";		// Units support requires MySQL 8.0.16; available units listed in INFORMATION_SCHEMA.ST_UNITS_OF_MEASURE
+			$preparedStatementValues = array ('geometry' => json_encode ($feature['geometry']));
+			$lengthsKm[$index] = $this->databaseConnection->getOneField ($query, 'length', $preparedStatementValues);
+		}
+		
 		# Values for desire_lines
 		#!# MySQL 8.0 does not yet have geometry support in ST_Buffer ("#3618 - st_buffer(LINESTRING) has not been implemented for geographic spatial reference systems."), so both the data and the supplied geography have been converted to SRID = 0 as initial prototype
 		#!# Buffer size of 0.02 degrees has been used as an approximation to 2000m, but this needs to be implemented properly
