@@ -2,11 +2,11 @@
 
 /*
  * Coding copyright Martin Lucas-Smith, University of Cambridge, 2003-22
- * Version 3.1.1
+ * Version 3.1.1+sdca-postgres-patch
  * Uses prepared statements (see https://stackoverflow.com/questions/60174/how-can-i-prevent-sql-injection-in-php ) where possible
  * Distributed under the terms of the GNU Public Licence - https://www.gnu.org/copyleft/gpl.html
  * Requires PHP 4.1+ with register_globals set to 'off'
- * Download latest from: http://download.geog.cam.ac.uk/projects/database/
+ * Download latest from: https://download.geog.cam.ac.uk/projects/database/
  */
 
 
@@ -75,6 +75,9 @@ class database
 			// error_log ("{$e} {$dsn}, {$username}, {$password}");		// Not enabled by default as $e can contain passwords which get dumped to the webserver's error log
 			return false;
 		}
+		
+		# Set quote style
+		$this->quote = ($this->vendor == 'mysql' ? '`' : '"');
 	}
 	
 	
@@ -728,7 +731,7 @@ class database
 		
 		# Get the total
 		#!# 'WHERE' should be within this here, not part of the supplied parameter
-		$query = "SELECT COUNT(*) AS total FROM `{$database}`.`{$table}` {$restrictionSql};";
+		$query = "SELECT COUNT(*) AS total FROM {$this->quote}{$database}{$this->quote}.{$this->quote}{$table}{$this->quote} {$restrictionSql};";
 		$data = $this->_getOne ($query);
 		
 		# Return the value
@@ -749,12 +752,22 @@ class database
 			$cachedQueryValues = (!is_null ($this->queryValues) ? $this->queryValues : NULL);
 			
 			# Get the data
-			if ($this->vendor == 'sqlite') {
-				$query = "PRAGMA {$database}.table_info({$table});";
-			} else {
-				$query = "SHOW FULL FIELDS FROM `{$database}`.`{$table}`;";
+			switch ($this->vendor) {
+				case 'sqlite':
+					$query = "PRAGMA {$database}.table_info({$table});";
+					$data = $this->_getData ($query);
+					$data = $this->sqliteTableStructureEmulation ($data, $table);
+					break;
+				case 'pgsql':
+					$query = "SELECT * FROM information_schema.columns WHERE table_catalog = '{$database}' AND table_name = '{$table}';";
+					$data = $this->_getData ($query);
+					$data = $this->pgsqlTableStructureEmulation ($data, $table);
+					break;
+				case 'mysql':
+				default:
+					$query = "SHOW FULL FIELDS FROM {$this->quote}{$database}{$this->quote}.{$this->quote}{$table}{$this->quote};";
+					$data = $this->_getData ($query);
 			}
-			$data = $this->_getData ($query);
 			
 			# Restablish the catched query and its values if there is one
 			if (!is_null ($cachedQuery)) {$this->query = $cachedQuery;}
@@ -762,11 +775,6 @@ class database
 			
 			# Add the result to the fields cache, in case there is another request for getFields for this database table
 			$this->fieldsCache[$database][$table] = $data;
-		}
-		
-		# For SQLite, map the structure to emulate the MySQL format
-		if ($this->vendor == 'sqlite') {
-			$data = $this->sqliteTableStructureEmulation ($data, $table);
 		}
 		
 		# Convert the field name to be the key name
@@ -849,7 +857,7 @@ class database
 			}
 		}
 		
-		# Map the structure, replacing the SQLite
+		# Map the structure, replacing with the SQLite values
 		foreach ($data as $index => $field) {
 			$data[$index] = array (
 				'Field'			=> $field['name'],
@@ -861,6 +869,52 @@ class database
 				'Extra'			=> ($field['type'] == 'INTEGER' && $field['pk'] == '1' ? 'auto_increment' : NULL),
 				'Privileges'	=> NULL,		// No support for this in SQLite
 				'Comment'		=> $comments[$field['name']],
+			);
+		}
+		
+		# Return the data
+		return $data;
+	}
+	
+	
+	# Function to emulate a PostgreSQL table structure in MySQL format
+	private function pgsqlTableStructureEmulation ($data, $table)
+	{
+		# Map the structure, replacing with the PostgreSQL values
+		# See: https://www.postgresql.org/docs/14/infoschema-columns.html
+		foreach ($data as $index => $field) {
+			
+			# Determine data type
+			#!# More to be added
+			switch ($field['data_type']) {
+				case 'SERIAL':
+				case 'BIGSERIAL':
+					$type = 'int';
+					break;
+				case 'character varying':
+					$type = 'varchar';
+					if ($field['character_maximum_length']) {
+						$type .= '(' . $field['character_maximum_length'] . ')';
+					}
+					break;
+				case 'boolean':
+					$type = 'tinyint(1)';
+					break;
+				default:
+					$type = $field['data_type'];
+			}
+			
+			# Register the structure
+			$data[$index] = array (
+				'Field'			=> $field['column_name'],
+				'Type'			=> $type,
+				'Collation'		=> 'en_GB.UTF-8',	// #!# Needs to be retrieved using: `SELECT datcollate FROM pg_database WHERE datname = :database;`
+				'Null'			=> $field['is_nullable'],
+				'Key'			=> '?',			// #!# Need to implement this using: https://wiki.postgresql.org/wiki/Retrieve_primary_key_columns
+				'Default'		=> $field['column_default'],
+				'Extra'			=> (in_array ($field['data_type'], array ('SERIAL', 'BIGSERIAL')) ? 'auto_increment' : NULL),
+				'Privileges'	=> NULL,		// No support for this in PostgreSQL
+				'Comment'		=> '',			// #!# Support to be determined
 			);
 		}
 		
@@ -1029,7 +1083,7 @@ class database
 	public function getTables ($database, $matchingRegexp = false, $excludeTables = array (), $withLabels = false)
 	{
 		# Get the data
-		$query = "SHOW TABLES FROM `{$database}`;";
+		$query = "SHOW TABLES FROM {$this->quote}{$database}{$this->quote};";
 		$data = $this->_getData ($query);
 		
 		# Rearrange
@@ -1177,7 +1231,7 @@ class database
 			if (is_array ($conditions)) {
 				foreach ($conditions as $key => $value) {
 					if ($value === NULL) {		// Has to be set with a real NULL value, i.e. using $conditions['keyname'] = NULL;
-						$where[] = '`' . $key . '`' . ' IS NULL';
+						$where[] = $this->quote . $key . $this->quote . ' IS NULL';
 						unset ($conditions[$key]);	// Remove the original placeholder as that will never be used, and contains an array
 					} else if (is_array ($value)) {
 						$i = 0;
@@ -1188,11 +1242,11 @@ class database
 							$conditionsThisGroup[$valuesKey] = $valueItem;
 						}
 						unset ($conditions[$key]);	// Remove the original placeholder as that will never be used, and contains an array
-						$where[] = '`' . $key . '`' . ' IN(:' . implode (', :', array_keys ($conditionsThisGroup)) . ')';
+						$where[] = $this->quote . $key . $this->quote . ' IN(:' . implode (', :', array_keys ($conditionsThisGroup)) . ')';
 					} else {
 						$useLike = ($like === true || (is_array ($like) && in_array ($key, $like)));
 						$operator = ($useLike ? 'LIKE' : '=');
-						$where[] = ($this->strictWhere ? 'BINARY ' : '') . '`' . $key . '`' . " {$operator} :" . $key;
+						$where[] = ($this->strictWhere ? 'BINARY ' : '') . $this->quote . $key . $this->quote . " {$operator} :" . $key;
 					}
 				}
 			} else if (is_string ($conditions)) {
@@ -1216,7 +1270,7 @@ class database
 			if (is_array ($columns)) {
 				foreach ($columns as $key => $value) {
 					if (is_numeric ($key)) {
-						if ($value == 'rank') {$value = "`{$value}`";}	// Hotfix - see above, added for MySQL 8 compatibility
+						if ($value == 'rank') {$value = "{$this->quote}{$value}{$this->quote}";}	// Hotfix - see above, added for MySQL 8 compatibility
 						$what[] = $value;
 					} else {
 						$what[] = "{$key} AS {$value}";
@@ -1235,7 +1289,8 @@ class database
 		$limit = ($limit ? " LIMIT {$limit}" : '');
 		
 		# Prepare the statement
-		$query = "SELECT {$what} FROM `{$database}`.`{$table}`{$where}{$orderBy}{$limit};\n";
+		$databasePrefix = ($this->vendor == 'pgsql' ? '' : "{$this->quote}{$database}{$this->quote}.");
+		$query = "SELECT {$what} FROM {$databasePrefix}{$this->quote}{$table}{$this->quote}{$where}{$orderBy}{$limit};\n";
 		
 		# Get the data
 		$data = $this->_getData ($query, ($associative ? "{$database}.{$table}" : false), $keyed, $conditions, array (), false, $datasource = array ($database, $table));
@@ -1301,7 +1356,7 @@ class database
 		if (!is_array ($data) || !$data) {return false;}
 		
 		# Assemble the field names
-		$fields = '`' . implode ('`,`', array_keys ($data)) . '`';
+		$fields = $this->quote . implode ("{$this->quote},{$this->quote}", array_keys ($data)) . $this->quote;
 		
 		# Assemble the values
 		$preparedValuePlaceholders = array ();
@@ -1325,7 +1380,7 @@ class database
 		$onDuplicateKeyUpdate = $this->onDuplicateKeyUpdate ($onDuplicateKeyUpdate, $data);
 		
 		# Assemble the query
-		$query = "{$statement} INTO `{$database}`.`{$table}` ({$fields}) VALUES ({$preparedValuePlaceholders}){$onDuplicateKeyUpdate};\n";
+		$query = "{$statement} INTO {$this->quote}{$database}{$this->quote}.{$this->quote}{$table}{$this->quote} ({$fields}) VALUES ({$preparedValuePlaceholders}){$onDuplicateKeyUpdate};\n";
 		
 		# In safe mode, only show the query
 		if ($safe) {
@@ -1377,7 +1432,7 @@ class database
 		# If boolean true (rather than a string), compile the supplied data to a string first
 		if ($onDuplicateKeyUpdate === true) {
 			foreach ($data as $key => $value) {
-				$clauses[] = "`{$key}`=VALUES(`{$key}`)";
+				$clauses[] = "{$this->quote}{$key}{$this->quote}=VALUES({$this->quote}{$key}{$this->quote})";
 			}
 			$onDuplicateKeyUpdate = implode (',', $clauses);
 		}
@@ -1406,7 +1461,7 @@ class database
 		}
 		
 		# Assemble the field names
-		$fields = '`' . implode ('`,`', $fields) . '`';
+		$fields = $this->quote . implode ("{$this->quote},{$this->quote}", $fields) . $this->quote;
 		
 		# Chunk the records if required; if not, the entire set will be put into a single container
 		$dataSetChunked = array_chunk ($dataSet, ($chunking ? $chunking : count ($dataSet)), true);
@@ -1444,7 +1499,7 @@ class database
 			$onDuplicateKeyUpdateThisChunk = $this->onDuplicateKeyUpdate ($onDuplicateKeyUpdate, $firstData);
 			
 			# Assemble the query
-			$query = "{$statement} INTO `{$database}`.`{$table}` ({$fields}) VALUES (" . implode ('),(', $valuesPreparedSet) . "){$onDuplicateKeyUpdateThisChunk};\n";
+			$query = "{$statement} INTO {$this->quote}{$database}{$this->quote}.{$this->quote}{$table}{$this->quote} ({$fields}) VALUES (" . implode ('),(', $valuesPreparedSet) . "){$onDuplicateKeyUpdateThisChunk};\n";
 			
 			# Prevent submission of over-long queries
 			if ($maxLength = $this->getVariable ('max_allowed_packet')) {
@@ -1517,12 +1572,12 @@ if (!$rows) {
 			# Add the data
 			if ($emptyToNull && ($data[$key] === '')) {$data[$key] = NULL;}	// Convert empty to NULL if required
 			if ($this->valueIsFunctionCall ($data[$key])) {	// Special handling for keywords, which are not quoted
-				$preparedValueUpdates[] = "`{$key}`= " . $data[$key];
+				$preparedValueUpdates[] = "{$this->quote}{$key}{$this->quote}= " . $data[$key];
 				unset ($data[$key]);
 				continue;
 			}
 			$placeholder = "data_" . $key;	// The prefix ensures namespaced uniqueness within $dataUniqued
-			$preparedValueUpdates[] = "`{$key}`= :" . $placeholder;
+			$preparedValueUpdates[] = "{$this->quote}{$key}{$this->quote}= :" . $placeholder;
 			
 			# Save the data using the new placeholder
 			$dataUniqued[$placeholder] = $data[$key];
@@ -1540,7 +1595,7 @@ if (!$rows) {
 			$where = array ();
 			foreach ($conditions as $key => $value) {
 				$placeholder = 'conditions_' . $key;	// The prefix ensures namespaced uniqueness within $dataUniqued
-				$where[] = ($this->strictWhere ? 'BINARY ' : '') . '`' . $key . '` = :' . $placeholder;
+				$where[] = ($this->strictWhere ? 'BINARY ' : '') . $this->quote . $key . "{$this->quote} = :" . $placeholder;
 				
 				# Save the data using the new placeholder
 				$dataUniqued[$placeholder] = $value;
@@ -1549,7 +1604,7 @@ if (!$rows) {
 		}
 		
 		# Assemble the query
-		$query = "UPDATE `{$database}`.`{$table}` SET {$preparedValueUpdates}{$where};\n";
+		$query = "UPDATE {$this->quote}{$database}{$this->quote}.{$this->quote}{$table}{$this->quote} SET {$preparedValueUpdates}{$where};\n";
 		
 		# In safe mode, only show the query
 		if ($safe) {
@@ -1602,7 +1657,7 @@ if (!$rows) {
 			$preparedStatementValues = array ();
 			$keyPlaceholders = array ();
 			foreach ($fields as $index => $field) {
-				$querySetCaseBlocks[$field]  = "`{$field}` = CASE id";
+				$querySetCaseBlocks[$field]  = "{$this->quote}{$field}{$this->quote} = CASE id";
 				$keyPlaceholderId = 0;	// These can be reused
 				foreach ($dataSet as $key => $data) {
 					$value = $data[$field];
@@ -1639,9 +1694,9 @@ if (!$rows) {
 			}
 			
 			# Assemble the overall query
-			$query  = "UPDATE `{$database}`.`{$table}`";
+			$query  = "UPDATE {$this->quote}{$database}{$this->quote}.{$this->quote}{$table}{$this->quote}";
 			$query .= "\n\tSET " . implode (",\n\t", $querySetCaseBlocks);
-			$query .= "\nWHERE `{$uniqueField}` IN (" . implode (', ', $keyPlaceholders) . ')';
+			$query .= "\nWHERE {$this->quote}{$uniqueField}{$this->quote} IN (" . implode (', ', $keyPlaceholders) . ')';
 			
 			# Prevent submission of over-long queries
 			if ($maxLength = $this->getVariable ('max_allowed_packet')) {
@@ -1682,7 +1737,7 @@ if (!$rows) {
 		if ($conditions) {
 			$where = array ();
 			foreach ($conditions as $key => $value) {
-				$where[] = ($this->strictWhere ? 'BINARY ' : '') . '`' . $key . '`' . ' = :' . $key;
+				$where[] = ($this->strictWhere ? 'BINARY ' : '') . $this->quote . $key . $this->quote . ' = :' . $key;
 			}
 			$where = ' WHERE ' . implode (' AND ', $where);
 		}
@@ -1691,7 +1746,7 @@ if (!$rows) {
 		$limit = ($limit ? " LIMIT {$limit}" : '');
 		
 		# Assemble the query
-		$query = "DELETE FROM `{$database}`.`{$table}`{$where}{$limit};\n";
+		$query = "DELETE FROM {$this->quote}{$database}{$this->quote}.{$this->quote}{$table}{$this->quote}{$where}{$limit};\n";
 		
 		# Execute the query
 		#!# Currently unable to distinguish syntax error vs nothing to delete
@@ -1723,7 +1778,7 @@ if (!$rows) {
 		}
 		
 		# Assemble the query
-		$query = "DELETE FROM `{$database}`.`{$table}` WHERE " . ($this->strictWhere ? 'BINARY ' : '') . "`{$field}` IN (" . implode (', ', $placeholders) . ");";
+		$query = "DELETE FROM {$this->quote}{$database}{$this->quote}.{$this->quote}{$table}{$this->quote} WHERE " . ($this->strictWhere ? 'BINARY ' : '') . "{$this->quote}{$field}{$this->quote} IN (" . implode (', ', $placeholders) . ");";
 		
 		# Execute the query
 		$rows = $this->_execute ($query, $placeholderValues);
@@ -1759,7 +1814,7 @@ if (!$rows) {
 		}
 		
 		# Compile the overall SQL; type is deliberately set to InnoDB so that rows are physically stored in the unique key order
-		$query = 'CREATE TABLE' . ($ifNotExists ? ' IF NOT EXISTS' : '') . " `{$database}`.`{$table}` (" . implode (', ', $fieldsSql) . ") ENGINE={$type} CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
+		$query = 'CREATE TABLE' . ($ifNotExists ? ' IF NOT EXISTS' : '') . " {$this->quote}{$database}{$this->quote}.{$this->quote}{$table}{$this->quote} (" . implode (', ', $fieldsSql) . ") ENGINE={$type} CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
 		
 		# Create the table
 		if ($this->_execute ($query) === false) {return false;}
@@ -1773,7 +1828,7 @@ if (!$rows) {
 	public function getTableStatus ($database, $table, $getOnly = false /*array ('Comment')*/)
 	{
 		# Define the query
-		$query = "SHOW TABLE STATUS FROM `{$database}` LIKE '{$table}';";
+		$query = "SHOW TABLE STATUS FROM {$this->quote}{$database}{$this->quote} LIKE '{$table}';";
 		
 		# Get the results
 		$data = $this->_getOne ($query);
@@ -2295,7 +2350,7 @@ file_put_contents ('/websites/configuration/mysql/log-220112pm-postlive.txt', $l
 	public function trimSql ($fieldname, $additionalTokens = array ())
 	{
 		# Assemble the fieldname quoted
-		$fieldname = '`' . str_replace ('.', '`.`', $fieldname) . '`';
+		$fieldname = $this->quote . str_replace ('.', "{$this->quote}.{$this->quote}", $fieldname) . $this->quote;
 		
 		# Define strings to trim
 		$strings = array (
@@ -2378,9 +2433,9 @@ file_put_contents ('/websites/configuration/mysql/log-220112pm-postlive.txt', $l
 	{
 		# Define the query
 		$query = "UPDATE
-			`{$database}`.`{$table}`
-			SET `{$field}` = CONCAT_WS(',', IF(`{$field}` = '', NULL, `{$field}`), :value)
-			WHERE `{$whereField}` = :id
+			{$this->quote}{$database}{$this->quote}.{$this->quote}{$table}{$this->quote}
+			SET {$this->quote}{$field}{$this->quote} = CONCAT_WS(',', IF({$this->quote}{$field}{$this->quote} = '', NULL, {$this->quote}{$field}{$this->quote}), :value)
+			WHERE {$this->quote}{$whereField}{$this->quote} = :id
 		;";
 		$preparedStatementValues = array (
 			'id'	=> $whereValue,
@@ -2406,9 +2461,9 @@ file_put_contents ('/websites/configuration/mysql/log-220112pm-postlive.txt', $l
 	{
 		# Define the query
 		$query = "UPDATE
-			`{$database}`.`{$table}`
-			SET `{$field}` = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', `{$field}`, ','), CONCAT(',', :value, ','), ','))
-			WHERE `{$whereField}` = :id
+			{$this->quote}{$database}{$this->quote}.{$this->quote}{$table}{$this->quote}
+			SET {$this->quote}{$field}{$this->quote} = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', {$this->quote}{$field}{$this->quote}, ','), CONCAT(',', :value, ','), ','))
+			WHERE {$this->quote}{$whereField}{$this->quote} = :id
 		;";
 		$preparedStatementValues = array (
 			'id'	=> $whereValue,
