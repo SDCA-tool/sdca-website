@@ -172,7 +172,7 @@ class sdcaModel
 		$preparedStatementValues = array ('geometry' => json_encode ($geojson));
 		$centroidJsonString = $this->databaseConnection->getOneField ($centroidQuery, 'centroid', $preparedStatementValues);
 		
-		# Get the distance
+		# Get the distance; see: https://www.alibabacloud.com/blog/597328
 		$query = "
 			SELECT Material_Types, MIN(distance_km) AS distance_km
 			FROM (
@@ -180,7 +180,7 @@ class sdcaModel
 					id,
 					site,
 					material_types AS Material_Types,
-					(ST_Distance( ST_GeomFromGeoJSON(ST_AsGeoJSON( :centroid )), geometry) / 1000) AS distance_km
+					(ST_DistanceSpheroid (ST_GeomFromGeoJSON (:centroid), geometry, 'SPHEROID[\"WGS84\",6378137,298.257223563]') / 1000) AS distance_km		-- See: https://www.alibabacloud.com/blog/597328
 				FROM materialsites
 				ORDER BY material_types,distance_km
 			) AS distances
