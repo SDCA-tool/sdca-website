@@ -791,7 +791,7 @@ var sdca = (function ($) {
 				
 				// Calculate distance
 				// !TODO This only calculates LineStrings for now
-				var distance = sdca.calculateInterventionLength(feature);
+				var distance = sdca.calculateInterventionLength (feature);
 
 				// Generate the HTML
 				html += getSummaryListRow(indexInRegistry, feature.properties.intervention_name, feature.properties.mode, distance);
@@ -1289,11 +1289,13 @@ var sdca = (function ($) {
 					// #!# This is required because csvToJson's conversion from CSV to JSON ends up quoting
 					drawingStyles = sdca.fixIntStrings (drawingStyles);
 					
-					// Create the source and layer
+					// Create the source
 					_map.addSource ('sdca', {
 						'type': 'geojson',
 						'data': {type: 'FeatureCollection', features: []}	// Initally empty GeoJSON
 					});
+					
+					// Create the layer renderers
 					_map.addLayer ({
 						'id': 'sdca-lines',
 						'type': 'line',
@@ -1318,7 +1320,28 @@ var sdca = (function ($) {
 						},
 						'filter': ['==', '$type', 'Point']
 					});
-
+					
+					// Enable popups
+					var layerVariants = ['sdca-lines', 'sdca-points'];			// #!# Soon can replace this with https://github.com/mapbox/mapbox-gl-js/pull/11114
+					$.each (layerVariants, function (index, layerId) {
+						_map.on ('click', layerId, function (e) {
+console.log (_interventionRegistry);
+							new mapboxgl.Popup ()
+								.setLngLat (e.lngLat)
+								.setHTML (sdca.interventionPopupHtml (e.features[0]))
+								.addTo (_map);
+						});
+					});
+					
+					// Change the cursor to a pointer when the mouse is over a feature, and change back when leaving
+					$.each (layerVariants, function (index, layerId) {
+						_map.on ('mouseenter', layerId, function () {
+							_map.getCanvas().style.cursor = 'pointer';
+						});
+						_map.on ('mouseleave', layerId, function () {
+							_map.getCanvas().style.cursor = '';
+						});
+					});
 				});
 			});
 		},
@@ -1344,10 +1367,53 @@ var sdca = (function ($) {
 				// Return the expression
 				return expression;
 		},
-
-
+		
+		
+		// Intervention popup HTML
+		interventionPopupHtml: function (feature)
+		{
+			// Create the HTML
+			var html = `
+				<dl class="govuk-summary-list">
+					<div class="govuk-summary-list__row">
+					<dt class="govuk-summary-list__key">
+						Mode
+					</dt>
+					<dd class="govuk-summary-list__value">
+						${feature.properties.mode}
+					</dd>
+					</div>
+					<div class="govuk-summary-list__row">
+					<dt class="govuk-summary-list__key">
+						Intervention
+					</dt>
+					<dd class="govuk-summary-list__value intervention-name">
+						${feature.properties.intervention_name}
+					</dd>
+					</div>
+					<div class="govuk-summary-list__row">
+					<dt class="govuk-summary-list__key">
+						Total distance
+					</dt>
+					<dd class="govuk-summary-list__value distance">
+						${sdca.calculateInterventionLength (feature)}
+					</dd>
+					</div>
+				</dl>
+				<!--
+				<button class="govuk-button edit-intervention" data-sdca-target-panel="draw-intervention" data-module="govuk-button" data-sdca-registry-index="{feature.id}">
+					Edit this intervention
+				</button>
+				-->
+			`;
+			
+			// Return the HTML
+			return html;
+		},
+		
+		
 		// Helper function to fix int strings to proper ints in a two-dimensional array
-		fixIntStrings (dataset)
+		fixIntStrings: function (dataset)
 		{
 			// Loop through each row
 			$.each (dataset, function (index, row) {
