@@ -389,9 +389,9 @@ var sdca = (function ($) {
 				$(this).toggleClass('selected');
 				
 				if ($(this).hasClass('selected')) {
-					$(this).text('Hide data layers panel');
+					$(this).html ('Hide data layers panel &#9650;');
 				} else {
-					$(this).text('Explore data layers');
+					$(this).html ('Explore data layers &#9660;');
 				}
 			});
 
