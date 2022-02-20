@@ -736,6 +736,7 @@ var sdca = (function ($) {
 				var newGeoJson = {
 					_interventionTypeIndex: _currentInterventionType.index,
 					type: 'Feature',
+					id: (Object.keys (_interventionRegistry.features).length),		// I.e. allocate next, so if 2 features (0, 1), next will be 2
 					properties: {
 						infrastructure_type: currentIntervention.infrastructure_type,
 						mode_class: currentIntervention.mode_class,
@@ -1401,7 +1402,7 @@ console.log (_interventionRegistry);
 					</div>
 				</dl>
 				<!--
-				<button class="govuk-button edit-intervention" data-sdca-target-panel="draw-intervention" data-module="govuk-button" data-sdca-registry-index="...">
+				<button class="govuk-button edit-intervention" data-sdca-target-panel="draw-intervention" data-module="govuk-button" data-sdca-registry-index="{feature.id}">
 					Edit this intervention
 				</button>
 				-->
