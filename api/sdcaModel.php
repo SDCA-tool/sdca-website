@@ -109,13 +109,13 @@ class sdcaModel
 		
 		# Values for desire_lines
 		#!# MySQL 8.0 does not yet have geometry support in ST_Buffer ("#3618 - st_buffer(LINESTRING) has not been implemented for geographic spatial reference systems."), so both the data and the supplied geography have been converted to SRID = 0 as initial prototype
-		#!# Buffer size of 0.02 degrees has been used as an approximation to 2000m, but this needs to be implemented properly
+		$averageBufferSize = (array_sum ($bufferDistances) / count ($bufferDistances));
 		$query = "
 			SELECT
 				ST_AsGeoJSON(geometrySrid0) AS geometry,
 				`from`, `to`, cycle, drive, passenger, walk, rail, bus, lgv, hgv
 			FROM desire_lines
-			WHERE ST_Intersects( geometrySrid0, ST_Buffer( ST_GeomFromGeoJSON(:geometry, 1, 0), 0.1) );
+			WHERE ST_Intersects( geometrySrid0, ST_Buffer( ST_GeomFromGeoJSON(:geometry, 1, 0), {$averageBufferSize}) )
 		;";
 		$preparedStatementValues = array ('geometry' => json_encode ($geojson));
 		$desire_linesRaw = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
