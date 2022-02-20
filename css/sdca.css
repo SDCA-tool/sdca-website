@@ -20,7 +20,7 @@ body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
 .govuk-panel {padding: 20px}
 .govuk-panel__title {font-size: 1.5rem}
 .govuk-panel__body {font-size: 1rem;}
-.govuk-tabs__panel {overflow-x: scroll;}
+#details.govuk-tabs__panel > div {overflow-x: auto;}
 
 /* gov.uk addons */
 .govuk-summary-list__row.active {background-color: #ECECEC;}
