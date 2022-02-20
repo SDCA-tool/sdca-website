@@ -182,7 +182,7 @@ class sdcaModel
 					material_types AS Material_Types,
 					(ST_DistanceSpheroid (ST_GeomFromGeoJSON (:centroid), geometry, 'SPHEROID[\"WGS84\",6378137,298.257223563]') / 1000) AS distance_km		-- See: https://www.alibabacloud.com/blog/597328
 				FROM materialsites
-				ORDER BY material_types,distance_km
+				ORDER BY material_types, distance_km
 			) AS distances
 			GROUP BY material_types
 			ORDER BY material_types
@@ -199,10 +199,10 @@ class sdcaModel
 					material_types AS Material_Types,
 					(ST_Distance( ST_GeomFromGeoJSON(ST_AsGeoJSON( ST_Centroid(ST_GeomFromGeoJSON(:geometry, 1, 0)) ), 1, 4326), geometry) / 1000) AS distance_km
 				FROM materialsites
-				ORDER BY material_types,distance_km
+				ORDER BY Material_Types, distance_km
 			) AS distances
-			GROUP BY material_types
-			ORDER BY material_types
+			GROUP BY Material_types
+			ORDER BY Material_types
 		;";
 		$preparedStatementValues = array ('geometry' => json_encode ($geojson));
 		$json['material_sites'] = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
