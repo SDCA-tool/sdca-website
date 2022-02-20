@@ -507,6 +507,7 @@ class database
 				if (preg_match ('/^decimal\(([0-9]+),([0-9]+)\)$/', $fieldSpecification['Type'], $matches)) {
 					$castTo = ($matches[2] === '0' ? 'int' : 'float');
 					foreach ($data as $index => $record) {
+						if ($data[$index][$field] === NULL) {continue;}
 						if ($castTo == 'int')   {$data[$index][$field] = (int)   $record[$field];}
 						if ($castTo == 'float') {$data[$index][$field] = (float) $record[$field];}
 					}
