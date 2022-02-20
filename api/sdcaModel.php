@@ -104,13 +104,8 @@ class sdcaModel
 		$carbon_factors = $this->databaseConnection->select ($this->settings['database'], 'carbon_factors', array ('cf_name' => $cf_names));
 		$json['carbon_factors'] = $carbon_factors;
 		
-		# Get length of each feature
-		$lengthsKm = array ();
-		foreach ($geojson['features'] as $index => $feature) {
-			$query = "SELECT ST_Length(ST_GeomFromGeoJSON(:geometry), 'kilometre') AS length;";		// Units support requires MySQL 8.0.16; available units listed in INFORMATION_SCHEMA.ST_UNITS_OF_MEASURE
-			$preparedStatementValues = array ('geometry' => json_encode ($feature['geometry']));
-			$lengthsKm[$index] = $this->databaseConnection->getOneField ($query, 'length', $preparedStatementValues);
-		}
+		# Determine buffer distance for each feature
+		$bufferDistances = $this->bufferDistances ($geojson['features']);
 		
 		# Values for desire_lines
 		#!# MySQL 8.0 does not yet have geometry support in ST_Buffer ("#3618 - st_buffer(LINESTRING) has not been implemented for geographic spatial reference systems."), so both the data and the supplied geography have been converted to SRID = 0 as initial prototype
@@ -211,6 +206,33 @@ class sdcaModel
 		
 		# No problems
 		return true;
+	}
+	
+	
+	# Function to determine the buffer distance for each feature
+	private function bufferDistances ($features)
+	{
+			# Get length of each feature
+			$lengthsKm = array ();
+			foreach ($features as $index => $feature) {
+				$query = "SELECT ST_Length(ST_GeomFromGeoJSON(:geometry), 'kilometre') AS length;";		// Units support requires MySQL 8.0.16; available units listed in INFORMATION_SCHEMA.ST_UNITS_OF_MEASURE
+				$preparedStatementValues = array ('geometry' => json_encode ($feature['geometry']));
+				$lengthsKm[$index] = $this->databaseConnection->getOneField ($query, 'length', $preparedStatementValues);
+			}
+			
+			# Determine buffer distance for each feature
+			$bufferDistances = array ();
+			foreach ($lengthsKm as $featureIndex => $lengthKm) {
+				if (($lengthKm / 5) < 3) {
+					$bufferDistance = 3 * 0.02;
+				} else {
+					$bufferDistance = ($lengthKm / 5) * 0.02;
+				}
+				$bufferDistances[$featureIndex] = $bufferDistance;
+			}
+			
+			# Return the buffer distances
+			return $bufferDistances;
 	}
 	
 	
