@@ -27,9 +27,9 @@ var sdca = (function ($) {
 		
 		// Initial lat/lon/zoom of map and tile layer
 		defaultLocation: {
-			latitude: 53.891,
-			longitude: -1.216,
-			zoom: 5.2
+			latitude: 54.383,
+			longitude: -4.051,
+			zoom: 5.4
 		},
 		defaultTileLayer: 'osoutdoor',
 		
