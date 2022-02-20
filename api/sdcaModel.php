@@ -146,7 +146,11 @@ class sdcaModel
 					'geometry' => json_decode ($geometry),
 			);
 		}
-		$json['desire_lines'] = array (json_encode ($desire_lines));
+	if (isSet ($_GET['postgres']) && $_GET['postgres'] == 'true') {
+		$json['desire_lines'] = array (json_encode ($desire_lines, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK));
+	} else {
+		$json['desire_lines'] = array (json_encode ($desire_lines, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+	}
 		
 		# Values for raster files
 		$json['path_dem'] = '/var/www/sdca/data/dem/UKdem.tif';
