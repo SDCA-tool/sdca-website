@@ -265,15 +265,12 @@ class sdcaModel
 			$lengthsKm = array ();
 			foreach ($features as $index => $feature) {
 		if (isSet ($_GET['postgres']) && $_GET['postgres'] == 'true') {
-				$query = "SELECT ST_Length(ST_GeomFromGeoJSON(:geometry)) AS length;";		// Result is in degrees
-				$preparedStatementValues = array ('geometry' => json_encode ($feature['geometry']));
-				$degrees = $this->databaseConnection->getOneField ($query, 'length', $preparedStatementValues);
-				$lengthsKm[$index] = $degrees * 111300 / 1000;			// #!# Wrong result
+				$query = "SELECT ST_LengthSpheroid(geom, 'SPHEROID[\"WGS 84\",6378137,298.257223563]') / 1000 AS length FROM ST_GeomFromGeoJSON(:geometry) AS geom;";	// See: https://gis.stackexchange.com/a/170828/58752
 		} else {
 				$query = "SELECT ST_Length(ST_GeomFromGeoJSON(:geometry), 'kilometre') AS length;";		// Units support requires MySQL 8.0.16; available units listed in INFORMATION_SCHEMA.ST_UNITS_OF_MEASURE
+		}
 				$preparedStatementValues = array ('geometry' => json_encode ($feature['geometry']));
 				$lengthsKm[$index] = $this->databaseConnection->getOneField ($query, 'length', $preparedStatementValues);
-		}
 			}
 			
 			# Determine buffer distance for each feature
