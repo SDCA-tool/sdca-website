@@ -736,6 +736,7 @@ var sdca = (function ($) {
 				var newGeoJson = {
 					_interventionTypeIndex: _currentInterventionType.index,
 					type: 'Feature',
+					id: (Object.keys (_interventionRegistry.features).length),		// I.e. allocate next, so if 2 features (0, 1), next will be 2
 					properties: {
 						infrastructure_type: currentIntervention.infrastructure_type,
 						mode_class: currentIntervention.mode_class,
@@ -1325,7 +1326,6 @@ var sdca = (function ($) {
 					var layerVariants = ['sdca-lines', 'sdca-points'];			// #!# Soon can replace this with https://github.com/mapbox/mapbox-gl-js/pull/11114
 					$.each (layerVariants, function (index, layerId) {
 						_map.on ('click', layerId, function (e) {
-console.log (_interventionRegistry);
 							new mapboxgl.Popup ()
 								.setLngLat (e.lngLat)
 								.setHTML (sdca.interventionPopupHtml (e.features[0]))
