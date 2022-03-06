@@ -266,9 +266,6 @@ var sdca = (function ($) {
 			// Load layers from datasets file, and then initialise layers
 			sdca.loadDatasets ();
 			
-			// Drawing handlers
-			sdca.handleDrawing ();
-			
 			// Manage panels
 			sdca.managePanels ();
 			sdca.handleFileUpload ();
@@ -1096,7 +1093,10 @@ var sdca = (function ($) {
 						
 						// Run the layerviewer for these settings and layers
 						layerviewer.initialise (_settings, _layerConfig);
-
+						
+						// Drawing handlers
+						sdca.handleDrawing ();
+						
 						// Also get the _draw Object
 						_draw = layerviewer.getDrawObject ();
 
@@ -1165,7 +1165,7 @@ var sdca = (function ($) {
 		{
 			// At startup, get and store the drawing status proxy 
 			_drawingHappening = layerviewer.getDrawingStatusObject();
-
+			
 			// Listener for LayerViewer _drawingHappening
 			// Drawing panel UI controller based on drawing state in LayerViewer
 			_drawingHappening.registerListener(function (drawingHappening) {
