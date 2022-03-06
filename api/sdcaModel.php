@@ -108,7 +108,6 @@ class sdcaModel
 		$bufferDistances = $this->bufferDistances ($geojson['features']);
 		
 		# Values for desire_lines
-	if (isSet ($_GET['postgres']) && $_GET['postgres'] == 'true') {
 		$queryParts = array ();
 		$preparedStatementValues = array ();
 		foreach ($geojson['features'] as $index => $feature) {
@@ -123,19 +122,6 @@ class sdcaModel
 		}
 		$query = implode (' UNION ', $queryParts) . ';';
 		$desire_linesRaw = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
-	} else {
-		#!# MySQL 8.0 does not yet have geometry support in ST_Buffer ("#3618 - st_buffer(LINESTRING) has not been implemented for geographic spatial reference systems."), so both the data and the supplied geography have been converted to SRID = 0 as initial prototype
-		$averageBufferSize = (array_sum ($bufferDistances) / count ($bufferDistances));
-		$query = "
-			SELECT
-				ST_AsGeoJSON(geometrySrid0) AS geometry,
-				`from`, `to`, cycle, drive, passenger, walk, rail, bus, lgv, hgv
-			FROM desire_lines
-			WHERE ST_Intersects( geometrySrid0, ST_Buffer( ST_GeomFromGeoJSON(:geometry, 1, 0), {$averageBufferSize}) )
-		;";
-		$preparedStatementValues = array ('geometry' => json_encode ($geojson));
-		$desire_linesRaw = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
-	}
 		$desire_lines = array ('type' => 'FeatureCollection', 'features' => array ());
 		foreach ($desire_linesRaw as $row) {
 			$geometry = $row['geometry'];
@@ -146,11 +132,8 @@ class sdcaModel
 					'geometry' => json_decode ($geometry),
 			);
 		}
-	if (isSet ($_GET['postgres']) && $_GET['postgres'] == 'true') {
+		#!# JSON_NUMERIC_CHECK is used as a workaround because PostgreSQL is returning strings for floats; see: https://stackoverflow.com/questions/71198679/
 		$json['desire_lines'] = array (json_encode ($desire_lines, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK));
-	} else {
-		$json['desire_lines'] = array (json_encode ($desire_lines, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-	}
 		
 		# Values for raster files
 		$json['path_dem'] = '/var/www/sdca/data/dem/UKdem.tif';
@@ -162,8 +145,6 @@ class sdcaModel
 		# "The logic is st_centroid(user_input) then find the nearest location for each material_sites. Material_Types (there are 11 types of site). Then measure the straight line distance between the centroid and the 11 sites in km."
 		#!# Needs tests - has been checked manually for now
 		#!# Would ideally retrieve the site to help testing, but this has the groupwise problem which is hard to solve on a derived distance value
-		#!# MySQL 8.0 does not yet have geometry support in ST_Centroid, however the casting from 0 to 4326 should be a reasonable approximation - centroid here is "ST_GeomFromGeoJSON(ST_AsGeoJSON( ST_Centroid(ST_GeomFromGeoJSON(:geometry, 1, 0)) ), 1, 4326)"
-	if (isSet ($_GET['postgres']) && $_GET['postgres'] == 'true') {
 		# Firstly, determine the centroid
 		#!# Disaggregation of features done at: https://gis.stackexchange.com/a/114203/58752
 		$centroidQuery = "
@@ -193,31 +174,10 @@ class sdcaModel
 		;';
 		$preparedStatementValues = array ('centroid' => $centroidJsonString);
 		$json['material_sites'] = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
-	} else {
-		$query = '
-			SELECT Material_Types, MIN(distance_km) AS distance_km
-			FROM (
-				SELECT
-					id,
-					site,
-					material_types AS Material_Types,
-					(ST_Distance( ST_GeomFromGeoJSON(ST_AsGeoJSON( ST_Centroid(ST_GeomFromGeoJSON(:geometry, 1, 0)) ), 1, 4326), geometry) / 1000) AS distance_km
-				FROM materialsites
-				ORDER BY Material_Types, distance_km
-			) AS distances
-			GROUP BY Material_types
-			ORDER BY Material_types
-		;';
-		$preparedStatementValues = array ('geometry' => json_encode ($geojson));
-		$json['material_sites'] = $this->databaseConnection->getData ($query, false, true, $preparedStatementValues);
-	}
 		
 		# Construct as string
-	if (isSet ($_GET['postgres']) && $_GET['postgres'] == 'true') {
+		#!# JSON_NUMERIC_CHECK is used as a workaround because PostgreSQL is returning strings for floats; see: https://stackoverflow.com/questions/71198679/
 		$stdin = json_encode ($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
-	} else {
-		$stdin = json_encode ($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-	}
 		
 		# Show input to the package if required
 		#!# Temporary option - to be removed after debugging
@@ -272,11 +232,7 @@ class sdcaModel
 			# Get length of each feature
 			$lengthsKm = array ();
 			foreach ($features as $index => $feature) {
-		if (isSet ($_GET['postgres']) && $_GET['postgres'] == 'true') {
 				$query = "SELECT ST_LengthSpheroid(geom, 'SPHEROID[\"WGS 84\",6378137,298.257223563]') / 1000 AS length FROM ST_GeomFromGeoJSON(:geometry) AS geom;";	// See: https://gis.stackexchange.com/a/170828/58752
-		} else {
-				$query = "SELECT ST_Length(ST_GeomFromGeoJSON(:geometry), 'kilometre') AS length;";		// Units support requires MySQL 8.0.16; available units listed in INFORMATION_SCHEMA.ST_UNITS_OF_MEASURE
-		}
 				$preparedStatementValues = array ('geometry' => json_encode ($feature['geometry']));
 				$lengthsKm[$index] = $this->databaseConnection->getOneField ($query, 'length', $preparedStatementValues);
 			}
