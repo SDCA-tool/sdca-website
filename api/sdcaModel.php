@@ -108,6 +108,7 @@ class sdcaModel
 		$bufferDistances = $this->bufferDistances ($geojson['features']);
 		
 		# Values for desire_lines
+		#!# The UNION here could be replaced by using ST_COLLECT and/or ST_Union as used elsewhere in this file and as per https://gis.stackexchange.com/a/114203/58752
 		$queryParts = array ();
 		$preparedStatementValues = array ();
 		foreach ($geojson['features'] as $index => $feature) {
