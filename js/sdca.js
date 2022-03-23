@@ -1587,10 +1587,10 @@ var sdca = (function ($) {
 			// Populate the results in the interface
 			if (data.netzero_compatible[0] == 'yes') {
 				$('.govuk-panel--confirmation').removeClass ('failure');
-				$('.netzero_compatible').text ('Net zero compatible');
+//				$('.netzero_compatible').text ('Net zero compatible');
 			} else {
 				$('.govuk-panel--confirmation').addClass ('failure');
-				$('.netzero_compatible').text ('Not net zero compatible');
+//				$('.netzero_compatible').text ('Not net zero compatible');
 			}
 			
 			// Check if API returned string 'Never' or number
