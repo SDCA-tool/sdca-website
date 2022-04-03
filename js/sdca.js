@@ -646,6 +646,10 @@ var sdca = (function ($) {
 
 					// Add the saved copy of the feature to be edited to the map as a new drawing
 					_draw.add(interventionToBeEdited);
+
+					// Get the featureId of the drawing, and set direct_select mode (i.e. the best edit mode)
+					var featureId = _draw.getAll().features.pop().id;
+					_draw.changeMode ('direct_select', {featureId: featureId});
 				});
 			});
 		},
