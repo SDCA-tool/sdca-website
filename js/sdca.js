@@ -1806,6 +1806,7 @@ var sdca = (function ($) {
 							]
 						},
 						options: {
+							aspectRatio: 2,
 							animation: {
 								duration: 0 // general animation time
 							},
