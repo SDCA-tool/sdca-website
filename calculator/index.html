@@ -418,6 +418,9 @@
               <button class="govuk-button govuk-button--secondary edit-clear" data-module="govuk-button">
                 Clear line
               </button>
+              <button class="govuk-button govuk-button--secondary edit-draw" data-module="govuk-button">
+                Edit existing drawing on map
+              </button>
               <button class="govuk-button govuk-button--warning" id="delete-intervention" data-module="govuk-button">
                 Delete this intervention
               </button>
@@ -528,7 +531,7 @@
 
                 <p class="govuk-body">Showing emissions by PAS 2080 category:</p>
 
-                <div class="graph-container" style="height: 436px; width: 50%; min-width: 400px; max-width: 700px;">
+                <div class="graph-container" style="min-width: 400px; max-width: 700px;">
                   <canvas class="emissions-chart" id="emissions-by-type-chart-high"></canvas>
                   <canvas class="emissions-chart" id="emissions-by-type-chart-average"></canvas>
                   <canvas class="emissions-chart" id="emissions-by-type-chart-low"></canvas>
