@@ -622,6 +622,31 @@ var sdca = (function ($) {
 				// Pull the intervention type and set that so we know what we are editing
 				var interventionObject = _interventionRegistry.features[_currentlyEditingRegistry.index];
 				_currentInterventionType.index = interventionObject._interventionTypeIndex;
+
+				// Enable editing of drawn objects
+				// This saves a copy of the feature we want to edit, deleted the original feature from the intervention registry, and adds the saved version as a new drawing.
+				$('body').on('click', '.edit-draw', function () {
+					// Save a copy of the feature we are editing
+					var interventionToBeEdited = _interventionRegistry.features[_currentlyEditingRegistry.index];
+					
+					// Remove that intervention from the map/registry
+					sdca.deleteInterventionFromRegistry(_currentlyEditingRegistry.index);
+
+					// Update timestamp
+					_interventionRegistry._timestamp = Date.now();
+
+					// Simulate new drawing mode
+					_currentlyEditingRegistry.index = -1;
+
+					// Clear the #geometry field, used for storing temp draw coordinates
+					$('#geometry').val('');
+
+					// Update the map features (with the removed feature)
+					sdca.addFeaturesToMap(_interventionRegistry);
+
+					// Add the saved copy of the feature to be edited to the map as a new drawing
+					_draw.add(interventionToBeEdited);
+				});
 			});
 		},
 
@@ -1791,7 +1816,6 @@ var sdca = (function ($) {
 								tooltip: {
 									callbacks: {
 										label: function (item) {
-											console.log(item);
 											return item.label + ': ' + item.parsed + ' tonnes CO2e';
 										}
 									}
