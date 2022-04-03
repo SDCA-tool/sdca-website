@@ -356,6 +356,7 @@ var sdca = (function ($) {
 				// Show the delete intervention button
 				if (_mapState.state == 'edit') {
 					$('#delete-intervention').show ();
+					$('.edit-draw').show ();
 				} else {
 					$('#delete-intervention').hide ();
 				}
@@ -611,6 +612,11 @@ var sdca = (function ($) {
 
 		// Code to enter editing mode for an intervention
 		editIntervention: function () {
+			// When on the editing screen, hide the 'edit drawing' button once clicked
+			$('.edit-draw').on ('click', function () {
+				$('.edit-draw').hide ();
+			});
+
 			$('body').on('click', '.edit-intervention', function () {
 				
 				// Set the map state to trigger UI changes

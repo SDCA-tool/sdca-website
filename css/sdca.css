@@ -64,7 +64,7 @@ body .mapboxgl-map {line-height: 1.4;}
 /* Drawing */
 #drawing {height: 130px; bottom: 25px; right: 20px;}
 body #application nav #drawing a {border-bottom: 0;}
-#calculate, .edit-clear {display: none;}
+#calculate, .edit-clear, .edit-draw {display: none;}
 .drawing-complete {display: none;}
 .stop-drawing {display: none;}
 
