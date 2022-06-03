@@ -456,11 +456,6 @@ var sdca = (function ($) {
 
 				// Remove the geometries added to the map, if present
 				layerviewer.eraseDirectGeojson('resultWarnings');
-
-				// Select the first (summary) scheme results tab
-				$('#view-results .govuk-tabs__list .govuk-tabs__list-item').removeClass('govuk-tabs__list-item--selected').removeAttr('aria-selected');
-				$('#view-results .govuk-tabs__list .govuk-tabs__list-item').first().addClass('govuk-tabs__list-item--selected').attr('aria-selected', true);
-				$('#view-results .govuk-tabs__list .govuk-tabs__list-item').first().click();
 			});
 		},
 
