@@ -1652,7 +1652,7 @@ var sdca = (function ($) {
 			}
 			
 			// Check if API returned string 'Never' or number
-			if (Number.isNaN (data.payback_time[0])) {
+			if (isNaN (data.payback_time[0])) {
 				$('.payback_time').text (layerviewer.number_format (data.payback_time[0]));
 			} else {
 				$('.payback_time').text (layerviewer.number_format (data.payback_time[0]) + ' ' + (data.payback_time[0] == 1  ? 'year' : 'years'));
