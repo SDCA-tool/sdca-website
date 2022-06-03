@@ -173,11 +173,13 @@ var sdca = (function ($) {
 	};
 	
 
-	/* UI state */
-	var _startupPanelId = 'design-scheme'; // Panel to show at startup
-	var _isTempPanel = false; // If we have a temp (i.e. data layers) panel in view
-	var _currentPanelId = null; // Store the current panel in view
-	var _previousPanelId = null; // The previous panel. Used when exiting the _tempPanel
+	/* Panel state */
+	var _panelState = {
+		startupId: 'design-scheme',		// Panel to show at startup
+		isTemp: false,					// Whether we have a temp (i.e. data layers) panel in view
+		currentId: null,				// Current panel in view
+		previousId: null,				// Previous panel; used when exiting a temp panel
+	};
 
 
 	/* Charts */
@@ -373,11 +375,11 @@ var sdca = (function ($) {
 			$('body').on('click', 'button, a', function () {
 				var panel = $(this).data('sdca-target-panel');
 				if (panel !== undefined) {
-					// Are we currently exiting a temporary panel (i.e. layer viewer)
-					if (_isTempPanel) {
-						sdca.switchPanel(_previousPanelId);
+					// Are we currently exiting a temporary panel (i.e. layer viewer)?
+					if (_panelState.isTemp) {
+						sdca.switchPanel (_panelState.previousId);
 					} else {
-						sdca.switchPanel(panel);
+						sdca.switchPanel (panel);
 					}
 				}
 			});
@@ -394,27 +396,27 @@ var sdca = (function ($) {
 			});
 
 			// At startup, show the desired panel
-			sdca.switchPanel(_startupPanelId);
+			sdca.switchPanel (_panelState.startupId);
 		},
 
 
 		// Panel switching
 		switchPanel: function (panelToShow) {
 			// Save the previous panel
-			_previousPanelId = _currentPanelId;
+			_panelState.previousId = _panelState.currentId;
 
 			// Only show the desired sdca panel
 			$('.sdca-panel').hide();
 			$('#' + panelToShow).show();
 
 			// Is this panel a temporary one? Set status
-			_isTempPanel = ($('#' + panelToShow).data('sdca-is-temp-panel') ? true : false);
+			_panelState.isTemp = ($('#' + panelToShow).data('sdca-is-temp-panel') ? true : false);
 			
 			// Add autofocus if required
 			$('.autofocus').focus ();
 			
 			// Save the panel as current
-			_currentPanelId = panelToShow;
+			_panelState.currentId = panelToShow;
 
 			// Update the map state
 			if (panelToShow !== 'draw-intervention') {
@@ -971,7 +973,7 @@ var sdca = (function ($) {
 			$(window).on('keydown', function (e) {
 
 				// This applies to the search-for-interventions screen
-				if (_currentPanelId !== 'search-for-intervention') {
+				if (_panelState.currentId !== 'search-for-intervention') {
 					return;
 				}
 
