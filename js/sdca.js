@@ -1,7 +1,7 @@
 // SDCA implementation code
 
-/*jslint browser: true, white: true, single: true, for: true, unordered: true, long: true */
-/*global $, alert, console, window, osm2geo, layerviewer, jQuery, turf, Chart */
+/*jslint browser: true, white: true, single: true, for: true, unordered: true, long: true, getset: true, this: true, variable: true */
+/*global $, alert, console, window, osm2geo, layerviewer, mapboxgl, jQuery, turf, Chart */
 
 var sdca = (function ($) {
 	
@@ -178,7 +178,7 @@ var sdca = (function ($) {
 		startupId: 'design-scheme',		// Panel to show at startup
 		isTemp: false,					// Whether we have a temp (i.e. data layers) panel in view
 		currentId: null,				// Current panel in view
-		previousId: null,				// Previous panel; used when exiting a temp panel
+		previousId: null				// Previous panel; used when exiting a temp panel
 	};
 
 
@@ -201,7 +201,7 @@ var sdca = (function ($) {
 		registerListener: function (listener) {
 			this.indexListener = listener;
 		}
-	}
+	};
 	var _currentlyEditingRegistry = { // Store the intervention we are editing for deletion purposes.
 		indexInternal: -1,
 		indexListener: function (val) { },
@@ -215,7 +215,7 @@ var sdca = (function ($) {
 		registerListener: function (listener) {
 			this.indexListener = listener;
 		}
-	}
+	};
 	var _interventionRegistry = {
 		_timestamp: null,
 		type: 'FeatureCollection',
@@ -236,7 +236,7 @@ var sdca = (function ($) {
 		registerListener: function (listener) {
 			this.stateListener = listener;
 		}
-	}
+	};
 	
 	/* Labels */
 	var _pas2080Labels = {};
@@ -296,7 +296,8 @@ var sdca = (function ($) {
 
 
 		// Controller to manage map state
-		mapState: function () {
+		mapState: function ()
+		{
 			_mapState.registerListener(function (state) {
 				switch (state) {
 					case 'view-all':
@@ -370,7 +371,8 @@ var sdca = (function ($) {
 
 
 		// Panel management
-		managePanels: function () {
+		managePanels: function ()
+		{
 			// If a button is clicked with a target panel, go to that panel
 			$('body').on('click', 'button, a', function () {
 				var panel = $(this).data('sdca-target-panel');
@@ -401,7 +403,8 @@ var sdca = (function ($) {
 
 
 		// Panel switching
-		switchPanel: function (panelToShow) {
+		switchPanel: function (panelToShow)
+		{
 			// Save the previous panel
 			_panelState.previousId = _panelState.currentId;
 
@@ -437,7 +440,7 @@ var sdca = (function ($) {
 					_timestamp: null,
 					type: 'FeatureCollection',
 					features: []
-				}
+				};
 
 				// Run the map draw to empty the map
 				sdca.addFeaturesToMap(_interventionRegistry);
@@ -458,12 +461,13 @@ var sdca = (function ($) {
 				$('#view-results .govuk-tabs__list .govuk-tabs__list-item').removeClass('govuk-tabs__list-item--selected').removeAttr('aria-selected');
 				$('#view-results .govuk-tabs__list .govuk-tabs__list-item').first().addClass('govuk-tabs__list-item--selected').attr('aria-selected', true);
 				$('#view-results .govuk-tabs__list .govuk-tabs__list-item').first().click();
-			})
+			});
 		},
 
 
 		// User can click on button to save intervention design as JSON file
-		exportIntervention: function () {
+		exportIntervention: function ()
+		{
 			$('#save-interventions').on('click', function () {
 				let dataStr = JSON.stringify(_interventionRegistry, null, '\t');
 				let exportFileName = 'carbon-calculator-scheme' + sdca.timestampSuffix () + '.geojson';
@@ -495,7 +499,8 @@ var sdca = (function ($) {
 		
 		
 		// UI management for GIS file upload
-		handleFileUpload: function () {
+		handleFileUpload: function ()
+		{
 			// By default, the file upload button is disabled
 			$('#submit-gis-file').attr('disabled', 'disabled').addClass('govuk-button--disabled');
 
@@ -573,7 +578,8 @@ var sdca = (function ($) {
 
 
 		// Get the different intervention types and populate them
-		retrieveInterventions: function () {
+		retrieveInterventions: function ()
+		{
 			// Get the interventions JSON file
 			$.getJSON('/lexicon/data_tables/interventions.json', function (interventions) {
 				_interventions = interventions;
@@ -583,7 +589,8 @@ var sdca = (function ($) {
 
 
 		// Populate interventions in hTML
-		populateInterventions: function () {
+		populateInterventions: function ()
+		{
 			var mode = ''; // i.e. High speed rail
 
 			$('#interventions-accordion').empty();
@@ -613,7 +620,8 @@ var sdca = (function ($) {
 
 
 		// Code to enter editing mode for an intervention
-		editIntervention: function () {
+		editIntervention: function ()
+		{
 			// When on the editing screen, hide the 'edit drawing' button once clicked
 			$('.edit-draw').on ('click', function () {
 				$('.edit-draw').hide ();
@@ -664,7 +672,8 @@ var sdca = (function ($) {
 
 
 		// Code for handling adding, registering, removing interventions
-		trackInterventions: function () {
+		trackInterventions: function ()
+		{
 			// If we click on the link to add a new intervention, save the type for global access
 			$('body').on('click', '#interventions-accordion .govuk-summary-list__actions a.govuk-link', function () {
 				// Set the current intervention index
@@ -679,8 +688,8 @@ var sdca = (function ($) {
 				index = Number(index); // Ensure 0 isn't interpreted as False
 				if (index > -1) {
 					// Enable the correct drawing mode
-					$('.draw').toggleClass('point', _interventions[_currentInterventionType.index].geometry === 'point')
-					$('.draw').toggleClass('line', _interventions[_currentInterventionType.index].geometry === 'line')
+					$('.draw').toggleClass('point', _interventions[_currentInterventionType.index].geometry === 'point');
+					$('.draw').toggleClass('line', _interventions[_currentInterventionType.index].geometry === 'line');
 
 					// Update the UI
 					$('.intervention-mode').text(_interventions[index].mode);
@@ -688,7 +697,7 @@ var sdca = (function ($) {
 					$('.intervention-description').text(_interventions[index].intervention_description);
 
 					// Only show distance if we are drawing a line
-					$('.distance-row').toggle(_interventions[_currentInterventionType.index].geometry === 'line')
+					$('.distance-row').toggle(_interventions[_currentInterventionType.index].geometry === 'line');
 				}
 			});
 
@@ -699,7 +708,8 @@ var sdca = (function ($) {
 
 		// Handler for the delete intervention button
 		// !TODO needs to clear any drawings from map
-		deleteIntervention: function () {
+		deleteIntervention: function ()
+		{
 			// Listener for change in editing state, to show button
 			_currentlyEditingRegistry.registerListener(function (index) {
 				if (Number(index) > -1) {
@@ -715,7 +725,7 @@ var sdca = (function ($) {
 				if (_currentlyEditingRegistry.index < 0) {
 					// Shouldn't happen
 				} else {
-					sdca.deleteInterventionFromRegistry(_currentlyEditingRegistry.index)
+					sdca.deleteInterventionFromRegistry(_currentlyEditingRegistry.index);
 				}
 
 				// Update timestamp
@@ -734,7 +744,8 @@ var sdca = (function ($) {
 
 
 		// Delete an intervention from the registry
-		deleteInterventionFromRegistry: function (interventionIndex) {
+		deleteInterventionFromRegistry: function (interventionIndex)
+		{
 			// The following two steps are a way around JavaScript now having a proper ArrayItem.remove() method
 			// Empty the array at the correct index
 			delete _interventionRegistry.features[interventionIndex];
@@ -743,7 +754,7 @@ var sdca = (function ($) {
 			var cleanedInterventionArray = [];
 			$.each(_interventionRegistry.features, function (indexInArray, feature) {
 				if (feature !== undefined) {
-					cleanedInterventionArray.push(feature)
+					cleanedInterventionArray.push(feature);
 				}
 			});
 			_interventionRegistry.features = cleanedInterventionArray;
@@ -751,7 +762,8 @@ var sdca = (function ($) {
 
 
 		// Add intervention to registry/main page
-		registerIntervention: function () {
+		registerIntervention: function ()
+		{
 			$('#register-intervention').on('click', function () {
 
 				// Get the intervention type
@@ -815,7 +827,8 @@ var sdca = (function ($) {
 
 
 		// Update the list of user interventions
-		updateUserInterventionList: function () {
+		updateUserInterventionList: function ()
+		{
 			var html = '';
 			$.each(_interventionRegistry.features, function (indexInRegistry, feature) {
 				
@@ -871,7 +884,8 @@ var sdca = (function ($) {
 		},
 
 
-		calculateInterventionLength: function (feature) {
+		calculateInterventionLength: function (feature)
+		{
 			var distance = '';
 			if (feature.geometry.type == 'LineString') {
 				var line = turf.lineString(feature.geometry.coordinates);
@@ -886,7 +900,8 @@ var sdca = (function ($) {
 
 
 		// Generate intervention accordion header HTML
-		generateInterventionHeaderHtml: function (intervention, interventionIndex) {
+		generateInterventionHeaderHtml: function (intervention, interventionIndex)
+		{
 			var mode = sdca.convertLabelToKebab(intervention.mode);
 			return (`
 				<div class="govuk-accordion__section" id="intervention-${mode}">
@@ -911,7 +926,8 @@ var sdca = (function ($) {
 
 
 		// Generate intervention row HTML
-		generateInterventionRowHtml: function (intervention, interventionIndex) {
+		generateInterventionRowHtml: function (intervention, interventionIndex)
+		{
 			return (
 				`
 			<div class="govuk-summary-list__row">
@@ -932,15 +948,16 @@ var sdca = (function ($) {
 
 
 		// Convert normal case into kebab case
-		convertLabelToKebab: function (label) {
+		convertLabelToKebab: function (label)
+		{
 			// "High speed rail" => "high-speed-rail"
 			return label.replace(/\s+/g, '-').toLowerCase();
 		},
 
 
 		// Enable filtering of interventions
-		filterInterventions: function () {
-
+		filterInterventions: function ()
+		{
 			var currentSelectedRowIndex = -1;
 
 			$('#filter-interventions').on('keyup', function (e) {
@@ -1152,7 +1169,8 @@ var sdca = (function ($) {
 
 
 		// Generate data layer accordion header HTML
-		generateLayerAccordionHeaderHtml: function (layer) {
+		generateLayerAccordionHeaderHtml: function (layer)
+		{
 			var layerKebab = sdca.convertLabelToKebab(layer.category);
 			return (`
 				<div class="govuk-accordion__section" id="data-layer-${layerKebab}">
@@ -1175,7 +1193,8 @@ var sdca = (function ($) {
 
 
 		// Generate intervention row HTML
-		generateLayerAccordionRowHtml: function (layer) {
+		generateLayerAccordionRowHtml: function (layer)
+		{
 			var uniqueDescription = layer.title !== layer.description;
 			return (
 				`
@@ -1344,7 +1363,7 @@ var sdca = (function ($) {
 						},
 						'paint': {
 							'line-color': sdca.buildMatchExpression(drawingStyles, 'mode', 'line-color', 'black'),
-							'line-width': sdca.buildMatchExpression(drawingStyles, 'mode', 'line-width', 5),
+							'line-width': sdca.buildMatchExpression(drawingStyles, 'mode', 'line-width', 5)
 						},
 						'filter': ['==', '$type', 'LineString']
 					});
@@ -1467,7 +1486,8 @@ var sdca = (function ($) {
 		
 		
 		// Clear all drawings and drawing-associated layers
-		clearDrawings: function () {
+		clearDrawings: function ()
+		{
 			// Clear all drawings
 			if (_draw) {
 				_draw.deleteAll();
@@ -1494,7 +1514,8 @@ var sdca = (function ($) {
 		
 		
 		// Export or share the data returned from the API
-		exportData: function () {
+		exportData: function ()
+		{
 			$('.export-data').on('click', function () {
 				// Return if no data
 				if (!_returnedApiData) {
@@ -1582,7 +1603,7 @@ var sdca = (function ($) {
 				emissions_high: 'Emissions (best case)',
 				emissions_cumulative: 'Cumulative emissions',
 				emissions_cumulative_low: 'Cumulative emissions (worst case)',
-				emissions_cumulative_high: 'Cumulative emissions (best case)',
+				emissions_cumulative_high: 'Cumulative emissions (best case)'
 			};
 			var timeseries = sdca.htmlTable (data.timeseries, timeseriesLabels);
 			
@@ -1631,7 +1652,7 @@ var sdca = (function ($) {
 			}
 			
 			// Check if API returned string 'Never' or number
-			if (isNaN (data.payback_time[0])) {
+			if (Number.isNaN (data.payback_time[0])) {
 				$('.payback_time').text (layerviewer.number_format (data.payback_time[0]));
 			} else {
 				$('.payback_time').text (layerviewer.number_format (data.payback_time[0]) + ' ' + (data.payback_time[0] == 1  ? 'year' : 'years'));
@@ -1670,7 +1691,8 @@ var sdca = (function ($) {
 
 
 		// Generate time series chart (y/y emissions)
-		generateEmissionsByYearChart: function (data) {
+		generateEmissionsByYearChart: function (data)
+		{
 			const ctx = document.getElementById('emissions-by-year-chart').getContext('2d');
 
 			var labels = data.map((row) => row.year);
@@ -1678,7 +1700,7 @@ var sdca = (function ($) {
 			var chartObject = {
 				name: 'emissions-by-year',
 				chart:
-					new Chart(ctx, {
+					new Chart (ctx, {
 						type: 'line',
 						data: {
 							labels: labels,
@@ -1700,7 +1722,7 @@ var sdca = (function ($) {
 									data: data.map((row) => row.emissions_cumulative_high),
 									borderColor: '#00703c',
 									tension: 0.1
-								},
+								}
 							]
 						},
 						options: {
@@ -1712,7 +1734,6 @@ var sdca = (function ($) {
 										}
 									}
 								}
-
 							},
 							scales: {
 								y: {
@@ -1721,16 +1742,17 @@ var sdca = (function ($) {
 										text: 'tonnes CO2e'
 									}
 								}
-							},
+							}
 						}
 					})
-			}
+			};
 			_charts.push(chartObject);
 		},
 
 
 		// Handle the radio to show the right chart
-		handleChartRadios: function () {
+		handleChartRadios: function ()
+		{
 			// Listen for change and choose the appropriate chart
 			$('#emissions-by-type-select').on('change', function () {
 				var selectedChartType = $('#emissions-by-type-select').val();
@@ -1777,7 +1799,7 @@ var sdca = (function ($) {
 
 			// Programatically generate 3 charts
 			var chartObject;
-			charts.forEach((chart) => {
+			charts.forEach (function (chart) {
 				chartObject = {
 					name: chart.type,
 					chart: new Chart(chart.element, {
@@ -1807,7 +1829,7 @@ var sdca = (function ($) {
 										'#5694ca', // light-blue
 										'#00703c', // green
 										'#f3f2f1', // light grey
-										'#ffffff', // white
+										'#ffffff'  // white
 									],
 									tension: 0.1
 								}
@@ -1836,7 +1858,7 @@ var sdca = (function ($) {
 							}
 						}
 					})
-				}
+				};
 				_charts.push(chartObject);
 			});
 		},
