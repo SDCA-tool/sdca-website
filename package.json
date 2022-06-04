@@ -8,6 +8,8 @@
   "license": "GPL-3.0-only",
   "dependencies": {
     "@mapbox/geojson-extent": "^1.0.1",
-    "Mapboxgljs.LayerViewer": "https://github.com/cyclestreets/Mapboxgljs.LayerViewer/"
+    "Mapboxgljs.LayerViewer": "https://github.com/cyclestreets/Mapboxgljs.LayerViewer/",
+    "chart.js": "^3.8.0",
+    "jquery.scrollto": "^2.1.3"
   }
 }
