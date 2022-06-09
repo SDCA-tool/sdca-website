@@ -58,61 +58,6 @@ var sdca = (function ($) {
 	// Layer definitions
 	var _layerConfig = {
 		
-		// Public transport - vector layer
-		publictransport: {
-			vector: {
-				source: {
-					'type': 'vector',
-					'tiles': [
-						'/data/publictransport/{z}/{x}/{y}.pbf'
-					],
-					'minzoom': 6,
-					'maxzoom': 14
-				},
-				layer: {
-					'id': 'publictransport',
-					'type': 'circle',
-					'source': 'publictransport',
-					'source-layer': 'publictransport',
-					'paint': {
-						// Make circles larger as the user zooms from z12 to z22
-						'circle-radius': {
-							'base': 2.5,
-							'stops': [
-								[8, 3],
-								[22, 180]
-							]
-						},
-						// Color circles using a match expression; see: https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-match
-						'circle-stroke-width': 1,
-						'circle-color': [
-							'match',
-							['get', 'grade'],
-							'A+', '#313695',
-							'A',  '#4575b4',
-							'A-', '#4575b4',
-							'B+', '#74add1',
-							'B',  '#abd9e9',
-							'B-', '#abd9e9',
-							'C+', '#e0f3f8',
-							'C',  '#e0f3f8',
-							'C-', '#ffffbf',
-							'D+', '#ffffbf',
-							'D',  '#fee090',
-							'D-', '#fee090',
-							'E+', '#fdae61',
-							'E',  '#fdae61',
-							'E-', '#f46d43',
-							'F+', '#d73027',
-							'F',  '#d73027',
-							'F-', '#a50026',
-							/* other */ '#e0e0e0'
-						]
-					}
-				}
-			}
-		},
-		
 		trafficcounts: {
 			apiCall: '/v2/trafficcounts.locations',
 			apiFixedParameters: {
