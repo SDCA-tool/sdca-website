@@ -539,7 +539,7 @@ var sdca = (function ($) {
 			$.each(_interventions, function (interventionIndex, intervention) {
 
 				// Save the python-case intervention mode (i.e. high-speed-rail)
-				mode = sdca.convertLabelToKebab(intervention.mode);
+				mode = sdca.convertLabelToMoniker (intervention.mode);
 
 				// If we already have an accordion header for this,
 				if ($('#intervention-' + mode).length > 0) {
@@ -677,7 +677,7 @@ var sdca = (function ($) {
 				// Regenerate user intervention list
 				sdca.updateUserInterventionList();
 
-				// ET go home
+				// Go home
 				sdca.switchPanel('design-scheme');
 			});
 		},
@@ -842,7 +842,7 @@ var sdca = (function ($) {
 		// Generate intervention accordion header HTML
 		generateInterventionHeaderHtml: function (intervention, interventionIndex)
 		{
-			var mode = sdca.convertLabelToKebab(intervention.mode);
+			var mode = sdca.convertLabelToMoniker (intervention.mode);
 			return (`
 				<div class="govuk-accordion__section" id="intervention-${mode}">
 					<div class="govuk-accordion__section-header">
@@ -887,11 +887,10 @@ var sdca = (function ($) {
 		},
 
 
-		// Convert normal case into kebab case
-		convertLabelToKebab: function (label)
+		// Convert normal case into kebab case, e.g. "High speed rail" => "high-speed-rail"
+		convertLabelToMoniker: function (label)
 		{
-			// "High speed rail" => "high-speed-rail"
-			return label.replace(/\s+/g, '-').toLowerCase();
+			return label.replace (/\s+/g, '-').toLowerCase ();
 		},
 
 
@@ -1054,11 +1053,9 @@ var sdca = (function ($) {
 								_layerConfig[dataset.id].vector.layer.paint = styles[dataset.id];
 							}
 						});
-
-						// Create the land use accordion
-						var categoryKebab = '';
 						
-						// Iterate through the layers
+						// Iterate through the layers to create the accordion
+						var categoryMoniker = '';
 						$.each(datasets, function (index, layer) {
 
 							// The lexicon contains a string of 'FALSE' if layer should not be shown
@@ -1067,20 +1064,20 @@ var sdca = (function ($) {
 							}
 
 							// Save the python-case category
-							categoryKebab = sdca.convertLabelToKebab(layer.category);
+							categoryMoniker = sdca.convertLabelToMoniker (layer.category);
 
 							// If we already have an accordion header for this
-							if ($('#data-layer-' + categoryKebab).length > 0) {
+							if ($('#data-layer-' + categoryMoniker).length > 0) {
 
 								// Append a new list row
-								$('#data-layers-accordion-content-' + categoryKebab + ' .govuk-checkboxes').append(
-									sdca.generateLayerAccordionRowHtml(layer)
+								$('#data-layers-accordion-content-' + categoryMoniker + ' .govuk-checkboxes').append(
+									sdca.generateLayerAccordionRowHtml (layer)
 								);
 							} else {
 			
 								// Otherwise, append a new section
-								$('#data-layers-accordion').prepend(
-									sdca.generateLayerAccordionHeaderHtml(layer)
+								$('#data-layers-accordion').prepend (
+									sdca.generateLayerAccordionHeaderHtml (layer)
 								);
 							}
 						});
@@ -1111,18 +1108,18 @@ var sdca = (function ($) {
 		// Generate data layer accordion header HTML
 		generateLayerAccordionHeaderHtml: function (layer)
 		{
-			var layerKebab = sdca.convertLabelToKebab(layer.category);
+			var layerMoniker = sdca.convertLabelToMoniker (layer.category);
 			return (`
-				<div class="govuk-accordion__section" id="data-layer-${layerKebab}">
+				<div class="govuk-accordion__section" id="data-layer-${layerMoniker}">
 					<div class="govuk-accordion__section-header">
 					<h2 class="govuk-accordion__section-heading">
-						<span class="govuk-accordion__section-button" id="data-layers-accordion-heading-${layerKebab}">
+						<span class="govuk-accordion__section-button" id="data-layers-accordion-heading-${layerMoniker}">
 						${layer.category}
 						</span>
 					</h2>
 					</div>
-					<div id="data-layers-accordion-content-${layerKebab}" class="govuk-accordion__section-content"
-					aria-labelledby="data-layers-accordion-content-${layerKebab}">
+					<div id="data-layers-accordion-content-${layerMoniker}" class="govuk-accordion__section-content"
+					aria-labelledby="data-layers-accordion-content-${layerMoniker}">
 					<div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
 						${sdca.generateLayerAccordionRowHtml(layer)}
 					</div>
