@@ -117,7 +117,7 @@
 
 "Mapboxgljs.LayerViewer@https://github.com/cyclestreets/Mapboxgljs.LayerViewer/":
   version "1.0.0"
-  resolved "https://github.com/cyclestreets/Mapboxgljs.LayerViewer/#d1823c51d9f5c4577e9bbf191dd4355f152e6ab8"
+  resolved "https://github.com/cyclestreets/Mapboxgljs.LayerViewer/#dded5d2773ba95ed353b2c2ee953b758f2382a66"
   dependencies:
     "@benmajor/jquery-touch-events" "^2.0.3"
     "@hughsk/fulltilt" "^0.7.1"
