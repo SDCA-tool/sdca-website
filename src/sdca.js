@@ -55,10 +55,13 @@ var sdca = (function ($) {
 
 	};
 	
-	// Layer definitions
-	var _layerConfig = {
+	// API layer definitions
+	var _apiLayers = {
 		
 		trafficcounts: {
+			_category: 'Transport data',
+			name: 'Traffic counts',
+			description: 'AADF (Annual Average Daily Flows) data for all main roads in the UK',
 			apiCall: '/v2/trafficcounts.locations',
 			apiFixedParameters: {
 				groupyears: '1'
@@ -90,6 +93,9 @@ var sdca = (function ($) {
 		},
 		
 		planningapplications: {
+			_category: 'Planning system data',
+			name: 'Planning applictions',
+			description: 'Planning applications submitted to local authorities around the UK.',
 			apiCall: 'https://www.planit.org.uk/api/applics/geojson',
 			apiFixedParameters: {
 				pg_sz: 100,
@@ -236,7 +242,6 @@ var sdca = (function ($) {
 			sdca.pas2080Labels ();
 
 			// LayerViewer initialisation is wrapped within loadDatasets
-			// layerviewer.initialise (_settings, _layerConfig);
 		},
 
 
@@ -979,6 +984,9 @@ var sdca = (function ($) {
 				$.getJSON ('/lexicon/data_dictionary/fields.json', function (fields) {
 					$.getJSON ('/lexicon/styles/styles.json', function (styles) {
 						
+						// Start an ordered list of layer definitions
+						var layers = [];
+						
 						// #!# Duplicate fields, pending layer merging work
 						fields.carbon_full = fields.lsoa;
 						fields.carbon_general = fields.lsoa;
@@ -989,6 +997,7 @@ var sdca = (function ($) {
 						var popupLabels;
 						var popupDescriptions;
 						var fieldname;
+						var layer;
 						$.each (datasets, function (index, dataset) {
 							
 							// Skip if required
@@ -1025,7 +1034,7 @@ var sdca = (function ($) {
 							}
 							
 							// Register the layer definition
-							_layerConfig[dataset.id] = {
+							layer = {
 								vector: {
 									source: {
 										'type': 'vector',
@@ -1050,22 +1059,33 @@ var sdca = (function ($) {
 							
 							// Define style if present
 							if (styles[dataset.id]) {
-								_layerConfig[dataset.id].vector.layer.paint = styles[dataset.id];
+								layer.vector.layer.paint = styles[dataset.id];
 							}
+							
+							// Add the ID and category
+							layer.id = dataset.id;
+							layer._category = dataset.category;
+							layer.title = dataset.title;
+							layer.description = dataset.description;
+							
+							// Register this layer
+							layers.push (layer);
+						});
+						
+						// Merge in API-based layers
+						$.each (_apiLayers, function (layerId, layer) {
+							layer.id = layerId;
+							layer.title = layer.name;
+							layers.push (layer);
 						});
 						
 						// Iterate through the layers to create the accordion
-						var categoryMoniker = '';
-						$.each(datasets, function (index, layer) {
-
-							// The lexicon contains a string of 'FALSE' if layer should not be shown
-							if (layer.show === 'FALSE') {
-								return;
-							}
-
-							// Save the python-case category
-							categoryMoniker = sdca.convertLabelToMoniker (layer.category);
-
+						var categoryMoniker;
+						$.each (layers, function (index, layer) {
+							
+							// Save the category, python-case
+							categoryMoniker = sdca.convertLabelToMoniker (layer._category);
+							
 							// If we already have an accordion header for this
 							if ($('#data-layer-' + categoryMoniker).length > 0) {
 
@@ -1076,14 +1096,20 @@ var sdca = (function ($) {
 							} else {
 			
 								// Otherwise, append a new section
-								$('#data-layers-accordion').prepend (
+								$('#data-layers-accordion').append (
 									sdca.generateLayerAccordionHeaderHtml (layer)
 								);
 							}
 						});
 						
 						// Run the layerviewer for these settings and layers
-						layerviewer.initialise (_settings, _layerConfig);
+						var layersById = {};
+						var layerId;
+						$.each (layers, function (index, layer) {
+							delete layer._category;		// Not needed by LayerViewer
+							layersById[layer.id] = layer;
+						});
+						layerviewer.initialise (_settings, layersById);
 						
 						// Drawing handlers
 						sdca.handleDrawing ();
@@ -1108,13 +1134,13 @@ var sdca = (function ($) {
 		// Generate data layer accordion header HTML
 		generateLayerAccordionHeaderHtml: function (layer)
 		{
-			var layerMoniker = sdca.convertLabelToMoniker (layer.category);
+			var layerMoniker = sdca.convertLabelToMoniker (layer._category);
 			return (`
 				<div class="govuk-accordion__section" id="data-layer-${layerMoniker}">
 					<div class="govuk-accordion__section-header">
 					<h2 class="govuk-accordion__section-heading">
 						<span class="govuk-accordion__section-button" id="data-layers-accordion-heading-${layerMoniker}">
-						${layer.category}
+						${layer._category}
 						</span>
 					</h2>
 					</div>
