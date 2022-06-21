@@ -1531,7 +1531,7 @@ var sdca = (function ($) {
 		},
 
 
-		// Function to load the PAS 2080 labels
+		// Function to load the BS EN 17472 labels
 		pas2080Labels: function ()
 		{
 			// Get the interventions JSON file
