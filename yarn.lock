@@ -115,11 +115,6 @@
   resolved "https://registry.yarnpkg.com/@tmcw/togeojson/-/togeojson-5.2.1.tgz#3e9f08d521d30c968ea4a489116c76efe34a0a1c"
   integrity sha512-fEmZ29r5SiCqhQTC0mzIDgw2TC+zJIyhTac8hFHpvFFPnqGERM3d94dbbtzor4latESCX+uSBdBJyQ33nwkARg==
 
-"@types/geojson@*":
-  version "7946.0.8"
-  resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.8.tgz#30744afdb385e2945e22f3b033f897f76b1f12ca"
-  integrity sha512-1rkryxURpr6aWP7R786/UQOkJ3PcpQiWkAXBmdWc7ryFWqN6a4xfK7BtjXvFBKO9LjQ+MWQSWxYeZX1OApnArA==
-
 "Mapboxgljs.LayerViewer@https://github.com/cyclestreets/Mapboxgljs.LayerViewer/":
   version "1.0.0"
   resolved "https://github.com/cyclestreets/Mapboxgljs.LayerViewer/#dded5d2773ba95ed353b2c2ee953b758f2382a66"
