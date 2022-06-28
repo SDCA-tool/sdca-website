@@ -71,3 +71,10 @@ body #application nav #drawing a {border-bottom: 0;}
 /* Autocomplete */
 .ui-autocomplete li a {color: #0B0D0D; font-family: Helvetica, Arial, sans-serif;}
 #geocoder input {color: #0B0D0D; font-size: 1.4em;}
+
+/* Layer-specific popup styling */
+#map .mapboxgl-popup.trafficcounts .mapboxgl-popup-content {min-width: 420px; max-width: 420px;}
+#map .mapboxgl-popup.trafficcounts table td, #map .mapboxgl-popup.trafficcounts table th {font-size: 0.83em;}
+#map .mapboxgl-popup.trafficcounts table th {text-align: left; line-height: 2em;}
+#map .mapboxgl-popup.trafficcounts table td {text-align: right;}
+
