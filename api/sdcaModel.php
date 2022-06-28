@@ -254,8 +254,8 @@ class sdcaModel
 			}
 			
 			# Determine buffer distance for each feature
-			$bufferLengthFraction = 5;		// Buffer size fraction, i.e. 1/n, of the line length
-			$bufferLengthMinimumKm = 3;		// Buffer size minimum
+			$bufferLengthFraction = 10;		// Buffer size fraction, i.e. 1/n, of the line length
+			$bufferLengthMinimumKm = 1;		// Buffer size minimum
 			define ('KM_TO_DEGREES', 0.02);		// UK-specific estimate
 			$bufferDistances = array ();
 			foreach ($lengthsKm as $featureIndex => $lengthKm) {
