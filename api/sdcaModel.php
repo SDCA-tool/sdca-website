@@ -107,6 +107,21 @@ class sdcaModel
 		# Determine buffer distance for each feature
 		$bufferDistances = $this->bufferDistances ($geojson['features']);
 		
+		# Set error handler to catch desire_lines retrieval that is over-memory; see: https://stackoverflow.com/a/8440791
+		register_shutdown_function (function () {
+			$error = error_get_last ();
+			if ($error !== NULL) {
+				$response = array ('error' => 'The proposed intervention is too large for us to calculate at present during the development phase of this system. Is it possible for you try a smaller intervention?');
+				
+				# Send the error; this broadly matches error in the main class, but the stack trace is lost by this point
+				http_response_code (408);
+				header ('Access-Control-Allow-Origin: *');
+				header ('Content-Type: application/json');
+				echo json_encode ($response, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+				exit;
+			}
+		});
+		
 		# Values for desire_lines
 		#!# The UNION here could be replaced by using ST_COLLECT and/or ST_Union as used elsewhere in this file and as per https://gis.stackexchange.com/a/114203/58752
 		$queryParts = array ();
