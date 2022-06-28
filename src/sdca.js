@@ -95,12 +95,14 @@ var sdca = (function ($) {
 		planningapplications: {
 			_category: 'Planning system data',
 			name: 'Planning applictions',
-			description: 'Planning applications submitted to local authorities around the UK.',
+			description: 'Planning applications (large/medium) submitted to local authorities around the UK.',
 			apiCall: 'https://www.planit.org.uk/api/applics/geojson',
 			apiFixedParameters: {
 				pg_sz: 100,
 				limit: 100,
-				select: 'location,description,address,app_size,app_type,app_state,uid,area_name,start_date,url'
+				select: 'location,description,address,app_size,app_type,app_state,uid,area_name,start_date,url',
+				app_size: 'Large,Medium',
+				app_state: 'Undecided,Permitted,Conditions,Rejected'
 			},
 			apiKey: false,
 			iconUrl: '/images/icons/signs_neutral.svg',
