@@ -52,7 +52,6 @@ var sdca = (function ($) {
 		enableDrawing: true,
 		drawingGeometryType: 'LineString',
 		stopDrawingWhenClearingLine: false
-
 	};
 	
 	// API layer definitions
@@ -217,7 +216,10 @@ var sdca = (function ($) {
 					_settings[setting] = config[setting];
 				}
 			});
-
+			
+			// Keep drawn items on top after layer additions
+			_settings.forceTopLayers = ['sdca-lines', 'sdca-points'];
+			
 			// Load layers from datasets file, and then initialise layers
 			sdca.loadDatasets ();
 			
