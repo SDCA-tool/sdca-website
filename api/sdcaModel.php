@@ -258,9 +258,9 @@ class sdcaModel
 			$bufferDistances = array ();
 			foreach ($lengthsKm as $featureIndex => $lengthKm) {
 				if (($lengthKm / 5) < 3) {
-					$bufferDistance = 3 * KM_TO_DEGREES;
+					$bufferDistance = 3 * KM_TO_DEGREES;		// For short infrastructure, set fixed value
 				} else {
-					$bufferDistance = ($lengthKm / 5) * KM_TO_DEGREES;
+					$bufferDistance = ($lengthKm / 5) * KM_TO_DEGREES;		// The buffer distance should be 1/5th of the length of the infrastructure, then convert from kilometres to degrees
 				}
 				$bufferDistances[$featureIndex] = $bufferDistance;
 			}
