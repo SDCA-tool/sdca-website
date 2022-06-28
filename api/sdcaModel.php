@@ -254,12 +254,13 @@ class sdcaModel
 			}
 			
 			# Determine buffer distance for each feature
+			define ('KM_TO_DEGREES', 0.02);		// UK-specific estimate
 			$bufferDistances = array ();
 			foreach ($lengthsKm as $featureIndex => $lengthKm) {
 				if (($lengthKm / 5) < 3) {
-					$bufferDistance = 3 * 0.02;
+					$bufferDistance = 3 * KM_TO_DEGREES;
 				} else {
-					$bufferDistance = ($lengthKm / 5) * 0.02;
+					$bufferDistance = ($lengthKm / 5) * KM_TO_DEGREES;
 				}
 				$bufferDistances[$featureIndex] = $bufferDistance;
 			}
