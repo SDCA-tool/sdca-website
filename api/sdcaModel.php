@@ -259,12 +259,9 @@ class sdcaModel
 			define ('KM_TO_DEGREES', 0.02);		// UK-specific estimate
 			$bufferDistances = array ();
 			foreach ($lengthsKm as $featureIndex => $lengthKm) {
-				if (($lengthKm / $bufferLengthFraction) < $bufferLengthMinimumKm) {
-					$bufferDistance = $bufferLengthMinimumKm * KM_TO_DEGREES;		// For short infrastructure, set fixed value
-				} else {
-					$bufferDistance = ($lengthKm / $bufferLengthFraction) * KM_TO_DEGREES;		// The buffer distance should be 1/5th of the length of the infrastructure, then convert from kilometres to degrees
-				}
-				$bufferDistances[$featureIndex] = $bufferDistance;
+				
+				# The buffer distance should be the stated fraction of the length of the infrastructure (subject to the minimum), then convert from kilometres to degrees
+				$bufferDistances[$featureIndex] = max ( ($lengthKm / $bufferLengthFraction), $bufferLengthMinimumKm) * KM_TO_DEGREES;
 			}
 			
 			# Return the buffer distances
