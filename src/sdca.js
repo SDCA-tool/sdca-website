@@ -52,6 +52,7 @@ var sdca = (function ($) {
 		enableDrawing: true,
 		drawingGeometryType: 'LineString',
 		stopDrawingWhenClearingLine: false
+
 	};
 	
 	// API layer definitions
@@ -132,12 +133,10 @@ var sdca = (function ($) {
 		currentId: null,				// Current panel in view
 		previousId: null				// Previous panel; used when exiting a temp panel
 	};
-
-
+	
 	/* Charts */
 	var _charts = []; // Store charts for accessing/updating data/destroying
-
-
+	
 	/* Interventions state control */
 	var _interventions = null; // Store the parsed array of interventions JSON
 	var _currentInterventionType = { // Object to control the current intervention index
@@ -990,11 +989,6 @@ var sdca = (function ($) {
 						
 						// Start an ordered list of layer definitions
 						var layers = [];
-						
-						// #!# Duplicate fields, pending layer merging work
-						fields.carbon_full = fields.lsoa;
-						fields.carbon_general = fields.lsoa;
-						fields.carbon_super_general = fields.lsoa;
 						
 						// Add each dataset
 						var type;
