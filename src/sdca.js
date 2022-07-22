@@ -1548,9 +1548,9 @@ var sdca = (function ($) {
 			// Create the PAS2080 table
 			var pas2080Labels = {
 				pas2080_code: 'Code',
-				emissions: 'Emissions (tonnes CO2e)',
-				emissions_high: 'High (tonnes CO2e)',
-				emissions_low: 'Low (tonnes CO2e)',
+				emissions: 'Emissions (tonnes CO₂e)',
+				emissions_high: 'High (tonnes CO₂e)',
+				emissions_low: 'Low (tonnes CO₂e)',
 				confidence: 'Confidence',
 				notes: 'Notes'
 			};
@@ -1577,10 +1577,10 @@ var sdca = (function ($) {
 				after_low: 'After - low (daily trips)',
 				change: 'Change',
 				changekm: 'Change in km',
-				changeemissions_low: 'Change in emissions - low (tonnes CO2e per year)',
-				changeemissions_high: 'Change in emissions - high (tonnes CO2e per year)',
-				changeemissions_average: 'Change in emissions - average (tonnes CO2e per year)',
-				itemised_emissions: 'Itemised emissions (kg CO2e)'
+				changeemissions_low: 'Change in emissions - low (tonnes CO₂e per year)',
+				changeemissions_high: 'Change in emissions - high (tonnes CO₂e per year)',
+				changeemissions_average: 'Change in emissions - average (tonnes CO₂e per year)',
+				itemised_emissions: 'Itemised emissions (kg CO₂e)'
 			};
 			var demand_change = sdca.htmlTable (data.demand_change, demandChangeLabels);
 			
@@ -1691,7 +1691,7 @@ var sdca = (function ($) {
 								tooltip: {
 									callbacks: {
 										label: function (item) {
-											return item.label + ' tonnes CO2e';
+											return item.label + ' tonnes CO₂e';
 										}
 									}
 								}
@@ -1700,7 +1700,7 @@ var sdca = (function ($) {
 								y: {
 									title: {
 										display: true,
-										text: 'tonnes CO2e'
+										text: 'tonnes CO₂e'
 									}
 								}
 							}
@@ -1812,7 +1812,7 @@ var sdca = (function ($) {
 								tooltip: {
 									callbacks: {
 										label: function (item) {
-											return item.label + ': ' + item.parsed + ' tonnes CO2e';
+											return item.label + ': ' + item.parsed + ' tonnes CO₂e';
 										}
 									}
 								}
