@@ -125,8 +125,8 @@ var sdca = (function ($) {
 		}
 	};
 	
-	// Sublayer parameters, to be merged in
-	var _sublayerParameters = {};
+	// Manually-set parameters, to be merged in
+	var _manualParameters = {};
 	
 	/* Panel state */
 	var _panelState = {
@@ -1068,9 +1068,9 @@ var sdca = (function ($) {
 							layer.title = dataset.title;
 							layer.description = dataset.description;
 							
-							// Merge in sublayer parameters if present for this layer
-							if (_sublayerParameters.hasOwnProperty (dataset.id)) {
-								$.each (_sublayerParameters[dataset.id], function (key, value) {
+							// Merge in manually-set parameters if present for this layer
+							if (_manualParameters.hasOwnProperty (dataset.id)) {
+								$.each (_manualParameters[dataset.id], function (key, value) {
 									layer[key] = value;
 								});
 							}
