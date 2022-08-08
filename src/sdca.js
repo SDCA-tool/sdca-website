@@ -645,7 +645,7 @@ var sdca = (function ($) {
 					// Update the UI
 					$('.intervention-mode').text(_interventions[index].mode);
 					$('.intervention-name').text(_interventions[index].intervention_name);
-					$('.intervention-description').text(_interventions[index].intervention_description);
+					//$('.intervention-description').text(_interventions[index].intervention_description);
 
 					// Only show distance if we are drawing a line
 					$('.distance-row').toggle(_interventions[_currentInterventionType.index].geometry === 'line');
