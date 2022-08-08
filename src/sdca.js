@@ -18,6 +18,9 @@ var sdca = (function ($) {
 		selector: '#layerselector',
 		useJqueryTabsRendering: false,
 		
+		// Form rescan path
+		formRescanPath: '#layerselector #layercontrol_{layerId} .filters',
+		
 		// CycleStreets API; obtain a key at https://www.cyclestreets.net/api/apply/
 		apiBaseUrl: 'https://api.cyclestreets.net',
 		apiKey: 'YOUR_API_KEY',
@@ -124,6 +127,7 @@ var sdca = (function ($) {
 				+ '<p><a href="{properties.url}"><img src="/images/icons/bullet_go.png" /> <strong>View full details</a></strong></p>'
 		}
 	};
+	
 	
 	/* Panel state */
 	var _panelState = {
