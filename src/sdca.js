@@ -125,9 +125,6 @@ var sdca = (function ($) {
 		}
 	};
 	
-	// Manually-set parameters, to be merged in
-	var _manualParameters = {};
-	
 	/* Panel state */
 	var _panelState = {
 		startupId: 'design-scheme',		// Panel to show at startup
@@ -985,6 +982,7 @@ var sdca = (function ($) {
 		loadDatasets: function ()
 		{
 			// Load the datasets and field definitions
+			var keyUnprefixed;
 			$.getJSON ('/lexicon/datasets.json', function (datasets) {
 				$.getJSON ('/lexicon/data_dictionary/fields.json', function (fields) {
 					$.getJSON ('/lexicon/styles/styles.json', function (styles) {
@@ -1057,8 +1055,19 @@ var sdca = (function ($) {
 								popupDescriptions: popupDescriptions
 							};
 							
+							// Merge in underscore-prefixed parameters from the styles into the layer, if present for this layer
+							if (!$.isEmptyObject (styles[dataset.id])) {
+								$.each (styles[dataset.id], function (key, value) {
+									if (key.startsWith ('_')) {
+										keyUnprefixed = key.substring(1);	// E.g. key _polygonColourField becomes polygonColourField
+										layer[keyUnprefixed] = value;
+										delete styles[dataset.id][key];
+									}
+								});
+							}
+							
 							// Define style if present
-							if (styles[dataset.id]) {
+							if (!$.isEmptyObject (styles[dataset.id])) {
 								layer.vector.layer.paint = styles[dataset.id];
 							}
 							
@@ -1067,13 +1076,6 @@ var sdca = (function ($) {
 							layer._category = dataset.category;
 							layer.title = dataset.title;
 							layer.description = dataset.description;
-							
-							// Merge in manually-set parameters if present for this layer
-							if (_manualParameters.hasOwnProperty (dataset.id)) {
-								$.each (_manualParameters[dataset.id], function (key, value) {
-									layer[key] = value;
-								});
-							}
 							
 							// Register this layer
 							layers.push (layer);
