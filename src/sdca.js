@@ -1240,7 +1240,7 @@ var sdca = (function ($) {
 			var uniqueDescription = layer.title !== layer.description;
 			return (
 				`
-					<div class="govuk-checkboxes__item">
+					<div class="govuk-checkboxes__item" id="layercontrol_${layer.id}">
 						<input class="govuk-checkboxes__input" id="show_${layer.id}" name="show[]" type="checkbox"
 								value="${layer.id}">
 						<label class="govuk-label govuk-checkboxes__label" for="show_${layer.id}">
