@@ -1192,6 +1192,7 @@ var sdca = (function ($) {
 			html += 'Show map styles for: ';
 			html += '<select name="' + selectNameId + '" id="' + selectNameId + '">';
 			$.each (fields, function (index, field) {
+				if (field.hasOwnProperty ('selectable') && !field.selectable) {return; /* i.e. continue */}	// If marked as not selectable, skip
 				html += '<option value="' + field.col_name + '">' + sdca.htmlspecialchars (field.name) + '</option>';
 			});
 			html += '</select>';
