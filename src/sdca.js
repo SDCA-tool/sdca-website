@@ -125,7 +125,9 @@ var sdca = (function ($) {
 		}
 	};
 	
-
+	// Sublayer parameters, to be merged in
+	var _sublayerParameters = {};
+	
 	/* Panel state */
 	var _panelState = {
 		startupId: 'design-scheme',		// Panel to show at startup
@@ -1065,6 +1067,13 @@ var sdca = (function ($) {
 							layer._category = dataset.category;
 							layer.title = dataset.title;
 							layer.description = dataset.description;
+							
+							// Merge in sublayer parameters if present for this layer
+							if (_sublayerParameters.hasOwnProperty (dataset.id)) {
+								$.each (_sublayerParameters[dataset.id], function (key, value) {
+									layer[key] = value;
+								});
+							}
 							
 							// Register this layer
 							layers.push (layer);
