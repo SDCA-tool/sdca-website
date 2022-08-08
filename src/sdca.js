@@ -1109,6 +1109,9 @@ var sdca = (function ($) {
 							}
 						});
 						
+						// Create sublayer controls
+						sdca.createSublayerControls (layers, fields);
+						
 						// Run the layerviewer for these settings and layers
 						var layersById = {};
 						var layerId;
@@ -1136,8 +1139,70 @@ var sdca = (function ($) {
 				});
 			});
 		},
-
-
+		
+		
+		// Function to create and handle sublayer controls
+		createSublayerControls: function (layers, fields)
+		{
+			// Deal with each layer that has a sublayer parameter
+			var selectNameId;
+			var sublayerControlHtml;
+			var selectedLayerId;
+			var checkboxId;
+			$.each (layers, function (index, layer) {
+				if (layer.sublayerParameter) {
+					
+					// Create the dropdown
+					selectNameId = layer.id + '_type';
+					sublayerControlHtml = sdca.sublayerDropdown (selectNameId, fields[layer.id]);
+					
+					// Attach the dropdown to the HTML
+					$('#layercontrol_' + layer.id).append (sublayerControlHtml);
+					
+					// On select, reload layer
+					// #!# This would ideally be native to the layerViewer, but hard to generalise
+					$('body').on ('change', '#' + selectNameId, function (event) {
+						selectedLayerId = event.target.id.replace ('_type', '');
+						checkboxId = 'show_' + selectedLayerId;
+						if ($('#' + checkboxId).is (':checked')) {
+							$('#' + checkboxId).click ();
+							$('#' + checkboxId).click ();
+						}
+					});
+					
+					// Treat sublayer change as implicit enable
+					$('body').on ('change', '#' + selectNameId, function (event) {
+						selectedLayerId = event.target.id.replace ('_type', '');
+						checkboxId = 'show_' + selectedLayerId;
+						if ($('#' + checkboxId).not (':checked').length) {
+							$('#' + checkboxId).click ();	// Also triggers event
+						}
+					});
+				}
+			});
+		},
+		
+		
+		// Create a sublayer dropdown
+		sublayerDropdown: function (selectNameId, fields)
+		{
+			// Generate the HTML
+			var html = '<div class="filters">';
+			html += '<p>';
+			html += 'Show map styles for: ';
+			html += '<select name="' + selectNameId + '" id="' + selectNameId + '">';
+			$.each (fields, function (index, field) {
+				html += '<option value="' + field.col_name + '">' + sdca.htmlspecialchars (field.name) + '</option>';
+			});
+			html += '</select>';
+			html += '</p>';
+			html += '</div>';
+			
+			// Return the HTML
+			return html;
+		},
+		
+		
 		// Generate data layer accordion header HTML
 		generateLayerAccordionHeaderHtml: function (layer)
 		{
