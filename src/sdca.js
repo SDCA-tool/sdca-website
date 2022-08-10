@@ -1346,7 +1346,10 @@ var sdca = (function ($) {
 						data.pas2080 = sdca.filterNullRows (data.pas2080, 'emissions');
 						sdca.showResults(data);
 						sdca.switchPanel('view-results');
-
+						
+						// Click on summary tab to reset tab state; the GOV.UK tabs provides no problematic access, so this can only be done by simulating a click; see: https://stackoverflow.com/a/17105061
+						$('#tab_summary')[0].click ();
+						
 						// Register the last API call
 						_lastApiCallRegistryTimestamp = _interventionRegistry._timestamp;
 					},
