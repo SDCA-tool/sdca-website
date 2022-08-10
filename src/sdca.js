@@ -349,6 +349,28 @@ var sdca = (function ($) {
 					_map.resize ();		// Force recalculation, otherwise map stays in initial position
 				}
 			});
+			
+			// Function to determine if running in large screen mode; this uses a CSS property that is set in the stylesheet
+			var setDraggableAvailability = function () {
+				var isSmallScreen = ($('#sdca-map-container').css ('background-color') == 'rgb(255, 255, 255)');
+				if (isSmallScreen) {
+					// Small screen, i.e. disable draggability, hide divider, set full width
+					$('#sdca-divider').draggable ('option', 'disabled', true);
+					$('#sdca-divider').hide ();
+					$('#sdca-map-container, #sdca-panel-container').width ('100%');		// Value set in gov.uk stylesheet
+				} else {
+					// Reset state, i.e. enable draggability, show divider, reinstate half/half division
+					$('#sdca-divider').draggable ('option', 'disabled', false);
+					$('#sdca-divider').show ();
+					$('#sdca-map-container, #sdca-panel-container').css ('width', '50%').css ('width', '-=5px');		// See: https://stackoverflow.com/a/11117293
+				}
+			}
+			
+			// Determine whether draggability is enabled, at initial window size load and then on window resize
+			setDraggableAvailability ();
+			$(window).resize (function () {
+				setDraggableAvailability ();
+			});
 		},
 		
 		

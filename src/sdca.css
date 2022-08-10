@@ -12,8 +12,9 @@ body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
     .govuk-footer {padding-top: 25px;}
 }
 
+.govuk-grid-column-two-thirds {background-color: white;}
 @media (min-width: 50.0625em) {
-    .govuk-grid-column-two-thirds {width: calc(50% - 5px);}
+    .govuk-grid-column-two-thirds {width: calc(50% - 5px); background-color: #fffffe;} /* Background colour shift is workaround to detect sufficient width for resizing; NB if changing 5px calculation, this must be changed also in the draggable JS code */
     .govuk-grid-column-one-third {width: calc(50% - 5px);}
 }
 
@@ -82,4 +83,4 @@ body #application nav #drawing a {border-bottom: 0;}
 .warning {color: #fe6f5e;}
 
 /* Draggable panes */
-#sdca-divider {float: left; min-height: 700px; height: calc(100vh - 260px); width: 10px; cursor: ew-resize; background-color: #f8f8f8;}
+#sdca-divider {float: left; min-height: 700px; height: calc(100vh - 260px); width: 10px; cursor: ew-resize; background-color: #f8f8f8;}	/* If changing 10px width, this must be changed also in the draggable JS code */
