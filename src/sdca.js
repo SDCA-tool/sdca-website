@@ -1346,6 +1346,7 @@ var sdca = (function ($) {
 					},
 					success: function (data, textStatus, jqXHR) {
 						_returnedApiData = data;
+						data.pas2080 = sdca.filterNullRows (data.pas2080, 'emissions');
 						sdca.showResults(data);
 						sdca.switchPanel('view-results');
 
@@ -1445,6 +1446,21 @@ var sdca = (function ($) {
 					});
 				});
 			});
+		},
+		
+		
+		// Function to filter out null rows
+		filterNullRows: function (data, nullableField)
+		{
+			// Skip rows with empty data, marked as the NA type in R; see: https://github.com/SDCA-tool/sdca-website/issues/39
+			var dataFiltered = [];
+			$.each (data, function (index, row) {
+				if (row[nullableField] === null) {return; /* i.e. continue */}
+				dataFiltered.push (row);
+			});
+			
+			// Return the filtered dataset
+			return dataFiltered;
 		},
 		
 		
