@@ -225,6 +225,7 @@ var sdca = (function ($) {
 			sdca.loadDatasets ();
 			
 			// Manage panels
+			sdca.managePanelDraggability ();
 			sdca.managePanels ();
 			sdca.handleFileUpload ();
 
@@ -323,8 +324,34 @@ var sdca = (function ($) {
 			// At startup, set map state as view-all
 			_mapState.state = 'view-all';
 		},
-
-
+		
+		
+		// Function to manage panel draggability
+		managePanelDraggability: function ()
+		{
+			// Set up drag handling between the two panels; see: https://stackoverflow.com/a/38236563
+			var shiftInitial;
+			var leftWidth;
+			var rightWidth;
+			var shift;
+			$('#sdca-divider').draggable ({
+				axis: 'x',
+				start: function (event, ui) {
+					shiftInitial = ui.position.left;
+					leftWidth = $('#sdca-map-container').width ();
+					rightWidth = $('#sdca-panel-container').width ();
+				},
+				drag: function (event,ui) {
+					var shift = ui.position.left;
+					$('#sdca-divider').css ('position', 'static');		// Workaround, as otherwise the divider position increases out of proportion for some reason
+					$('#sdca-map-container').width (leftWidth + shift - shiftInitial);
+					$('#sdca-panel-container').width (rightWidth - shift + shiftInitial);
+					_map.resize ();		// Force recalculation, otherwise map stays in initial position
+				}
+			});
+		},
+		
+		
 		// Panel management
 		managePanels: function ()
 		{

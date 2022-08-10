@@ -4,7 +4,7 @@ body.full-width .govuk-grid-row {margin-left: 0; margin-right: 0;}
 body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
 
 @media (min-width: 48.0625em) {
-    .govuk-header__logo {width: 60%}
+    .govuk-header__logo {width: 60%;}
     .govuk-header__content {width: 40%;}
 }
 
@@ -13,8 +13,8 @@ body.full-width .govuk-footer__meta {margin-left: 0; margin-right: 0;}
 }
 
 @media (min-width: 50.0625em) {
-    .govuk-grid-column-two-thirds {width: 50%;}
-    .govuk-grid-column-one-third {width: 50%;}
+    .govuk-grid-column-two-thirds {width: calc(50% - 5px);}
+    .govuk-grid-column-one-third {width: calc(50% - 5px);}
 }
 
 .govuk-panel {padding: 20px}
@@ -80,3 +80,6 @@ body #application nav #drawing a {border-bottom: 0;}
 
 /* Warning style */
 .warning {color: #fe6f5e;}
+
+/* Draggable panes */
+#sdca-divider {float: left; min-height: 700px; height: calc(100vh - 260px); width: 10px; cursor: ew-resize; background-color: #f8f8f8;}
