@@ -371,6 +371,12 @@ var sdca = (function ($) {
 			$(window).resize (function () {
 				setDraggableAvailability ();
 			});
+			
+			// Treat double-click on divider as reset
+			$('#sdca-divider').dblclick (function () {
+				$('#sdca-map-container, #sdca-panel-container').css ('width', '50%').css ('width', '-=5px');
+				_map.resize ();		// Force recalculation, otherwise map stays in initial position
+			});
 		},
 		
 		
