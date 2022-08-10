@@ -78,3 +78,5 @@ body #application nav #drawing a {border-bottom: 0;}
 #map .mapboxgl-popup.trafficcounts table th {text-align: left; line-height: 2em;}
 #map .mapboxgl-popup.trafficcounts table td {text-align: right;}
 
+/* Warning style */
+.warning {color: #fe6f5e;}

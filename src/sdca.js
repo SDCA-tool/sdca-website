@@ -101,18 +101,14 @@ var sdca = (function ($) {
 		planningapplications: {
 			_category: 'Planning system data',
 			name: 'Planning applications',
-			description: 'Planning applications (large/medium) submitted to local authorities around the UK.',
-			apiCall: 'https://www.planit.org.uk/api/applics/geojson',
+			description: 'Planning applications (large/medium) submitted to local authorities around the UK. Data compiled by PlanIt. <span class="warning">Alpha note: Data can be slow (~20s) to appear at present.<span>',
+			apiCall: '/v2/planningapplications.locations',
 			apiFixedParameters: {
-				pg_sz: 100,
-				limit: 100,
-				select: 'location,description,address,app_size,app_type,app_state,uid,area_name,start_date,url',
-				app_size: 'Large,Medium',
-				app_state: 'Undecided,Permitted,Conditions,Rejected'
+				size: 'Medium,Large',
+				limit: 400
 			},
-			apiKey: false,
 			iconUrl: '/images/icons/signs_neutral.svg',
-			iconSizeField: 'app_size',
+			iconSizeField: 'size',
 			iconSizes: {
 				'Small': [24, 24],
 				'Medium': [36, 36],
@@ -121,13 +117,13 @@ var sdca = (function ($) {
 			popupHtml:
 				  '<p><strong>{properties.description}</strong></p>'
 				+ '<p>{properties.address}</p>'
-				+ '<p>Size of development: <strong>{properties.app_size}</strong><br />'
-				+ 'Type of development: <strong>{properties.app_type}</strong><br />'
-				+ 'Status: <strong>{properties.app_state}</strong></p>'
+				+ '<p>Size of development: <strong>{properties.size}</strong><br />'
+				+ 'Type of development: <strong>{properties.type}</strong><br />'
+				+ 'Status: <strong>{properties.state}</strong></p>'
 				+ '<p>Reference: <a href="{properties.url}">{properties.uid}</a><br />'
-				+ 'Local Authority: {properties.area_name}<br />'
-				+ 'Date: {properties.start_date}</p>'
-				+ '<p><a href="{properties.url}"><img src="/images/icons/bullet_go.png" /> <strong>View full details</a></strong></p>'
+				+ 'Local Authority: {properties.area}<br />'
+				+ 'Date: {properties.startdate}</p>'
+				+ '<p><a href="{properties.url}" target="_blank"><img src="/images/icons/bullet_go.png" /> <strong>View full details</a></strong></p>'
 		}
 	};
 	
