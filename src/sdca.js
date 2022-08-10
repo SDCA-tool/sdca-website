@@ -51,6 +51,9 @@ var sdca = (function ($) {
 		// Enable scale bar
 		enableScale: true,
 		
+		// Enable full screen map control
+		enableFullScreen: true,
+		
 		// Drawing
 		enableDrawing: true,
 		drawingGeometryType: 'LineString',
