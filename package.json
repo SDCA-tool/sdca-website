@@ -9,7 +9,7 @@
   "dependencies": {
     "@mapbox/geojson-extent": "^1.0.1",
     "@turf/turf": "^6.5.0",
-    "Mapboxgljs.LayerViewer": "https://github.com/cyclestreets/Mapboxgljs.LayerViewer",
+    "Mapboxgljs.LayerViewer": "https://github.com/mem48/Mapboxgljs.LayerViewer",
     "chart.js": "^3.8.0",
     "jquery.scrollto": "^2.1.3"
   }
